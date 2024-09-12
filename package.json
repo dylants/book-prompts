@@ -1,0 +1,36 @@
+{
+  "name": "book-prompts",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "build": "next build",
+    "check-types": "tsc --noemit",
+    "dev": "next dev",
+    "eslint": "next lint",
+    "lint": "bun run eslint && bun run check-types",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.26.1",
+    "next": "14.2.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.1.0",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "@typescript-eslint/eslint-plugin": "8.0.1",
+    "@typescript-eslint/parser": "8.0.1",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.5",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-prettier": "5.2.1",
+    "prettier": "3.3.3",
+    "ts-node": "10.9.2",
+    "typescript": "5.5.4"
+  }
+}
