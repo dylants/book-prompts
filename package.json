@@ -11,6 +11,7 @@
     "dev": "next dev",
     "eslint": "next lint",
     "lint": "bun run eslint && bun run check-types",
+    "log-prompts": "ts-node -r tsconfig-paths/register --compiler-options {\"module\":\"CommonJS\"} ./src/scripts/log-prompts.ts",
     "start": "next start"
   },
   "dependencies": {
