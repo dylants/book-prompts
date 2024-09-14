@@ -12,14 +12,16 @@
     "eslint": "next lint",
     "lint": "bun run eslint && bun run check-types",
     "log-prompts": "ts-node -r tsconfig-paths/register --compiler-options {\"module\":\"CommonJS\"} ./src/scripts/log-prompts.ts",
+    "run-prompt": "ts-node -r tsconfig-paths/register --compiler-options {\"module\":\"CommonJS\"} ./src/scripts/run-prompt.ts",
     "start": "next start"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "0.26.1",
     "@types/json-schema": "7.0.15",
     "next": "14.2.5",
+    "openai": "4.61.0",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "zod": "3.23.8"
   },
   "devDependencies": {
     "@types/node": "22.1.0",

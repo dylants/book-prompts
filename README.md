@@ -36,8 +36,22 @@ To log a `Prompt`, run the following script:
 bun run log-prompts <prompt name>
 ```
 
-For example, to run `RecommendBooksPrompt.ts`:
+For example, to log `RecommendBooksPrompt.ts`:
 
 ```
 bun run log-prompts RecommendBooksPrompt
+```
+
+### `run-prompt`
+
+To run a `Prompt`, run the following script:
+
+```
+bun run run-prompt <prompt name>
+```
+
+For example, to run `RecommendBooksPrompt.ts`:
+
+```
+bun run run-prompt RecommendBooksPrompt
 ```

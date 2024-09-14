@@ -18,11 +18,10 @@ titles, just to find that perfect book recommendation.
     // - Recommend 5 books with a Royal word in the title (such as "crown", "king", "court", etc).
     // - Recommend 5 books featuring vampires
     // - Recommend 5 books with gothic themes
-    // - The books should be all in the Romance genre.
 
     return `
 OBJECTIVE:
-- Recommend 5 books
+- Recommend and return only 5 books
 - The books should all feature witches (but not necessarily in the title).
 - The books should be all in the Romantic genre.
 - The books should be all in the Comedy subgenre.
@@ -38,7 +37,7 @@ and document those improvements.
 - Review and execute those improvements to come up with an improved list.
 - Sort the books in descending order based on how closely they match the OBJECTIVE.
 - Select the top books from that sorted list that match the OBJECTIVE.
-- Submit the solution, following the specific rules in OUTPUT.
+- Submit the solution, limiting the recommendations to the amount stated in OBJECTIVE.
 
 CONSIDERATIONS:
 - INPUT includes a list of books which I have previously read.
@@ -51,10 +50,10 @@ books to predict books that I would enjoy.
 
 INPUT:
 - Previously read books: ${JSON.stringify(books)}
-
-OUTPUT:
-- Output in JSON following this well-structured JSON schema type:
-${JSON.stringify(bookRecommendationsSchema)}
 `;
+  }
+
+  getSchema() {
+    return bookRecommendationsSchema;
   }
 }
