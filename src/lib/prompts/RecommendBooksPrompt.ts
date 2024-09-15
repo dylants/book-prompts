@@ -1,9 +1,11 @@
+import { fakeRecommendation } from '@/lib/fakes/recommendation.fake';
 import BasePrompt from '@/lib/prompts/BasePrompt';
 import bookRecommendationsSchema from '@/lib/schemas/book-recommendations.schema';
 import books from '@/lib/scratch-data/books';
 import aiService from '@/lib/services/ai.service';
 import Prompt from '@/types/Prompt';
 import Recommendation from '@/types/Recommendation';
+import _ from 'lodash';
 
 export default class RecommendBooksPrompt
   extends BasePrompt<Recommendation[]>
@@ -63,6 +65,14 @@ INPUT:
   }
 
   async execute(): Promise<Recommendation[] | string> {
+    if (this.shouldUseFakeResponses()) {
+      return _.orderBy(
+        _.times(5, () => fakeRecommendation()),
+        ['confidenceScore'],
+        ['desc'],
+      );
+    }
+
     const response = await aiService.createMessage({
       messages: [
         { content: this.getSystemPrompt(), role: 'system' },
