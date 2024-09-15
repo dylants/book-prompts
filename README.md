@@ -18,6 +18,10 @@ Install dependencies
 bun install
 ```
 
+## Config
+
+Configuration for the application is available within the [`config/index.js`](config/index.js) file.
+
 ## Scratch Data
 
 Static data used in place of a database, stored in `src/lib/scratch-data/`

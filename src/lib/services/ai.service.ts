@@ -1,3 +1,4 @@
+import logger from '@/lib/logger';
 import OpenAI from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
 import { ZodType } from 'zod';
@@ -13,8 +14,8 @@ class AIService {
       apiKey: process.env.OPENAI_API_KEY,
     });
     this.model = process.env.OPENAI_MODEL || DEFAULT_MODEL;
-    // TODO logger
-    console.log(this.model);
+
+    logger.trace({ model: this.model }, 'AIService');
   }
 
   async createMessage<ZodInput extends ZodType>({
@@ -24,6 +25,8 @@ class AIService {
     messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[];
     schema: ZodInput;
   }) {
+    logger.trace({ model: this.model }, 'createMessage');
+
     return this.openai.beta.chat.completions.parse({
       max_completion_tokens: 4096,
       messages,
