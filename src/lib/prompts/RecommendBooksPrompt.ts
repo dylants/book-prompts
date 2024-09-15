@@ -1,9 +1,14 @@
 import BasePrompt from '@/lib/prompts/BasePrompt';
 import bookRecommendationsSchema from '@/lib/schemas/book-recommendations.schema';
 import books from '@/lib/scratch-data/books';
+import aiService from '@/lib/services/ai.service';
 import Prompt from '@/types/Prompt';
+import Recommendation from '@/types/Recommendation';
 
-export default class RecommendBooksPrompt extends BasePrompt implements Prompt {
+export default class RecommendBooksPrompt
+  extends BasePrompt<Recommendation[]>
+  implements Prompt<Recommendation[]>
+{
   getSystemPrompt(): string {
     return `
 IDENTITY:
@@ -55,5 +60,24 @@ INPUT:
 
   getSchema() {
     return bookRecommendationsSchema;
+  }
+
+  async execute(): Promise<Recommendation[] | string> {
+    const response = await aiService.createMessage({
+      messages: [
+        { content: this.getSystemPrompt(), role: 'system' },
+        { content: this.getUserPrompt(), role: 'user' },
+      ],
+      schema: bookRecommendationsSchema,
+    });
+
+    const message = response.choices[0]?.message;
+    if (message?.parsed) {
+      return message.parsed.recommendations;
+    } else if (message?.refusal) {
+      return message.refusal;
+    }
+
+    throw new Error('Unable to process response from AIService');
   }
 }

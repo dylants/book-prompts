@@ -17,12 +17,12 @@ class AIService {
     console.log(this.model);
   }
 
-  async createMessage({
+  async createMessage<ZodInput extends ZodType>({
     messages,
     schema,
   }: {
     messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[];
-    schema: ZodType;
+    schema: ZodInput;
   }) {
     return this.openai.beta.chat.completions.parse({
       max_completion_tokens: 4096,
