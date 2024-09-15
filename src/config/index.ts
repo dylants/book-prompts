@@ -1,4 +1,10 @@
 const config = {
+  auth: {
+    token: {
+      name: 'AUTH_TOKEN',
+      value: process.env.AUTH_TOKEN,
+    },
+  },
   log: {
     level: 'trace',
   },
