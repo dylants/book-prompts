@@ -1,19 +1,18 @@
 import config from '@/config/index';
 import logger from '@/lib/logger';
+import openai from '@/lib/openai';
 import OpenAI from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
 import { ZodType } from 'zod';
 
 class AIService {
-  private openai: OpenAI;
   private maxTokens: number;
   private model: string;
 
   constructor() {
     const {
-      openai: { apiKey, maxTokens, model },
+      openai: { maxTokens, model },
     } = config;
-    this.openai = new OpenAI({ apiKey });
     this.maxTokens = Number(maxTokens);
     this.model = model;
 
@@ -32,7 +31,7 @@ class AIService {
       'createMessage',
     );
 
-    return this.openai.beta.chat.completions.parse({
+    return openai.beta.chat.completions.parse({
       max_completion_tokens: this.maxTokens,
       messages,
       model: this.model,

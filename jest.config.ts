@@ -21,11 +21,15 @@ const config: Config = {
     '!src/scripts/**',
     '!src/types/**',
   ],
-  coveragePathIgnorePatterns: ['src/components/*', 'src/lib/logger.ts'],
+  coveragePathIgnorePatterns: [
+    'src/components/*',
+    'src/lib/logger.ts',
+    'src/lib/openai.ts',
+  ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
-  setupFilesAfterEnv: [],
+  setupFilesAfterEnv: ['<rootDir>/test-setup/openai-mock.setup.ts'],
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
