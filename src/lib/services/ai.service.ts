@@ -1,21 +1,23 @@
+import config from '@/config/index';
 import logger from '@/lib/logger';
 import OpenAI from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
 import { ZodType } from 'zod';
 
-const DEFAULT_MODEL = 'gpt-4o-mini-2024-07-18';
-
 class AIService {
   private openai: OpenAI;
+  private maxTokens: number;
   private model: string;
 
   constructor() {
-    this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
-    this.model = process.env.OPENAI_MODEL || DEFAULT_MODEL;
+    const {
+      openai: { apiKey, maxTokens, model },
+    } = config;
+    this.openai = new OpenAI({ apiKey });
+    this.maxTokens = Number(maxTokens);
+    this.model = model;
 
-    logger.trace({ model: this.model }, 'AIService');
+    logger.trace({ maxTokens: this.maxTokens, model: this.model }, 'AIService');
   }
 
   async createMessage<ZodInput extends ZodType>({
@@ -25,10 +27,13 @@ class AIService {
     messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[];
     schema: ZodInput;
   }) {
-    logger.trace({ model: this.model }, 'createMessage');
+    logger.trace(
+      { maxTokens: this.maxTokens, model: this.model },
+      'createMessage',
+    );
 
     return this.openai.beta.chat.completions.parse({
-      max_completion_tokens: 4096,
+      max_completion_tokens: this.maxTokens,
       messages,
       model: this.model,
       response_format: zodResponseFormat(schema, 'data'),

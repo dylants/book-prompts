@@ -20,7 +20,7 @@ bun install
 
 ## Config
 
-Configuration for the application is available within the [`config/index.js`](config/index.js) file.
+Configuration for the application is available within the [`src/config/index.ts`](src/config/index.ts) file. See the config file for configuration elements exposed via environment variables.
 
 ## Scratch Data
 
