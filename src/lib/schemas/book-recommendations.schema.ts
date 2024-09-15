@@ -6,7 +6,7 @@ const bookRecommendationsSchema = z.object({
       author: z.string({
         description: 'The author of the book',
       }),
-      confidenceScore: z.string({
+      confidenceScore: z.number({
         description:
           'How confident you are in this recommendation using a score from 0 (low) to 1 (high)',
       }),
