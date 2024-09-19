@@ -3,15 +3,15 @@ import logger from '@/lib/logger';
 import Prompt from '@/types/Prompt';
 
 export default abstract class BasePrompt<Result> implements Prompt<Result> {
-  abstract getSystemPrompt(): string;
+  abstract getSystemPrompt(): Promise<string>;
 
-  abstract getUserPrompt(): string;
+  abstract getUserPrompt(): Promise<string>;
 
   abstract execute(): Promise<Result | string>;
 
-  logPrompts(): void {
-    console.log(this.getSystemPrompt());
-    console.log(this.getUserPrompt());
+  async logPrompts(): Promise<void> {
+    console.log(await this.getSystemPrompt());
+    console.log(await this.getUserPrompt());
   }
 
   protected shouldUseFakeResponses(): boolean {

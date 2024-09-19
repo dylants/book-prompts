@@ -12,22 +12,22 @@ export default class RecommendBooksPrompt
   extends BasePrompt<Recommendation[]>
   implements Prompt<Recommendation[]>
 {
-  getSystemPrompt(): string {
-    return `
+  getSystemPrompt(): Promise<string> {
+    return Promise.resolve(`
 IDENTITY:
 You are an avid book reader, very knowledgeable about books, and enjoy helping others
 by recommending books. You've been known to dig deeper, scan through hundreds of
 titles, just to find that perfect book recommendation.
-`;
+`);
   }
 
-  getUserPrompt(): string {
+  getUserPrompt(): Promise<string> {
     // OBJECTIVE:
     // - Recommend 5 books with a Royal word in the title (such as "crown", "king", "court", etc).
     // - Recommend 5 books featuring vampires
     // - Recommend 5 books with gothic themes
 
-    return `
+    return Promise.resolve(`
 OBJECTIVE:
 - Recommend and return only 5 books
 - The books should all feature witches (but not necessarily in the title).
@@ -58,7 +58,7 @@ books to predict books that I would enjoy.
 
 INPUT:
 - Previously read books: ${JSON.stringify(books)}
-`;
+`);
   }
 
   async execute(): Promise<Recommendation[]> {
@@ -72,8 +72,8 @@ INPUT:
 
     const response = await aiService.createMessage({
       messages: [
-        { content: this.getSystemPrompt(), role: 'system' },
-        { content: this.getUserPrompt(), role: 'user' },
+        { content: await this.getSystemPrompt(), role: 'system' },
+        { content: await this.getUserPrompt(), role: 'user' },
       ],
       schema: bookRecommendationsSchema,
     });

@@ -5,12 +5,12 @@ import _ from 'lodash';
 const log = jest.spyOn(console, 'log').mockImplementation(() => {});
 
 class TestPrompt extends BasePrompt<string> {
-  getSystemPrompt(): string {
-    return 'system prompt';
+  getSystemPrompt(): Promise<string> {
+    return Promise.resolve('system prompt');
   }
 
-  getUserPrompt(): string {
-    return 'user prompt';
+  getUserPrompt(): Promise<string> {
+    return Promise.resolve('user prompt');
   }
 
   execute(): Promise<string> {
@@ -40,8 +40,8 @@ describe('BasePrompt', () => {
   });
 
   describe('logPrompts', () => {
-    it('should log the prompts', () => {
-      testPrompt.logPrompts();
+    it('should log the prompts', async () => {
+      await testPrompt.logPrompts();
 
       expect(log).toHaveBeenCalledTimes(2);
       expect(log).toHaveBeenNthCalledWith(1, 'system prompt');

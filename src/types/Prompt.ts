@@ -1,7 +1,7 @@
 type Prompt<Result> = {
-  getSystemPrompt(): string;
-  getUserPrompt(): string;
-  logPrompts(): void;
+  getSystemPrompt(): Promise<string>;
+  getUserPrompt(): Promise<string>;
+  logPrompts(): Promise<void>;
   execute(): Promise<Result | string>;
 };
 
