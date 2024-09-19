@@ -1,7 +1,6 @@
 import config from '@/config/index';
 import BasePrompt from '@/lib/prompts/BasePrompt';
 import _ from 'lodash';
-import { z, ZodType } from 'zod';
 
 const log = jest.spyOn(console, 'log').mockImplementation(() => {});
 
@@ -12,10 +11,6 @@ class TestPrompt extends BasePrompt<string> {
 
   getUserPrompt(): string {
     return 'user prompt';
-  }
-
-  getSchema(): ZodType {
-    return z.object({});
   }
 
   execute(): Promise<string> {

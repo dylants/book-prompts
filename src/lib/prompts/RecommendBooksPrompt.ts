@@ -1,4 +1,5 @@
 import { fakeRecommendation } from '@/lib/fakes/recommendation.fake';
+import logger from '@/lib/logger';
 import BasePrompt from '@/lib/prompts/BasePrompt';
 import bookRecommendationsSchema from '@/lib/schemas/book-recommendations.schema';
 import books from '@/lib/scratch-data/books';
@@ -60,11 +61,7 @@ INPUT:
 `;
   }
 
-  getSchema() {
-    return bookRecommendationsSchema;
-  }
-
-  async execute(): Promise<Recommendation[] | string> {
+  async execute(): Promise<Recommendation[]> {
     if (this.shouldUseFakeResponses()) {
       return _.orderBy(
         _.times(5, () => fakeRecommendation()),
@@ -85,9 +82,11 @@ INPUT:
     if (message?.parsed) {
       return message.parsed.recommendations;
     } else if (message?.refusal) {
-      return message.refusal;
+      logger.error({ refusal: message.refusal }, 'AIService refused to parse');
+      throw new Error('AIService refused to parse');
     }
 
+    logger.error({ message }, 'Unable to parse response from AIService');
     throw new Error('Unable to process response from AIService');
   }
 }

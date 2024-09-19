@@ -59,3 +59,27 @@ For example, to run `RecommendBooksPrompt.ts`:
 ```
 bun run run-prompt RecommendBooksPrompt
 ```
+
+## Tests
+
+This project is configured to use ESLint as the linter.
+
+To run both lint and compile TypeScript files:
+
+```
+npm run lint
+```
+
+Jest unit tests exist along side the source file. Integration tests exist in [`integration-tests`](integration-tests).
+
+To run the tests:
+
+```
+npm test
+```
+
+To run tests in watch mode:
+
+```
+npm run test:watch
+```

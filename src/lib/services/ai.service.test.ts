@@ -1,5 +1,5 @@
 import aiService from '@/lib/services/ai.service';
-import { ParsedChatCompletion } from 'openai/resources/beta/chat/completions.mjs';
+import { ParsedChatCompletion } from 'openai/resources/beta/chat/completions';
 import { z } from 'zod';
 import { openaiMock } from '../../../test-setup/openai-mock.setup';
 
