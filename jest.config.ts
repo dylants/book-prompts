@@ -25,6 +25,7 @@ const config: Config = {
     'src/components/*',
     'src/lib/logger.ts',
     'src/lib/openai.ts',
+    'src/lib/prisma.ts',
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',

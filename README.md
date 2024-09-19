@@ -22,6 +22,46 @@ bun install
 
 Configuration for the application is available within the [`src/config/index.ts`](src/config/index.ts) file. See the config file for configuration elements exposed via environment variables.
 
+## Database
+
+This project utilizes [Prisma](https://www.prisma.io/) for its ORM, and expects a PostgreSQL database instance.
+
+The database schema is stored in the [schema.prisma](prisma/schema.prisma) file.
+
+### Setup Postgres
+
+Install PostgreSQL and populate the `.env` file with the correct `DATABASE_URL` string to connect to PostgreSQL.
+
+The `DATABASE_URL` should be populated as such:
+
+```
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/book-prompts"
+```
+
+### Run Migrations
+
+To run migrations:
+
+```
+npx prisma migrate dev
+```
+
+### Create New Migration
+
+To create a new migration (and run it):
+
+```
+npx prisma migrate dev --name <migration name>
+```
+
+### Reset the Database
+
+Reset the database, re-run migrations, and re-seed the database:
+
+```
+bun db:reset
+```
+
 ## Scratch Data
 
 Static data used in place of a database, stored in `src/lib/scratch-data/`

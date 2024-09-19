@@ -8,6 +8,7 @@
   "scripts": {
     "build": "next build",
     "check-types": "tsc --noemit",
+    "db:reset": "prisma migrate reset",
     "dev": "next dev",
     "eslint": "next lint",
     "lint": "bun run eslint && bun run check-types",
@@ -19,6 +20,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "9.0.1",
+    "@prisma/client": "5.19.1",
     "@types/json-schema": "7.0.15",
     "lodash": "4.17.21",
     "next": "14.2.5",
@@ -43,6 +45,7 @@
     "jest": "29.7.0",
     "jest-mock-extended": "4.0.0-beta1",
     "prettier": "3.3.3",
+    "prisma": "5.19.1",
     "ts-node": "10.9.2",
     "typescript": "5.5.4"
   }
