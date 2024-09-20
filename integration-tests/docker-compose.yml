@@ -1,0 +1,22 @@
+name: book-prompts-tests
+
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    # Uncomment the following line to enable query logging
+    # Then restart the container.
+    # command: ['postgres', '-c', 'log_statement=all']
+    environment:
+      - POSTGRES_DB=book-prompts-tests
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '15432:5432'
+    healthcheck:
+      # specifying user and database is needed to avoid `FATAL:  role "root" does not exist`
+      # spam in the logs
+      test: ['CMD', 'pg_isready', '-U', 'postgres', '-d', 'book-prompts-tests']
+      interval: 5s
+      timeout: 2s
+      retries: 20

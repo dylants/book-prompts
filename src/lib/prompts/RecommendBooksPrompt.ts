@@ -1,8 +1,8 @@
 import { fakeRecommendation } from '@/lib/fakes/recommendation.fake';
 import logger from '@/lib/logger';
+import prisma from '@/lib/prisma';
 import BasePrompt from '@/lib/prompts/BasePrompt';
 import bookRecommendationsSchema from '@/lib/schemas/book-recommendations.schema';
-import books from '@/lib/scratch-data/books';
 import aiService from '@/lib/services/ai.service';
 import Prompt from '@/types/Prompt';
 import Recommendation from '@/types/Recommendation';
@@ -12,7 +12,7 @@ export default class RecommendBooksPrompt
   extends BasePrompt<Recommendation[]>
   implements Prompt<Recommendation[]>
 {
-  getSystemPrompt(): Promise<string> {
+  async getSystemPrompt(): Promise<string> {
     return Promise.resolve(`
 IDENTITY:
 You are an avid book reader, very knowledgeable about books, and enjoy helping others
@@ -21,7 +21,18 @@ titles, just to find that perfect book recommendation.
 `);
   }
 
-  getUserPrompt(): Promise<string> {
+  async getUserPrompt(): Promise<string> {
+    const books = await prisma.bookReview.findMany({
+      orderBy: {
+        rating: 'desc',
+      },
+      select: {
+        author: true,
+        rating: true,
+        title: true,
+      },
+    });
+
     // OBJECTIVE:
     // - Recommend 5 books with a Royal word in the title (such as "crown", "king", "court", etc).
     // - Recommend 5 books featuring vampires

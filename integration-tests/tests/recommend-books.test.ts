@@ -1,11 +1,11 @@
 import { POST } from '@/app/api/recommendations/route';
 import { fakeRecommendation } from '@/lib/fakes/recommendation.fake';
 import bookRecommendationsSchema from '@/lib/schemas/book-recommendations.schema';
-import books from '@/lib/scratch-data/books';
 import aiService from '@/lib/services/ai.service';
 import { ParsedChatCompletion } from 'openai/resources/beta/chat/completions';
 import { ChatCompletionMessageParam } from 'openai/resources/index';
 import { ZodType } from 'zod';
+import bookReviewFixtures from '../fixtures/book-review.fixture';
 
 const mockCreateMessage = jest.spyOn(aiService, 'createMessage');
 
@@ -18,7 +18,7 @@ describe('Recommend Books Integration Test', () => {
     const recommendations = [fakeRecommendation(), fakeRecommendation()];
     let receivedMessages: ChatCompletionMessageParam[], receivedSchema: ZodType;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       mockCreateMessage.mockImplementation(({ messages, schema }) => {
         receivedMessages = messages;
         receivedSchema = schema;
@@ -56,7 +56,7 @@ describe('Recommend Books Integration Test', () => {
       );
       expect(userPrompt).toEqual(
         expect.stringContaining(
-          `Previously read books: ${JSON.stringify(books)}`,
+          `Previously read books: ${JSON.stringify(bookReviewFixtures)}`,
         ),
       );
 

@@ -10,7 +10,7 @@ Use [nvm](https://github.com/nvm-sh/nvm) to use the project's Node version
 nvm use
 ```
 
-_This app uses [bun](https://bun.sh/) for dependency management and script execution._
+_This app uses [bun](https://bun.sh/) for dependency management._
 
 Install dependencies
 
@@ -59,16 +59,8 @@ npx prisma migrate dev --name <migration name>
 Reset the database, re-run migrations, and re-seed the database:
 
 ```
-bun db:reset
+npm run db:reset
 ```
-
-## Scratch Data
-
-Static data used in place of a database, stored in `src/lib/scratch-data/`
-
-### `books.ts`
-
-Contains a list of books to use in the `RecommendBooksPrompt`
 
 ## Scripts
 
@@ -77,13 +69,13 @@ Contains a list of books to use in the `RecommendBooksPrompt`
 To log a `Prompt`, run the following script:
 
 ```
-bun run log-prompts <prompt name>
+npm run log-prompts <prompt name>
 ```
 
 For example, to log `RecommendBooksPrompt.ts`:
 
 ```
-bun run log-prompts RecommendBooksPrompt
+npm run log-prompts RecommendBooksPrompt
 ```
 
 ### `run-prompt`
@@ -91,16 +83,18 @@ bun run log-prompts RecommendBooksPrompt
 To run a `Prompt`, run the following script:
 
 ```
-bun run run-prompt <prompt name>
+npm run run-prompt <prompt name>
 ```
 
 For example, to run `RecommendBooksPrompt.ts`:
 
 ```
-bun run run-prompt RecommendBooksPrompt
+npm run run-prompt RecommendBooksPrompt
 ```
 
 ## Tests
+
+### Lint and Type Checking
 
 This project is configured to use ESLint as the linter.
 
@@ -110,9 +104,29 @@ To run both lint and compile TypeScript files:
 npm run lint
 ```
 
+### Unit and Integration Tests
+
 Jest unit tests exist along side the source file. Integration tests exist in [`integration-tests`](integration-tests).
 
+The integration tests (which are included in the test run) require a test database. This is setup via Docker Compose, and requires a running Docker instance.
+
 To run the tests:
+
+- Start Docker ([Docker Desktop](https://docs.docker.com/desktop/) is an easy option).
+
+- Start the test database
+
+```
+npm run ci:up
+```
+
+- Migrate and seed the test database
+
+```
+npm run ci:db:reset
+```
+
+- Run the tests
 
 ```
 npm test
@@ -122,4 +136,10 @@ To run tests in watch mode:
 
 ```
 npm run test:watch
+```
+
+When tests are complete, you can shutdown the test database:
+
+```
+npm run ci:down
 ```
