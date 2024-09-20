@@ -1,0 +1,36 @@
+# https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Setup Environment
+        uses: ./.github/actions/setup-env
+      - name: Run lint
+        run: bun run lint
+      - name: Run docker-compose
+        uses: hoverkraft-tech/compose-action@v2.0.1
+        with:
+          compose-file: './integration-tests/docker-compose.yml'
+      - name: Migrate and seed the test database
+        run: npm run ci:db:reset
+      - name: Run tests
+        run: npm run test
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Setup Environment
+        uses: ./.github/actions/setup-env
+      - name: Run build
+        run: bun run build
