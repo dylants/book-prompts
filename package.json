@@ -6,7 +6,7 @@
     "node": "20.x"
   },
   "scripts": {
-    "build": "next build",
+    "build": "dotenv -e .env.test -- next build",
     "check-types": "tsc --noemit",
     "ci:db:fixtures": "dotenv -e .env.test -- ts-node -r tsconfig-paths/register --compiler-options '{\"module\":\"CommonJS\"}' integration-tests/create-fixtures.ts",
     "ci:db:migrate-reset": "dotenv -e .env.test -- prisma migrate reset --skip-seed --force",
