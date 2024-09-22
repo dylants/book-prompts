@@ -26,6 +26,7 @@ const config: Config = {
     'src/lib/logger.ts',
     'src/lib/openai.ts',
     'src/lib/prisma.ts',
+    'src/lib/tailwind-utils.ts',
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
