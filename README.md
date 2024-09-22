@@ -143,3 +143,13 @@ When tests are complete, you can shutdown the test database:
 ```
 npm run ci:down
 ```
+
+## Storybook
+
+This app uses [Storybook](https://storybook.js.org/) to demo UI components.
+
+To run storybook:
+
+```
+npm run storybook
+```

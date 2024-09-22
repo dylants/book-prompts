@@ -44,3 +44,7 @@ next-env.d.ts
 
 # scratch data (until we have a database)
 /src/lib/scratch-data
+
+# storybook
+/storybook-static
+
