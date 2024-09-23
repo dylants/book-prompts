@@ -1,4 +1,4 @@
-import { POST } from '@/app/api/recommendations/route';
+import { POST } from '@/app/api/protected/recommendations/route';
 import { fakeRecommendation } from '@/lib/fakes/recommendation.fake';
 import bookRecommendationsSchema from '@/lib/schemas/book-recommendations.schema';
 import aiService from '@/lib/services/ai.service';

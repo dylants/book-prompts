@@ -48,7 +48,7 @@ describe('middleware.ts', () => {
     // Add test just to confirm we don't inadvertently change the path
     it('should match all API routes', () => {
       expect(config).toEqual({
-        matcher: '/api/:path*',
+        matcher: '/api/protected/:path*',
       });
     });
   });

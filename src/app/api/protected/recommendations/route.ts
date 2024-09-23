@@ -12,7 +12,7 @@ type ErrorBody = {
 };
 
 export async function POST(): Promise<NextResponse<ResponseBody | ErrorBody>> {
-  logger.trace({}, '/api/recommendations POST');
+  logger.trace({}, '/api/protected/recommendations POST');
 
   try {
     const prompt = new RecommendBooksPrompt();
