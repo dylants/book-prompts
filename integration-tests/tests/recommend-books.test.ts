@@ -1,7 +1,10 @@
 import { POST } from '@/app/api/protected/recommendations/route';
+import projectConfig from '@/config/index';
 import { fakeRecommendation } from '@/lib/fakes/recommendation.fake';
+import prisma from '@/lib/prisma';
 import bookRecommendationsSchema from '@/lib/schemas/book-recommendations.schema';
 import aiService from '@/lib/services/ai.service';
+import { NextRequest } from 'next/server';
 import { ParsedChatCompletion } from 'openai/resources/beta/chat/completions';
 import { ChatCompletionMessageParam } from 'openai/resources/index';
 import { ZodType } from 'zod';
@@ -10,6 +13,14 @@ import bookReviewFixtures from '../fixtures/book-review.fixture';
 const mockCreateMessage = jest.spyOn(aiService, 'createMessage');
 
 describe('Recommend Books Integration Test', () => {
+  let request: NextRequest;
+
+  beforeEach(async () => {
+    const user = await prisma.user.findFirstOrThrow();
+    request = new NextRequest('http://localhost');
+    request.cookies.set(projectConfig.auth.cookieName, user.uuid);
+  });
+
   afterEach(() => {
     jest.resetAllMocks();
   });
@@ -36,7 +47,7 @@ describe('Recommend Books Integration Test', () => {
     });
 
     it('should query AI and respond with a list of recommendations', async () => {
-      const response = await POST();
+      const response = await POST(request);
 
       expect(mockCreateMessage).toHaveBeenCalledTimes(1);
       expect(receivedMessages).toEqual([
@@ -80,7 +91,7 @@ describe('Recommend Books Integration Test', () => {
     });
 
     it('should return an error', async () => {
-      const response = await POST();
+      const response = await POST(request);
 
       expect(mockCreateMessage).toHaveBeenCalledTimes(1);
 
@@ -102,7 +113,7 @@ describe('Recommend Books Integration Test', () => {
     });
 
     it('should return an error', async () => {
-      const response = await POST();
+      const response = await POST(request);
 
       expect(mockCreateMessage).toHaveBeenCalledTimes(1);
 
