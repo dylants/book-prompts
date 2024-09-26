@@ -1,18 +1,25 @@
 import logger from '@/lib/logger';
+import { authMiddleware, handleMiddlewareError } from '@/lib/middleware';
 import RecommendBooksPrompt from '@/lib/prompts/RecommendBooksPrompt';
+import NextResponseErrorBody from '@/types/NextResponseErrorBody';
 import Recommendation from '@/types/Recommendation';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 type ResponseBody = {
   data: Recommendation[];
 };
 
-type ErrorBody = {
-  error: string;
-};
-
-export async function POST(): Promise<NextResponse<ResponseBody | ErrorBody>> {
+export async function POST(
+  request: NextRequest,
+): Promise<NextResponse<ResponseBody | NextResponseErrorBody>> {
   logger.trace({}, '/api/protected/recommendations POST');
+
+  /* istanbul ignore next */
+  try {
+    await authMiddleware(request);
+  } catch (error) {
+    return handleMiddlewareError(error);
+  }
 
   try {
     const prompt = new RecommendBooksPrompt();
