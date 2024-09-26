@@ -1,5 +1,6 @@
 const config = {
   auth: {
+    saltRounds: 10,
     // All /api routes are secured by checking for the auth token.
     // When the AUTH_TOKEN value is set, compares the requests to
     // verify they include this header key/value pair. Otherwise
