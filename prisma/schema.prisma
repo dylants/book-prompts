@@ -9,6 +9,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  email    String @unique
+  password String
+  uuid     String @default(cuid())
+
+  bookReviews BookReview[]
+}
+
 model BookReview {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @db.Timestamptz(3)
@@ -17,4 +29,7 @@ model BookReview {
   title  String
   author String
   rating Int // includes constraint bounding from 1-5, inclusive
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
 }

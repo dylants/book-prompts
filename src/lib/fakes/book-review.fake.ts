@@ -20,5 +20,6 @@ export function fakeBookReview(): BookReview {
     }),
     title: faker.music.songName(),
     updatedAt: faker.date.past(),
+    userId: faker.number.int({ max: 1000 }),
   };
 }
