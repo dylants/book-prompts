@@ -14,7 +14,9 @@
     "ci:db:reset": "npm run ci:db:migrate-reset && npm run ci:db:fixtures",
     "ci:down": "docker compose -f ./integration-tests/docker-compose.yml down",
     "ci:up": "docker compose -f ./integration-tests/docker-compose.yml up -d",
+    "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset",
+    "db:seed": "prisma db seed",
     "dev": "next dev",
     "eslint": "next lint",
     "lint": "bun run eslint && bun run check-types",
@@ -24,6 +26,9 @@
     "test": "dotenv -e .env.test -- jest --coverage",
     "test:watch": "dotenv -e .env.test -- jest --watch",
     "storybook": "storybook dev -p 6006"
+  },
+  "prisma": {
+    "seed": "ts-node -r tsconfig-paths/register --compiler-options {\"module\":\"CommonJS\"} prisma/seeds/run-seeds.ts"
   },
   "dependencies": {
     "@faker-js/faker": "9.0.1",

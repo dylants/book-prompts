@@ -43,7 +43,7 @@ DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/book-prompts"
 To run migrations:
 
 ```
-npx prisma migrate dev
+npm run db:migrate
 ```
 
 ### Create New Migration
@@ -51,10 +51,18 @@ npx prisma migrate dev
 To create a new migration (and run it):
 
 ```
-npx prisma migrate dev --name <migration name>
+npm run db:migrate --name <migration name>
 ```
 
-### Reset the Database
+### Seeds
+
+Database seeds are found in the [seeds script directory](prisma/seeds/).
+
+To run the script to generate seed data:
+
+```
+npm run db:seed
+```
 
 Reset the database, re-run migrations, and re-seed the database:
 
