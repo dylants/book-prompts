@@ -4,10 +4,51 @@ import logger from '@/lib/logger';
 import { UnauthorizedError } from '@/lib/middleware';
 import prisma from '@/lib/prisma';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
+import UserAuthGetResponse from '@/types/UserAuthGetResponse';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 const authCookieName = projectConfig.auth.cookieName;
+
+export type AuthGetResponseBody = UserAuthGetResponse;
+
+export async function GET(
+  request: NextRequest,
+): Promise<NextResponse<AuthGetResponseBody | NextResponseErrorBody>> {
+  logger.trace({}, `${request.nextUrl.pathname} ${request.method}`);
+
+  try {
+    const uuid = request.cookies.get(authCookieName)?.value;
+
+    if (!uuid) {
+      logger.trace({}, 'No uuid in auth cookie, returning not logged in');
+      return NextResponse.json({
+        isLoggedIn: false,
+      });
+    }
+
+    const user = await prisma.user.findFirst({ where: { uuid } });
+    if (!user) {
+      logger.trace({ uuid }, 'No user for uuid, returning not logged in');
+      return NextResponse.json({
+        isLoggedIn: false,
+      });
+    }
+
+    return NextResponse.json({
+      email: user.email,
+      isLoggedIn: true,
+    });
+  } catch (error: unknown) {
+    let errorMessage;
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    logger.error({ errorMessage }, 'Error occurred in GET auth');
+
+    return NextResponse.json({ error: 'Unknown error' }, { status: 500 });
+  }
+}
 
 export type AuthPostRequestBody = {
   email: string;
@@ -53,7 +94,7 @@ export async function POST(
       if (error instanceof Error) {
         errorMessage = error.message;
       }
-      logger.error({ errorMessage }, 'Error occurred in login auth');
+      logger.error({ errorMessage }, 'Error occurred in POST auth');
 
       return NextResponse.json({ error: 'Unknown error' }, { status: 500 });
     }
