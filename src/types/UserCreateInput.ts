@@ -1,5 +1,5 @@
-import { User } from '@prisma/client';
+import { User as PrismaUser } from '@prisma/client';
 
-type UserCreateInput = Pick<User, 'email' | 'password'>;
+type UserCreateInput = Pick<PrismaUser, 'email' | 'password'>;
 
 export default UserCreateInput;

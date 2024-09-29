@@ -1,7 +1,7 @@
 import userService from '@/lib/services/user.service';
-import { User } from '@prisma/client';
+import UserCreateInput from '@/types/UserCreateInput';
 
-export const USERS: Pick<User, 'email' | 'password'>[] = [
+export const USERS: UserCreateInput[] = [
   { email: 'test@fake.com', password: 'password' },
 ];
 

@@ -15,7 +15,7 @@ const mockCreateMessage = jest.spyOn(aiService, 'createMessage');
 describe('Recommend Books Integration Test', () => {
   let request: NextRequest;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const user = await prisma.user.findFirstOrThrow();
     request = new NextRequest('http://localhost');
     request.cookies.set(projectConfig.auth.cookieName, user.uuid);

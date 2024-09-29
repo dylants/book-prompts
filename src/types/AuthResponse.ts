@@ -1,6 +1,6 @@
-import { User } from '@prisma/client';
+import User from '@/types/User';
 
-type UserAuthGetResponse =
+type AuthResponse =
   | {
       isLoggedIn: true;
       email: User['email'];
@@ -9,4 +9,4 @@ type UserAuthGetResponse =
       isLoggedIn: false;
     };
 
-export default UserAuthGetResponse;
+export default AuthResponse;

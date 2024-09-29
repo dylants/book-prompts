@@ -23,17 +23,16 @@ describe('Create User Integration Test', () => {
       },
     });
 
-    const { email, password, uuid } = createdUser;
+    const { email, uuid } = createdUser;
     expect(email).toEqual(USER_EMAIL);
-    expect(
-      await comparePassword({
-        hash: password,
-        password: USER_PASSWORD,
-      }),
-    ).toEqual(true);
     expect(uuid).toBeDefined();
 
     const foundUser = await prisma.user.findFirst({
+      select: {
+        email: true,
+        password: true,
+        uuid: true,
+      },
       where: { email: USER_EMAIL },
     });
     expect(foundUser).toBeDefined();

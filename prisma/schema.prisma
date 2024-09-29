@@ -1,7 +1,9 @@
 // https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  // https://www.prisma.io/docs/orm/prisma-client/queries/excluding-fields
+  previewFeatures = ["omitApi"]
 }
 
 datasource db {
