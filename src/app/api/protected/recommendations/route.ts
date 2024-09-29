@@ -1,5 +1,6 @@
+import { handleErrorResponse } from '@/lib/errors/handleErrorResponse';
 import logger from '@/lib/logger';
-import { authMiddleware, handleMiddlewareError } from '@/lib/middleware';
+import { authMiddleware } from '@/lib/middleware';
 import RecommendBooksPrompt from '@/lib/prompts/RecommendBooksPrompt';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
 import Recommendation from '@/types/Recommendation';
@@ -18,7 +19,7 @@ export async function POST(
   try {
     await authMiddleware(request);
   } catch (error) {
-    return handleMiddlewareError(error);
+    return handleErrorResponse(error);
   }
 
   try {
