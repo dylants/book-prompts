@@ -1,7 +1,7 @@
 import { encryptPassword } from '@/lib/encryption';
 import prisma from '@/lib/prisma';
+import User from '@/types/User';
 import UserCreateInput from '@/types/UserCreateInput';
-import { User } from '@prisma/client';
 
 class UserService {
   private static instance: UserService;

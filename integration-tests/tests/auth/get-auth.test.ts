@@ -2,7 +2,7 @@ import { AuthGetResponseBody, GET } from '@/app/api/auth/route';
 import projectConfig from '@/config/index';
 import prisma from '@/lib/prisma';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
-import { User } from '@prisma/client';
+import User from '@/types/User';
 import { NextRequest } from 'next/server';
 import userFixtures from '../../fixtures/user.fixture';
 
@@ -12,7 +12,7 @@ describe('GET /auth API Integration Test', () => {
   const userFixture = userFixtures[0];
   let user: User;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     user = await prisma.user.findFirstOrThrow({
       where: { email: userFixture.email },
     });

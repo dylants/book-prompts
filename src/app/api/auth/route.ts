@@ -3,14 +3,14 @@ import { comparePassword } from '@/lib/encryption';
 import logger from '@/lib/logger';
 import { UnauthorizedError } from '@/lib/middleware';
 import prisma from '@/lib/prisma';
+import AuthResponse from '@/types/AuthResponse';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
-import UserAuthGetResponse from '@/types/UserAuthGetResponse';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 const authCookieName = projectConfig.auth.cookieName;
 
-export type AuthGetResponseBody = UserAuthGetResponse;
+export type AuthGetResponseBody = AuthResponse;
 
 export async function GET(
   request: NextRequest,
@@ -55,7 +55,7 @@ export type AuthPostRequestBody = {
   password: string;
 };
 
-export type AuthPostResponseBody = Record<string, never>;
+export type AuthPostResponseBody = AuthResponse;
 
 export async function POST(
   request: NextRequest,
@@ -66,7 +66,14 @@ export async function POST(
     const { email, password } = (await request.json()) as AuthPostRequestBody;
     logger.trace({ email }, 'Attempted login');
 
-    const user = await prisma.user.findFirst({ where: { email } });
+    const user = await prisma.user.findFirst({
+      select: {
+        email: true,
+        password: true,
+        uuid: true,
+      },
+      where: { email },
+    });
     if (!user) {
       logger.trace({ email }, 'User not found, returning UnauthorizedError');
       throw new UnauthorizedError();
@@ -85,7 +92,10 @@ export async function POST(
     const cookieStore = cookies();
     cookieStore.set(authCookieName, user.uuid);
 
-    return NextResponse.json({});
+    return NextResponse.json({
+      email: user.email,
+      isLoggedIn: true,
+    });
   } catch (error: unknown) {
     if (error instanceof UnauthorizedError) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

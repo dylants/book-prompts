@@ -6,7 +6,7 @@ import {
 import projectConfig from '@/config/index';
 import prisma from '@/lib/prisma';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
-import { User } from '@prisma/client';
+import User from '@/types/User';
 import { NextRequest } from 'next/server';
 import userFixtures from '../../fixtures/user.fixture';
 
@@ -23,12 +23,14 @@ describe('/auth POST API', () => {
   const userFixture = userFixtures[0];
   let user: User;
 
-  beforeEach(async () => {
-    mockSetCookies.mockReset();
-
+  beforeAll(async () => {
     user = await prisma.user.findFirstOrThrow({
       where: { email: userFixture.email },
     });
+  });
+
+  beforeEach(async () => {
+    mockSetCookies.mockReset();
   });
 
   it('should return auth cookie on successful login', async () => {
@@ -46,7 +48,10 @@ describe('/auth POST API', () => {
     expect(response.status).toEqual(200);
     const responseBody: AuthPostResponseBody | NextResponseErrorBody =
       await response.json();
-    expect(responseBody).toEqual({});
+    expect(responseBody).toEqual({
+      email: userFixture.email,
+      isLoggedIn: true,
+    });
 
     expect(mockSetCookies).toHaveBeenCalledWith(
       projectConfig.auth.cookieName,
