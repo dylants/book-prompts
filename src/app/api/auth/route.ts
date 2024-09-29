@@ -1,7 +1,7 @@
 import projectConfig from '@/config/index';
 import { comparePassword } from '@/lib/encryption';
+import { UnauthorizedError } from '@/lib/errors/UnauthorizedError';
 import logger from '@/lib/logger';
-import { UnauthorizedError } from '@/lib/middleware';
 import prisma from '@/lib/prisma';
 import AuthResponse from '@/types/AuthResponse';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';

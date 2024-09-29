@@ -1,10 +1,7 @@
 import projectConfig from '@/config/index';
+import { UnauthorizedError } from '@/lib/errors/UnauthorizedError';
 import { fakeUser } from '@/lib/fakes/user.fake';
-import {
-  authMiddleware,
-  handleMiddlewareError,
-  UnauthorizedError,
-} from '@/lib/middleware';
+import { authMiddleware } from '@/lib/middleware';
 import prisma from '@/lib/prisma';
 import { NextRequest } from 'next/server';
 
@@ -54,20 +51,6 @@ describe('src/lib/middleware', () => {
       } catch (err) {
         expect(err instanceof UnauthorizedError).toBeTruthy();
       }
-    });
-  });
-
-  describe('handleMiddlewareError', () => {
-    it('should return 401 for unauthorized', async () => {
-      const response = handleMiddlewareError(new UnauthorizedError());
-      expect(response.status).toEqual(401);
-      expect(await response.json()).toEqual({ error: 'Unauthorized' });
-    });
-
-    it('should return 500 for unknown', async () => {
-      const response = handleMiddlewareError(new Error());
-      expect(response.status).toEqual(500);
-      expect(await response.json()).toEqual({ error: 'Unknown error' });
     });
   });
 });
