@@ -1,5 +1,7 @@
 import projectConfig from '@/config/index';
 import { comparePassword } from '@/lib/encryption';
+import { BadRequestError } from '@/lib/errors/BadRequestError';
+import { handleErrorResponse } from '@/lib/errors/handleErrorResponse';
 import { UnauthorizedError } from '@/lib/errors/UnauthorizedError';
 import logger from '@/lib/logger';
 import prisma from '@/lib/prisma';
@@ -7,6 +9,9 @@ import AuthResponse from '@/types/AuthResponse';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
+import { toZod } from 'tozod';
+import { z } from 'zod';
+import { fromZodError } from 'zod-validation-error';
 
 const authCookieName = projectConfig.auth.cookieName;
 
@@ -40,13 +45,7 @@ export async function GET(
       isLoggedIn: true,
     });
   } catch (error: unknown) {
-    let errorMessage;
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
-    logger.error({ errorMessage }, 'Error occurred in GET auth');
-
-    return NextResponse.json({ error: 'Unknown error' }, { status: 500 });
+    return handleErrorResponse(error);
   }
 }
 
@@ -54,6 +53,11 @@ export type AuthPostRequestBody = {
   email: string;
   password: string;
 };
+
+const postSchema: toZod<AuthPostRequestBody> = z.object({
+  email: z.string(),
+  password: z.string(),
+});
 
 export type AuthPostResponseBody = AuthResponse;
 
@@ -63,7 +67,16 @@ export async function POST(
   logger.trace({}, `${request.nextUrl.pathname} ${request.method}`);
 
   try {
-    const { email, password } = (await request.json()) as AuthPostRequestBody;
+    const json = await request.json();
+    const validatedBody = postSchema.safeParse(json);
+
+    if (!validatedBody.success) {
+      const message = fromZodError(validatedBody.error);
+      throw new BadRequestError(message.toString());
+    }
+
+    const { email, password } = validatedBody.data;
+
     logger.trace({ email }, 'Attempted login');
 
     const user = await prisma.user.findFirst({
@@ -97,16 +110,6 @@ export async function POST(
       isLoggedIn: true,
     });
   } catch (error: unknown) {
-    if (error instanceof UnauthorizedError) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    } else {
-      let errorMessage;
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      logger.error({ errorMessage }, 'Error occurred in POST auth');
-
-      return NextResponse.json({ error: 'Unknown error' }, { status: 500 });
-    }
+    return handleErrorResponse(error);
   }
 }

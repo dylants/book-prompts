@@ -28,14 +28,6 @@ export async function POST(
 
     return NextResponse.json({ data: recommendations });
   } catch (error: unknown) {
-    let errorMessage;
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
-    logger.error({ errorMessage }, 'Error occurred in prompt');
-    return NextResponse.json(
-      { error: 'Error occurred in prompt' },
-      { status: 500 },
-    );
+    return handleErrorResponse(error);
   }
 }

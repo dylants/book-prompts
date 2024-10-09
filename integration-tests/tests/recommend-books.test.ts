@@ -97,7 +97,7 @@ describe('Recommend Books Integration Test', () => {
 
       expect(response.status).toEqual(500);
       const body = await response.json();
-      expect(body).toEqual({ error: 'Error occurred in prompt' });
+      expect(body).toEqual({ error: 'Unknown error' });
     });
   });
 
@@ -119,7 +119,7 @@ describe('Recommend Books Integration Test', () => {
 
       expect(response.status).toEqual(500);
       const body = await response.json();
-      expect(body).toEqual({ error: 'Error occurred in prompt' });
+      expect(body).toEqual({ error: 'Unknown error' });
     });
   });
 });

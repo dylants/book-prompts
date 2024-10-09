@@ -59,6 +59,22 @@ describe('/auth POST API', () => {
     );
   });
 
+  it('should return Bad Request when the request data is invalid', async () => {
+    const request = new NextRequest(url, {
+      body: JSON.stringify({ hi: 'how are you?' }),
+      method: 'POST',
+    });
+
+    const response = await POST(request);
+
+    expect(response.status).toEqual(400);
+    expect(await response.json()).toEqual({
+      error: 'Validation error: Required at "email"; Required at "password"',
+    });
+
+    expect(mockSetCookies).not.toHaveBeenCalled();
+  });
+
   it('should return Unauthorized when user does not exist', async () => {
     const body: AuthPostRequestBody = {
       email: 'user@doesnotexist.com',
