@@ -26,8 +26,10 @@ describe('GET /auth API Integration Test', () => {
     expect(response.status).toEqual(200);
     const responseBody: AuthGetResponseBody = await response.json();
     expect(responseBody).toEqual({
-      email: user.email,
-      isLoggedIn: true,
+      data: {
+        email: user.email,
+        isLoggedIn: true,
+      },
     });
   });
 
@@ -38,7 +40,7 @@ describe('GET /auth API Integration Test', () => {
     expect(response.status).toEqual(200);
     const responseBody: AuthGetResponseBody = await response.json();
     expect(responseBody).toEqual({
-      isLoggedIn: false,
+      data: { isLoggedIn: false },
     });
   });
 
@@ -50,7 +52,7 @@ describe('GET /auth API Integration Test', () => {
     expect(response.status).toEqual(200);
     const responseBody: AuthGetResponseBody = await response.json();
     expect(responseBody).toEqual({
-      isLoggedIn: false,
+      data: { isLoggedIn: false },
     });
   });
 
