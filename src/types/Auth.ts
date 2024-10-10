@@ -1,6 +1,6 @@
 import User from '@/types/User';
 
-type AuthResponse =
+type Auth =
   | {
       isLoggedIn: true;
       email: User['email'];
@@ -9,4 +9,4 @@ type AuthResponse =
       isLoggedIn: false;
     };
 
-export default AuthResponse;
+export default Auth;

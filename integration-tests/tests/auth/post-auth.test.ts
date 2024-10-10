@@ -49,8 +49,10 @@ describe('/auth POST API', () => {
     const responseBody: AuthPostResponseBody | NextResponseErrorBody =
       await response.json();
     expect(responseBody).toEqual({
-      email: userFixture.email,
-      isLoggedIn: true,
+      data: {
+        email: userFixture.email,
+        isLoggedIn: true,
+      },
     });
 
     expect(mockSetCookies).toHaveBeenCalledWith(

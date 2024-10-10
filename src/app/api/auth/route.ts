@@ -5,7 +5,7 @@ import { handleErrorResponse } from '@/lib/errors/handleErrorResponse';
 import { UnauthorizedError } from '@/lib/errors/UnauthorizedError';
 import logger from '@/lib/logger';
 import prisma from '@/lib/prisma';
-import AuthResponse from '@/types/AuthResponse';
+import Auth from '@/types/Auth';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
@@ -15,7 +15,9 @@ import { fromZodError } from 'zod-validation-error';
 
 const authCookieName = projectConfig.auth.cookieName;
 
-export type AuthGetResponseBody = AuthResponse;
+export type AuthGetResponseBody = {
+  data: Auth;
+};
 
 export async function GET(
   request: NextRequest,
@@ -28,7 +30,7 @@ export async function GET(
     if (!uuid) {
       logger.trace({}, 'No uuid in auth cookie, returning not logged in');
       return NextResponse.json({
-        isLoggedIn: false,
+        data: { isLoggedIn: false },
       });
     }
 
@@ -36,13 +38,15 @@ export async function GET(
     if (!user) {
       logger.trace({ uuid }, 'No user for uuid, returning not logged in');
       return NextResponse.json({
-        isLoggedIn: false,
+        data: { isLoggedIn: false },
       });
     }
 
     return NextResponse.json({
-      email: user.email,
-      isLoggedIn: true,
+      data: {
+        email: user.email,
+        isLoggedIn: true,
+      },
     });
   } catch (error: unknown) {
     return handleErrorResponse(error);
@@ -59,7 +63,9 @@ const postSchema: toZod<AuthPostRequestBody> = z.object({
   password: z.string(),
 });
 
-export type AuthPostResponseBody = AuthResponse;
+export type AuthPostResponseBody = {
+  data: Auth;
+};
 
 export async function POST(
   request: NextRequest,
@@ -106,8 +112,10 @@ export async function POST(
     cookieStore.set(authCookieName, user.uuid);
 
     return NextResponse.json({
-      email: user.email,
-      isLoggedIn: true,
+      data: {
+        email: user.email,
+        isLoggedIn: true,
+      },
     });
   } catch (error: unknown) {
     return handleErrorResponse(error);
