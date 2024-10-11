@@ -4,18 +4,14 @@ import prisma from '@/lib/prisma';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
 import User from '@/types/User';
 import { NextRequest } from 'next/server';
-import userFixtures from '../../fixtures/user.fixture';
 
 const url = 'https://localhost';
 
 describe('GET /auth API Integration Test', () => {
-  const userFixture = userFixtures[0];
   let user: User;
 
   beforeAll(async () => {
-    user = await prisma.user.findFirstOrThrow({
-      where: { email: userFixture.email },
-    });
+    user = await prisma.user.findFirstOrThrow();
   });
 
   it('should return logged in with valid auth', async () => {

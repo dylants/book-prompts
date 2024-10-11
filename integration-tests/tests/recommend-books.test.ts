@@ -4,21 +4,42 @@ import { fakeRecommendation } from '@/lib/fakes/recommendation.fake';
 import prisma from '@/lib/prisma';
 import bookRecommendationsSchema from '@/lib/schemas/book-recommendations.schema';
 import aiService from '@/lib/services/ai.service';
+import { BookReview } from '@prisma/client';
 import { NextRequest } from 'next/server';
 import { ParsedChatCompletion } from 'openai/resources/beta/chat/completions';
 import { ChatCompletionMessageParam } from 'openai/resources/index';
 import { ZodType } from 'zod';
-import bookReviewFixtures from '../fixtures/book-review.fixture';
+import {
+  USER_NO_REVIEWS_EMAIL,
+  USER_WITH_REVIEWS_EMAIL,
+} from '../fixtures/user.fixture';
 
 const mockCreateMessage = jest.spyOn(aiService, 'createMessage');
 
 describe('Recommend Books Integration Test', () => {
+  const recommendations = [fakeRecommendation(), fakeRecommendation()];
   let request: NextRequest;
+  let bookReviews: Pick<BookReview, 'author' | 'rating' | 'title'>[];
 
   beforeAll(async () => {
-    const user = await prisma.user.findFirstOrThrow();
+    const user = await prisma.user.findFirstOrThrow({
+      include: {
+        bookReviews: {
+          orderBy: { rating: 'desc' },
+          select: {
+            author: true,
+            rating: true,
+            title: true,
+          },
+        },
+      },
+      where: { email: USER_WITH_REVIEWS_EMAIL },
+    });
+
     request = new NextRequest('http://localhost');
     request.cookies.set(projectConfig.auth.cookieName, user.uuid);
+
+    bookReviews = user.bookReviews;
   });
 
   afterEach(() => {
@@ -26,7 +47,6 @@ describe('Recommend Books Integration Test', () => {
   });
 
   describe('when the AI returns a list of books', () => {
-    const recommendations = [fakeRecommendation(), fakeRecommendation()];
     let receivedMessages: ChatCompletionMessageParam[], receivedSchema: ZodType;
 
     beforeEach(async () => {
@@ -67,7 +87,7 @@ describe('Recommend Books Integration Test', () => {
       );
       expect(userPrompt).toEqual(
         expect.stringContaining(
-          `Previously read books: ${JSON.stringify(bookReviewFixtures)}`,
+          `Previously read books: ${JSON.stringify(bookReviews)}`,
         ),
       );
 
@@ -120,6 +140,54 @@ describe('Recommend Books Integration Test', () => {
       expect(response.status).toEqual(500);
       const body = await response.json();
       expect(body).toEqual({ error: 'Unknown error' });
+    });
+  });
+
+  describe('when the user has no book reviews', () => {
+    let receivedMessages: ChatCompletionMessageParam[];
+
+    beforeAll(async () => {
+      const user = await prisma.user.findFirstOrThrow({
+        where: { email: USER_NO_REVIEWS_EMAIL },
+      });
+
+      request = new NextRequest('http://localhost');
+      request.cookies.set(projectConfig.auth.cookieName, user.uuid);
+    });
+
+    beforeEach(async () => {
+      mockCreateMessage.mockImplementation(({ messages }) => {
+        receivedMessages = messages;
+        return Promise.resolve({
+          choices: [
+            {
+              message: {
+                parsed: { recommendations },
+                refusal: null,
+              },
+            },
+          ],
+        } as ParsedChatCompletion<unknown>);
+      });
+    });
+
+    it('should provide the AI with no book reviews', async () => {
+      const response = await POST(request);
+
+      expect(mockCreateMessage).toHaveBeenCalledTimes(1);
+      expect(receivedMessages).toEqual([
+        { content: expect.stringContaining('IDENTITY'), role: 'system' },
+        { content: expect.stringContaining('OBJECTIVE'), role: 'user' },
+      ]);
+
+      const userPrompt = receivedMessages[1].content;
+      expect(userPrompt).toEqual(
+        expect.stringContaining('Previously read books: []'),
+      );
+
+      expect(response.status).toEqual(200);
+      const body = await response.json();
+      expect(body).toEqual({ data: recommendations });
     });
   });
 });

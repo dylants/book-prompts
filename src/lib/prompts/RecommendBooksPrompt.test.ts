@@ -1,6 +1,7 @@
 import config from '@/config/index';
 import RecommendBooksPrompt from '@/lib/prompts/RecommendBooksPrompt';
 import aiService from '@/lib/services/ai.service';
+import User from '@/types/User';
 import _ from 'lodash';
 
 const mockCreateMessage = jest.spyOn(aiService, 'createMessage');
@@ -18,7 +19,7 @@ describe('RecommendBooksPrompt', () => {
   });
 
   beforeEach(() => {
-    prompt = new RecommendBooksPrompt();
+    prompt = new RecommendBooksPrompt({ user: {} as User });
   });
 
   describe('when shouldUseFakeResponses is enabled', () => {

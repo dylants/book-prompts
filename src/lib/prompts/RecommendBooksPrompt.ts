@@ -6,12 +6,25 @@ import bookRecommendationsSchema from '@/lib/schemas/book-recommendations.schema
 import aiService from '@/lib/services/ai.service';
 import Prompt from '@/types/Prompt';
 import Recommendation from '@/types/Recommendation';
+import User from '@/types/User';
 import _ from 'lodash';
+
+export type RecommendBooksPromptProps = {
+  user: User;
+};
 
 export default class RecommendBooksPrompt
   extends BasePrompt<Recommendation[]>
   implements Prompt<Recommendation[]>
 {
+  private user: User;
+
+  constructor({ user }: RecommendBooksPromptProps) {
+    super();
+
+    this.user = user;
+  }
+
   async getSystemPrompt(): Promise<string> {
     return Promise.resolve(`
 IDENTITY:
@@ -31,6 +44,7 @@ titles, just to find that perfect book recommendation.
         rating: true,
         title: true,
       },
+      where: { userId: this.user.id },
     });
 
     // OBJECTIVE:
