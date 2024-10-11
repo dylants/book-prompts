@@ -23,6 +23,7 @@ const config: Config = {
   ],
   coveragePathIgnorePatterns: [
     'src/components/*',
+    'src/lib/api.ts',
     'src/lib/logger.ts',
     'src/lib/openai.ts',
     'src/lib/prisma.ts',
