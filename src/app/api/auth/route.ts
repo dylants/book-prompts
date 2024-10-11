@@ -121,3 +121,26 @@ export async function POST(
     return handleErrorResponse(error);
   }
 }
+
+export type AuthDeleteResponseBody = {
+  data: Auth;
+};
+
+export async function DELETE(
+  request: NextRequest,
+): Promise<NextResponse<AuthDeleteResponseBody | NextResponseErrorBody>> {
+  logger.trace({}, `${request.nextUrl.pathname} ${request.method}`);
+
+  try {
+    const cookieStore = cookies();
+    cookieStore.delete(authCookieName);
+
+    return NextResponse.json({
+      data: {
+        isLoggedIn: false,
+      },
+    });
+  } catch (error: unknown) {
+    return handleErrorResponse(error);
+  }
+}
