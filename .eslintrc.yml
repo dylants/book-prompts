@@ -11,6 +11,7 @@ plugins:
   - prettier
 root: true
 rules:
+  no-console: "warn"
   prettier/prettier: 2
   sort-keys:
     - error
