@@ -1,6 +1,7 @@
 import { AuthPostRequestBody } from '@/app/api/auth/route';
 import UnauthorizedError from '@/lib/errors/UnauthorizedError';
 import Auth from '@/types/Auth';
+import Recommendation from '@/types/Recommendation';
 
 /**
  * Wrapper around fetch, expecting and returning a JSON typed response
@@ -44,5 +45,11 @@ export async function postAuth({
 export async function deleteAuth(): Promise<Auth> {
   return api<Auth>('/api/auth', {
     method: 'DELETE',
+  });
+}
+
+export async function postRecommendations(): Promise<Recommendation[]> {
+  return api<Recommendation[]>('/api/protected/recommendations', {
+    method: 'POST',
   });
 }
