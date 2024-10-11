@@ -1,8 +1,8 @@
 import projectConfig from '@/config/index';
 import { comparePassword } from '@/lib/encryption';
-import { BadRequestError } from '@/lib/errors/BadRequestError';
-import { handleErrorResponse } from '@/lib/errors/handleErrorResponse';
-import { UnauthorizedError } from '@/lib/errors/UnauthorizedError';
+import BadRequestError from '@/lib/errors/BadRequestError';
+import handleErrorResponse from '@/lib/errors/handleErrorResponse';
+import UnauthorizedError from '@/lib/errors/UnauthorizedError';
 import logger from '@/lib/logger';
 import prisma from '@/lib/prisma';
 import Auth from '@/types/Auth';

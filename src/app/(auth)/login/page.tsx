@@ -4,13 +4,38 @@ import { AuthPostRequestBody } from '@/app/api/auth/route';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import useHandleError from '@/hooks/useHandleError';
+import useLoginError from '@/hooks/useLoginError';
 import { postAuth } from '@/lib/api';
+import UnauthorizedError from '@/lib/errors/UnauthorizedError';
+import LoginError from '@/types/LoginError';
 import useAppContext from 'hooks/useAppContext';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+function Error() {
+  const searchParams = useSearchParams();
+  const { parseLoginErrorUrl } = useLoginError();
+
+  const { errorMessage } = parseLoginErrorUrl(searchParams);
+
+  if (!errorMessage) {
+    return;
+  }
+
+  return (
+    <div>
+      <p>{errorMessage}</p>
+    </div>
+  );
+}
+
 export default function LoginPage() {
   const { setAuth } = useAppContext();
+  const { handleError } = useHandleError();
+  const router = useRouter();
+  const { buildLoginErrorUrl } = useLoginError();
 
   const {
     formState: { errors },
@@ -21,14 +46,26 @@ export default function LoginPage() {
 
   const onSubmit: SubmitHandler<AuthPostRequestBody> = useCallback(
     async (formInput) => {
-      const { email, password } = formInput;
+      try {
+        const { email, password } = formInput;
 
-      const auth = await postAuth({ email, password });
+        const auth = await postAuth({ email, password });
 
-      reset();
-      setAuth(auth);
+        setAuth(auth);
+
+        // TODO we should probably navigate back to where they were at some point
+        router.push('/');
+      } catch (error) {
+        if (error instanceof UnauthorizedError) {
+          return router.push(buildLoginErrorUrl(LoginError.INVALID_LOGIN));
+        }
+
+        return handleError(error);
+      } finally {
+        reset();
+      }
     },
-    [reset, setAuth],
+    [buildLoginErrorUrl, handleError, reset, router, setAuth],
   );
 
   return (
@@ -37,6 +74,7 @@ export default function LoginPage() {
         <div className="space-y-2">
           <h1>Login</h1>
         </div>
+        <Error />
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid gap-5">
             <div className="grid gap-2">

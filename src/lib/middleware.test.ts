@@ -1,5 +1,5 @@
 import projectConfig from '@/config/index';
-import { UnauthorizedError } from '@/lib/errors/UnauthorizedError';
+import UnauthorizedError from '@/lib/errors/UnauthorizedError';
 import { fakeUser } from '@/lib/fakes/user.fake';
 import { authMiddleware } from '@/lib/middleware';
 import prisma from '@/lib/prisma';

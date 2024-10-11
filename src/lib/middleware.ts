@@ -1,5 +1,5 @@
 import projectConfig from '@/config/index';
-import { UnauthorizedError } from '@/lib/errors/UnauthorizedError';
+import UnauthorizedError from '@/lib/errors/UnauthorizedError';
 import logger from '@/lib/logger';
 import prisma from '@/lib/prisma';
 import Session from '@/types/Session';

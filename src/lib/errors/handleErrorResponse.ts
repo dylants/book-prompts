@@ -1,10 +1,10 @@
-import { BadRequestError } from '@/lib/errors/BadRequestError';
-import { UnauthorizedError } from '@/lib/errors/UnauthorizedError';
+import BadRequestError from '@/lib/errors/BadRequestError';
+import UnauthorizedError from '@/lib/errors/UnauthorizedError';
 import logger from '@/lib/logger';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
 import { NextResponse } from 'next/server';
 
-export function handleErrorResponse(
+export default function handleErrorResponse(
   error: unknown,
 ): NextResponse<NextResponseErrorBody> {
   if (error instanceof BadRequestError) {
