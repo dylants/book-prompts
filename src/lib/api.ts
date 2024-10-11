@@ -40,3 +40,9 @@ export async function postAuth({
     method: 'POST',
   });
 }
+
+export async function deleteAuth(): Promise<Auth> {
+  return api<Auth>('/api/auth', {
+    method: 'DELETE',
+  });
+}
