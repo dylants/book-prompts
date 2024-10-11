@@ -1,4 +1,4 @@
-import { handleErrorResponse } from '@/lib/errors/handleErrorResponse';
+import handleErrorResponse from '@/lib/errors/handleErrorResponse';
 import logger from '@/lib/logger';
 import { authMiddleware } from '@/lib/middleware';
 import RecommendBooksPrompt from '@/lib/prompts/RecommendBooksPrompt';

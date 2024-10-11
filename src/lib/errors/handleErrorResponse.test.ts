@@ -1,6 +1,6 @@
-import { BadRequestError } from '@/lib/errors/BadRequestError';
-import { handleErrorResponse } from '@/lib/errors/handleErrorResponse';
-import { UnauthorizedError } from '@/lib/errors/UnauthorizedError';
+import BadRequestError from '@/lib/errors/BadRequestError';
+import handleErrorResponse from '@/lib/errors/handleErrorResponse';
+import UnauthorizedError from '@/lib/errors/UnauthorizedError';
 
 describe('handleErrorResponse', () => {
   it('should return 400 for bad request', async () => {

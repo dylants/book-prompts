@@ -1,4 +1,5 @@
 import { AuthPostRequestBody } from '@/app/api/auth/route';
+import UnauthorizedError from '@/lib/errors/UnauthorizedError';
 import Auth from '@/types/Auth';
 
 /**
@@ -11,6 +12,10 @@ import Auth from '@/types/Auth';
  */
 async function api<T>(path: string, fetchOptions?: RequestInit): Promise<T> {
   const response = await fetch(path, fetchOptions);
+
+  if (response.status === 401) {
+    throw new UnauthorizedError();
+  }
 
   if (!response.ok) {
     throw new Error(response.statusText);
@@ -27,7 +32,6 @@ export async function postAuth({
   email,
   password,
 }: AuthPostRequestBody): Promise<Auth> {
-  // TODO handle failed login
   return api<Auth>('/api/auth', {
     body: JSON.stringify({ email, password }),
     headers: {
