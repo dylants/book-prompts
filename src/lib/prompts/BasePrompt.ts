@@ -10,7 +10,9 @@ export default abstract class BasePrompt<Result> implements Prompt<Result> {
   abstract execute(): Promise<Result | string>;
 
   async logPrompts(): Promise<void> {
+    // eslint-disable-next-line no-console
     console.log(await this.getSystemPrompt());
+    // eslint-disable-next-line no-console
     console.log(await this.getUserPrompt());
   }
 

@@ -12,6 +12,7 @@ async function runPrompt() {
   const instance = new PromptClass();
 
   const response = await instance.execute();
+  // eslint-disable-next-line no-console
   console.log(response);
 }
 
