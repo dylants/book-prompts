@@ -8,7 +8,7 @@ import prisma from '@/lib/prisma';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
 import User from '@/types/User';
 import { NextRequest } from 'next/server';
-import userFixtures from '../../fixtures/user.fixture';
+import { PASSWORD, USER_WITH_REVIEWS_EMAIL } from '../../fixtures/user.fixture';
 
 const mockSetCookies = jest.fn();
 jest.mock('next/headers', () => ({
@@ -19,13 +19,17 @@ jest.mock('next/headers', () => ({
 
 const url = 'https://localhost';
 
+const USER = {
+  email: USER_WITH_REVIEWS_EMAIL,
+  password: PASSWORD,
+};
+
 describe('/auth POST API', () => {
-  const userFixture = userFixtures[0];
   let user: User;
 
   beforeAll(async () => {
     user = await prisma.user.findFirstOrThrow({
-      where: { email: userFixture.email },
+      where: { email: USER.email },
     });
   });
 
@@ -35,8 +39,8 @@ describe('/auth POST API', () => {
 
   it('should return auth cookie on successful login', async () => {
     const body: AuthPostRequestBody = {
-      email: userFixture.email,
-      password: userFixture.password,
+      email: USER.email,
+      password: USER.password,
     };
     const request = new NextRequest(url, {
       body: JSON.stringify(body),
@@ -50,7 +54,7 @@ describe('/auth POST API', () => {
       await response.json();
     expect(responseBody).toEqual({
       data: {
-        email: userFixture.email,
+        email: USER.email,
         isLoggedIn: true,
       },
     });
@@ -80,7 +84,7 @@ describe('/auth POST API', () => {
   it('should return Unauthorized when user does not exist', async () => {
     const body: AuthPostRequestBody = {
       email: 'user@doesnotexist.com',
-      password: 'password',
+      password: PASSWORD,
     };
     const request = new NextRequest(url, {
       body: JSON.stringify(body),
@@ -96,7 +100,7 @@ describe('/auth POST API', () => {
 
   it('should return Unauthorized when password does not match', async () => {
     const body: AuthPostRequestBody = {
-      email: userFixture.email,
+      email: USER.email,
       password: 'bad',
     };
     const request = new NextRequest(url, {
@@ -119,8 +123,8 @@ describe('/auth POST API', () => {
       throw new Error('bad');
     });
     const body: AuthPostRequestBody = {
-      email: userFixture.email,
-      password: userFixture.password,
+      email: USER.email,
+      password: USER.password,
     };
     const request = new NextRequest(url, {
       body: JSON.stringify(body),
