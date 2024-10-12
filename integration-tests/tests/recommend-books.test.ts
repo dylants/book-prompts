@@ -190,4 +190,15 @@ describe('Recommend Books Integration Test', () => {
       expect(body).toEqual({ data: recommendations });
     });
   });
+
+  it('should fail when unauthorized', async () => {
+    const request = new NextRequest('http://localhost');
+
+    const response = await POST(request);
+
+    expect(response.status).toEqual(401);
+    expect(await response.json()).toEqual({
+      error: 'Unauthorized',
+    });
+  });
 });

@@ -18,7 +18,6 @@ export async function POST(
 
   let session: Session;
 
-  /* istanbul ignore next */
   try {
     session = await authMiddleware(request);
   } catch (error) {
