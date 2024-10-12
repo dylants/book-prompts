@@ -2,6 +2,7 @@ import { Prisma } from '@prisma/client';
 
 export const USER_WITH_REVIEWS_EMAIL = 'withReviews@fake.com';
 export const USER_NO_REVIEWS_EMAIL = 'noReviews@fake.com';
+export const USER_WITH_ONE_REVIEW_EMAIL = 'withOneReview@fake.com';
 
 export const PASSWORD = 'password';
 
@@ -28,6 +29,15 @@ const userFixtures: Prisma.UserCreateInput[] = [
   },
   {
     email: USER_NO_REVIEWS_EMAIL,
+    password: PASSWORD,
+  },
+  {
+    bookReviews: {
+      createMany: {
+        data: [{ author: 'Troy Raynor', rating: 3, title: 'Buttons & Bows' }],
+      },
+    },
+    email: USER_WITH_ONE_REVIEW_EMAIL,
     password: PASSWORD,
   },
 ];
