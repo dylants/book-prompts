@@ -6,30 +6,31 @@ import { useState } from 'react';
 
 export type ReviewStarsProps = {
   score: number | undefined;
-  onSetScore: (score: number | undefined) => Promise<void>;
+  onSetScore: (score: number) => Promise<void>;
 };
 
 export default function ReviewStars({ score, onSetScore }: ReviewStarsProps) {
   const [hoverStarNumber, setHoverStarNumber] = useState<number>();
 
   const stars = _.times(5, (num) => {
+    const currentStarNum = num + 1;
     const isHovering: boolean = _.isNumber(hoverStarNumber);
     const hasScore: boolean = _.isNumber(score);
 
-    const shouldBeFilled: boolean = hasScore && score! >= num;
+    const shouldBeFilled: boolean = hasScore && score! >= currentStarNum;
 
     const filled: boolean = isHovering
-      ? hoverStarNumber! >= num
+      ? hoverStarNumber! >= currentStarNum
       : shouldBeFilled;
 
     const filledFaded: boolean =
-      isHovering && hoverStarNumber! < num && shouldBeFilled;
+      isHovering && hoverStarNumber! < currentStarNum && shouldBeFilled;
 
     return (
       <div
-        key={num}
+        key={currentStarNum}
         onMouseEnter={() => {
-          setHoverStarNumber(num);
+          setHoverStarNumber(currentStarNum);
         }}
         onMouseLeave={() => {
           setHoverStarNumber(undefined);
@@ -39,10 +40,10 @@ export default function ReviewStars({ score, onSetScore }: ReviewStarsProps) {
           filled={filled}
           filledFaded={filledFaded}
           onClick={() => {
-            if (score === num) {
-              onSetScore(undefined);
+            if (score === currentStarNum) {
+              // ignore, there is no change
             } else {
-              onSetScore(num);
+              onSetScore(currentStarNum);
             }
           }}
         />
