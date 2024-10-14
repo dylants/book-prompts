@@ -16,7 +16,7 @@ const ReviewStar = ({
 }: ReviewStarProps) => (
   <StarIcon
     onClick={onClick}
-    size={size || 48}
+    size={size || 26}
     strokeWidth={strokeWidth || 1}
     className={cn(
       'fill-slate-100',
