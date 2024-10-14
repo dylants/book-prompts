@@ -20,7 +20,25 @@ model User {
   password String
   uuid     String @default(cuid())
 
-  bookReviews BookReview[]
+  bookReviews         BookReview[]
+  bookRecommendations BookRecommendation[]
+}
+
+model Book {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  /// true iff we're able to confirm this is a real book (AI hallucination)
+  confirmedExists Boolean
+  /// the ISBN13 number of the book if confirmedExists, else hash of title+author
+  isbn13          String  @unique
+  title           String
+  author          String
+  imageUrl        String?
+
+  bookReviews         BookReview[]
+  bookRecommendations BookRecommendation[]
 }
 
 model BookReview {
@@ -28,10 +46,31 @@ model BookReview {
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
-  title  String
-  author String
+  /// The user's rating of the book (1-5)
   rating Int // includes constraint bounding from 1-5, inclusive
 
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
+
+  book   Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId Int
+}
+
+model BookRecommendation {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  /// For record keeping, the AI model which generated this recommendation
+  aiModel         String
+  /// how confident the AI was in generating this recommendation (0 to 1)
+  confidenceScore Decimal @db.Decimal(3, 2) // includes constraint bounding from 0-1, inclusive
+  /// explanation from the AI as to why this was recommended
+  explanation     String
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  book   Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId Int
 }

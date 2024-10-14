@@ -1,7 +1,7 @@
 type Recommendation = {
   author: string;
   confidenceScore: number;
-  explanationToReader: string;
+  explanation: string;
   title: string;
 };
 

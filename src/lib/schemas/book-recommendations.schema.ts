@@ -10,7 +10,7 @@ const bookRecommendationsSchema = z.object({
         description:
           'How confident you are in this recommendation using a score from 0 (low) to 1 (high)',
       }),
-      explanationToReader: z.string({
+      explanation: z.string({
         description:
           'Explain why you think this would be a good book for me to read. ' +
           'Focus on the details of the recommended book, and how it matches the OBJECTIVE. ' +
