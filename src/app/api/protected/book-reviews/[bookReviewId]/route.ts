@@ -15,9 +15,7 @@ import { fromZodError } from 'zod-validation-error';
 export type PutRequestBody = BookReviewUpdateInput;
 
 const putSchema: toZod<PutRequestBody> = z.object({
-  author: z.string().optional(),
   rating: z.number().optional(),
-  title: z.string().optional(),
 });
 
 export type PutResponseBody = {
@@ -47,13 +45,11 @@ export async function PUT(
       throw new BadRequestError(message.toString());
     }
 
-    const { author, rating, title } = validatedBody.data;
+    const { rating } = validatedBody.data;
 
     const bookReview = await prisma.bookReview.update({
       data: {
-        author,
         rating,
-        title,
       },
       where: { id: Number(bookReviewId), userId: session.user.id },
     });

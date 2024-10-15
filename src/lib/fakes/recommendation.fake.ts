@@ -5,7 +5,7 @@ export function fakeRecommendation(): Recommendation {
   return {
     author: faker.person.fullName(),
     confidenceScore: faker.number.float({ fractionDigits: 2, max: 1, min: 0 }),
-    explanationToReader: faker.lorem.paragraph(),
+    explanation: faker.lorem.paragraph(),
     title: faker.music.songName(),
   };
 }

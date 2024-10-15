@@ -40,9 +40,13 @@ titles, just to find that perfect book recommendation.
         rating: 'desc',
       },
       select: {
-        author: true,
+        book: {
+          select: {
+            author: true,
+            title: true,
+          },
+        },
         rating: true,
-        title: true,
       },
       where: { userId: this.user.id },
     });

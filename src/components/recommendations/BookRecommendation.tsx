@@ -38,8 +38,7 @@ export default function BookRecommendation({
           <MessageCircleQuestionIcon size={26} />
         </div>
         <div>
-          <span className="font-bold">Why:</span>{' '}
-          {recommendation.explanationToReader}
+          <span className="font-bold">Why:</span> {recommendation.explanation}
         </div>
       </div>
     </div>

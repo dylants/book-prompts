@@ -60,9 +60,7 @@ describe('/book-reviews/[bookReviewId] PUT', () => {
     const body = (await response.json()) as PutResponseBody;
     expect(body.data).toEqual(
       expect.objectContaining({
-        author: existingBookReview.author,
         rating,
-        title: existingBookReview.title,
       }),
     );
   });

@@ -4,7 +4,6 @@ import { fakeRecommendation } from '@/lib/fakes/recommendation.fake';
 import prisma from '@/lib/prisma';
 import bookRecommendationsSchema from '@/lib/schemas/book-recommendations.schema';
 import aiService from '@/lib/services/ai.service';
-import { BookReview } from '@prisma/client';
 import { NextRequest } from 'next/server';
 import { ParsedChatCompletion } from 'openai/resources/beta/chat/completions';
 import { ChatCompletionMessageParam } from 'openai/resources/index';
@@ -19,7 +18,10 @@ const mockCreateMessage = jest.spyOn(aiService, 'createMessage');
 describe('Recommend Books Integration Test', () => {
   const recommendations = [fakeRecommendation(), fakeRecommendation()];
   let request: NextRequest;
-  let bookReviews: Pick<BookReview, 'author' | 'rating' | 'title'>[];
+  let bookReviews: {
+    book: { author: string; title: string };
+    rating: number;
+  }[];
 
   beforeAll(async () => {
     const user = await prisma.user.findFirstOrThrow({
@@ -27,9 +29,13 @@ describe('Recommend Books Integration Test', () => {
         bookReviews: {
           orderBy: { rating: 'desc' },
           select: {
-            author: true,
+            book: {
+              select: {
+                author: true,
+                title: true,
+              },
+            },
             rating: true,
-            title: true,
           },
         },
       },
