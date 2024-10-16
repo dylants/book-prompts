@@ -35,3 +35,15 @@ export const outline: Story = {
 export const secondary: Story = {
   args: { variant: 'secondary' },
 };
+
+export const loadingDefault: Story = {
+  args: { isLoading: true },
+};
+
+export const loadingSecondary: Story = {
+  args: { isLoading: true, variant: 'secondary' },
+};
+
+export const loadingDestructive: Story = {
+  args: { isLoading: true, variant: 'destructive' },
+};
