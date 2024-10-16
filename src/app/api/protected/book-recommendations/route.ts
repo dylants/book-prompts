@@ -1,4 +1,4 @@
-import projectConfig from '@/config/index';
+import { default as config, default as projectConfig } from '@/config/index';
 import handleErrorResponse from '@/lib/errors/handleErrorResponse';
 import logger from '@/lib/logger';
 import { authMiddleware } from '@/lib/middleware';
@@ -10,6 +10,8 @@ import HydratedBookRecommendation from '@/types/HydratedBookRecommendation';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
 import Session from '@/types/Session';
 import { NextRequest, NextResponse } from 'next/server';
+
+const isFakeRecommendations = config.prompts.useFakeResponses === 'true';
 
 export type PostResponseBody = {
   data: HydratedBookRecommendation[];
@@ -38,7 +40,11 @@ export async function POST(
       async (recommendation) => {
         const { author, confidenceScore, explanation, title } = recommendation;
 
-        const searchResult = await googleBookSearch({ author, title });
+        // skip the google book search if we've got fake recommendations
+        const searchResult = isFakeRecommendations
+          ? /* istanbul ignore next */
+            null
+          : await googleBookSearch({ author, title });
 
         const book = buildBookFromSearchResult({
           recommendation,
