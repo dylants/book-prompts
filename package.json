@@ -23,7 +23,7 @@
     "log-prompts": "ts-node -r tsconfig-paths/register --compiler-options '{\"module\":\"CommonJS\"}' ./src/scripts/log-prompts.ts",
     "run-prompt": "ts-node -r tsconfig-paths/register --compiler-options '{\"module\":\"CommonJS\"}' ./src/scripts/run-prompt.ts",
     "start": "next start",
-    "test": "dotenv -e .env.test -- jest --coverage",
+    "test": "dotenv -e .env.test -- jest --coverage --runInBand",
     "test:watch": "dotenv -e .env.test -- jest --watch",
     "storybook": "storybook dev -p 6006"
   },
@@ -75,6 +75,7 @@
     "@typescript-eslint/eslint-plugin": "8.0.1",
     "@typescript-eslint/parser": "8.0.1",
     "autoprefixer": "10.4.20",
+    "cross-fetch": "4.0.0",
     "dotenv-cli": "7.4.2",
     "eslint": "8.57.0",
     "eslint-config-next": "14.2.5",

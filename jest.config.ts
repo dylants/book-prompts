@@ -32,7 +32,10 @@ const config: Config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
-  setupFilesAfterEnv: ['<rootDir>/test-setup/openai-mock.setup.ts'],
+  setupFilesAfterEnv: [
+    '<rootDir>/test-setup/fetch-polyfill.setup.ts',
+    '<rootDir>/test-setup/openai-mock.setup.ts',
+  ],
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

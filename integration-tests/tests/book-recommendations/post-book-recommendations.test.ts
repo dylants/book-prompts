@@ -1,7 +1,7 @@
 import {
   POST,
   PostResponseBody,
-} from '@/app/api/protected/recommendations/route';
+} from '@/app/api/protected/book-recommendations/route';
 import projectConfig from '@/config/index';
 import { fakeAIBookRecommendation } from '@/lib/fakes/recommendation.fake';
 import { isbnHash } from '@/lib/hash';

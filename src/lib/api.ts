@@ -1,7 +1,10 @@
 import { AuthPostRequestBody } from '@/app/api/auth/route';
 import UnauthorizedError from '@/lib/errors/UnauthorizedError';
 import Auth from '@/types/Auth';
+import BookReviewCreateInput from '@/types/BookReviewCreateInput';
+import BookReviewUpdateInput from '@/types/BookReviewUpdateInput';
 import HydratedBookRecommendation from '@/types/HydratedBookRecommendation';
+import { BookReview } from '@prisma/client';
 
 /**
  * Wrapper around fetch, expecting and returning a JSON typed response
@@ -48,10 +51,47 @@ export async function deleteAuth(): Promise<Auth> {
   });
 }
 
-export async function postRecommendations(): Promise<
+export async function postBookRecommendations(): Promise<
   HydratedBookRecommendation[]
 > {
-  return api<HydratedBookRecommendation[]>('/api/protected/recommendations', {
+  return api<HydratedBookRecommendation[]>(
+    '/api/protected/book-recommendations',
+    {
+      method: 'POST',
+    },
+  );
+}
+
+export async function getBookReviews(): Promise<BookReview[]> {
+  return api<BookReview[]>('/api/protected/book-reviews');
+}
+
+export async function postBookReviews({
+  bookReview,
+}: {
+  bookReview: BookReviewCreateInput;
+}): Promise<BookReview> {
+  return api<BookReview>('/api/protected/book-reviews', {
+    body: JSON.stringify(bookReview),
+    headers: {
+      'Content-Type': 'application/json',
+    },
     method: 'POST',
+  });
+}
+
+export async function putBookReview({
+  id,
+  updates,
+}: {
+  id: BookReview['id'];
+  updates: BookReviewUpdateInput;
+}): Promise<BookReview> {
+  return api<BookReview>(`/api/protected/book-reviews/${id}`, {
+    body: JSON.stringify(updates),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'PUT',
   });
 }
