@@ -15,7 +15,6 @@ export interface GoogleSearchResponse {
   items: Array<{
     volumeInfo: {
       authors?: [string];
-      categories?: [string];
       imageLinks?: {
         thumbnail?: string;
       };
@@ -23,8 +22,6 @@ export interface GoogleSearchResponse {
         identifier: string;
         type: string;
       }>;
-      publishedDate?: string;
-      publisher: string;
       title: string;
     };
   }>;
@@ -38,7 +35,7 @@ export async function googleBookSearch(
   const authorQuery =
     search.author && `inauthor:${_buildQueryParam(search.author)}`;
   const titleQuery =
-    search.title && `+intitle:${_buildQueryParam(search.title)}`;
+    search.title && `intitle:${_buildQueryParam(search.title)}`;
 
   const query = [authorQuery, titleQuery].reduce<string | undefined>(
     (acc, value) => {

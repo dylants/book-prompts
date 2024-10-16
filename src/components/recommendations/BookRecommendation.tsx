@@ -1,4 +1,4 @@
-import Recommendation from '@/types/Recommendation';
+import HydratedBookRecommendation from '@/types/HydratedBookRecommendation';
 import {
   BookIcon,
   MessageCircleQuestionIcon,
@@ -8,7 +8,7 @@ import {
 export default function BookRecommendation({
   recommendation,
 }: {
-  recommendation: Recommendation;
+  recommendation: HydratedBookRecommendation;
 }) {
   return (
     <div className="flex flex-col gap-4">
@@ -17,9 +17,9 @@ export default function BookRecommendation({
           <BookIcon size={26} />
         </div>
         <div>
-          <span className="font-bold">{recommendation.title}</span>
+          <span className="font-bold">{recommendation.book.title}</span>
           <span> by </span>
-          <span className="font-bold">{recommendation.author}</span>
+          <span className="font-bold">{recommendation.book.author}</span>
         </div>
       </div>
       <div className="flex gap-2">
@@ -28,7 +28,7 @@ export default function BookRecommendation({
         </div>
         <div>
           <span className="font-bold">
-            {Math.floor(recommendation.confidenceScore * 100)}%
+            {Math.floor(Number(recommendation.confidenceScore) * 100)}%
           </span>
           <span> match</span>
         </div>
