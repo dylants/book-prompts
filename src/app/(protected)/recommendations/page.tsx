@@ -1,10 +1,12 @@
 'use client';
 
 import BookRecommendation from '@/components/recommendations/BookRecommendation';
+import ReviewStars from '@/components/ReviewStars';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import useBookReviews from '@/hooks/useBookReviews';
 import useHandleError from '@/hooks/useHandleError';
-import { postRecommendations } from '@/lib/api';
+import { postBookRecommendations } from '@/lib/api';
 import HydratedBookRecommendation from '@/types/HydratedBookRecommendation';
 import { BookCopyIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
@@ -14,10 +16,11 @@ export default function RecommendationsPage() {
     HydratedBookRecommendation[]
   >([]);
   const { handleError } = useHandleError();
+  const { bookReviews, createBookReview, updateBookReview } = useBookReviews();
 
   const generateRecommendations = useCallback(async () => {
     try {
-      const generatedRecommendations = await postRecommendations();
+      const generatedRecommendations = await postBookRecommendations();
       setRecommendations(generatedRecommendations);
     } catch (error) {
       return handleError(error);
@@ -40,12 +43,48 @@ export default function RecommendationsPage() {
       ) : (
         <div className="mt-10 grid gap-8">
           <Separator />
-          {recommendations.map((recommendation) => (
-            <div key={recommendation.id} className="grid gap-8">
-              <BookRecommendation recommendation={recommendation} />
-              <Separator />
-            </div>
-          ))}
+          {recommendations.map((recommendation) => {
+            const bookReview = bookReviews.find(
+              (review) => review.bookId === recommendation.book.id,
+            );
+            return (
+              <div key={recommendation.id} className="grid gap-8">
+                <div className="grid gap-4">
+                  <BookRecommendation recommendation={recommendation} />
+                  <div className="grid gap-1">
+                    <p className="text-center italic text-sm">
+                      Read this before? Provide a review to help improve the
+                      recommendations.
+                    </p>
+                    <div className="flex justify-center gap-2">
+                      <div>
+                        <span className="font-bold">Your book rating:</span>
+                      </div>
+                      <ReviewStars
+                        onSetScore={async (score) => {
+                          if (bookReview) {
+                            await updateBookReview({
+                              id: bookReview.id,
+                              updates: { rating: score },
+                            });
+                          } else {
+                            await createBookReview({
+                              bookReview: {
+                                bookId: recommendation.book.id,
+                                rating: score,
+                              },
+                            });
+                          }
+                        }}
+                        score={bookReview?.rating}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <Separator />
+              </div>
+            );
+          })}
           <div className="flex mt-4 w-full justify-center">
             <Button variant="default" onClick={() => generateRecommendations()}>
               Regenerate
