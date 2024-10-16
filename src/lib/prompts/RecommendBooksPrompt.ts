@@ -1,11 +1,11 @@
-import { fakeRecommendation } from '@/lib/fakes/recommendation.fake';
+import { fakeAIBookRecommendation } from '@/lib/fakes/recommendation.fake';
 import logger from '@/lib/logger';
 import prisma from '@/lib/prisma';
 import BasePrompt from '@/lib/prompts/BasePrompt';
 import bookRecommendationsSchema from '@/lib/schemas/book-recommendations.schema';
 import aiService from '@/lib/services/ai.service';
+import AIBookRecommendation from '@/types/AIBookRecommendation';
 import Prompt from '@/types/Prompt';
-import Recommendation from '@/types/Recommendation';
 import User from '@/types/User';
 import _ from 'lodash';
 
@@ -14,8 +14,8 @@ export type RecommendBooksPromptProps = {
 };
 
 export default class RecommendBooksPrompt
-  extends BasePrompt<Recommendation[]>
-  implements Prompt<Recommendation[]>
+  extends BasePrompt<AIBookRecommendation[]>
+  implements Prompt<AIBookRecommendation[]>
 {
   private user: User;
 
@@ -90,10 +90,10 @@ INPUT:
 `);
   }
 
-  async execute(): Promise<Recommendation[]> {
+  async execute(): Promise<AIBookRecommendation[]> {
     if (this.shouldUseFakeResponses()) {
       return _.orderBy(
-        _.times(5, () => fakeRecommendation()),
+        _.times(5, () => fakeAIBookRecommendation()),
         ['confidenceScore'],
         ['desc'],
       );

@@ -5,14 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import useHandleError from '@/hooks/useHandleError';
 import { postRecommendations } from '@/lib/api';
-import Recommendation from '@/types/Recommendation';
+import HydratedBookRecommendation from '@/types/HydratedBookRecommendation';
 import { BookCopyIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
 
 export default function RecommendationsPage() {
-  const [recommendations, setRecommendations] = useState<Array<Recommendation>>(
-    [],
-  );
+  const [recommendations, setRecommendations] = useState<
+    HydratedBookRecommendation[]
+  >([]);
   const { handleError } = useHandleError();
 
   const generateRecommendations = useCallback(async () => {
@@ -41,7 +41,7 @@ export default function RecommendationsPage() {
         <div className="mt-10 grid gap-8">
           <Separator />
           {recommendations.map((recommendation) => (
-            <div key={recommendation.title} className="grid gap-8">
+            <div key={recommendation.id} className="grid gap-8">
               <BookRecommendation recommendation={recommendation} />
               <Separator />
             </div>

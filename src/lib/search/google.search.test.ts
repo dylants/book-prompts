@@ -12,7 +12,6 @@ describe('google.search library', () => {
       {
         volumeInfo: {
           authors: ['Cressida Cowell'],
-          categories: ['YOUNG_ADULT_FANTASY'],
           imageLinks: {
             thumbnail:
               'http://books.google.com/books/content?id=28_qngEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api',
@@ -27,8 +26,6 @@ describe('google.search library', () => {
               type: 'ISBN_13',
             },
           ],
-          publishedDate: '2010-02-01',
-          publisher: 'Little Brown & Company',
           title: 'How to Train Your Dragon',
         },
       },
@@ -41,7 +38,6 @@ describe('google.search library', () => {
       {
         volumeInfo: {
           industryIdentifiers: [],
-          publisher: 'Little Brown & Company',
           title: 'How to Train Your Dragon',
         },
       },
