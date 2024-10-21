@@ -15,14 +15,13 @@ export function fakeAIBookRecommendation(): AIBookRecommendation {
 
 export function fakeBookRecommendation(): BookRecommendation {
   return {
-    aiModel: faker.lorem.word(),
     bookId: faker.number.int(),
+    bookPromptId: faker.number.int(),
     confidenceScore: new Prisma.Decimal(faker.number.float()),
     createdAt: faker.date.past(),
     explanation: faker.lorem.paragraph(),
     id: faker.number.int(),
     updatedAt: faker.date.past(),
-    userId: faker.number.int(),
   };
 }
 

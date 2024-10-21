@@ -10,6 +10,7 @@ import User from '@/types/User';
 import _ from 'lodash';
 
 export type RecommendBooksPromptProps = {
+  promptText: string;
   user: User;
 };
 
@@ -17,11 +18,13 @@ export default class RecommendBooksPrompt
   extends BasePrompt<AIBookRecommendation[]>
   implements Prompt<AIBookRecommendation[]>
 {
+  private promptText: string;
   private user: User;
 
-  constructor({ user }: RecommendBooksPromptProps) {
+  constructor({ promptText, user }: RecommendBooksPromptProps) {
     super();
 
+    this.promptText = promptText;
     this.user = user;
   }
 
@@ -59,7 +62,7 @@ titles, just to find that perfect book recommendation.
     return Promise.resolve(`
 OBJECTIVE:
 - Recommend and return only 5 books
-- The books should all feature witches (but not necessarily in the title).
+- The books should all ${this.promptText}.
 - The books should be all in the Romantic genre.
 - The books should be all in the Comedy subgenre.
 

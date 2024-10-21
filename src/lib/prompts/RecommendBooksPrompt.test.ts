@@ -19,7 +19,7 @@ describe('RecommendBooksPrompt', () => {
   });
 
   beforeEach(() => {
-    prompt = new RecommendBooksPrompt({ user: {} as User });
+    prompt = new RecommendBooksPrompt({ promptText: '', user: {} as User });
   });
 
   describe('when shouldUseFakeResponses is enabled', () => {

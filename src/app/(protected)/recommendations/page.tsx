@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import useBookReviews from '@/hooks/useBookReviews';
 import useHandleError from '@/hooks/useHandleError';
-import { postBookRecommendations } from '@/lib/api';
+import { postBookPrompt } from '@/lib/api';
 import HydratedBookRecommendation from '@/types/HydratedBookRecommendation';
 import { BookCopyIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
@@ -19,9 +19,11 @@ export default function RecommendationsPage() {
   const { bookReviews, createBookReview, updateBookReview } = useBookReviews();
 
   const generateRecommendations = useCallback(async () => {
+    // TODO gather this from form input
+    const promptText = 'feature witches (but not necessarily in the title)';
     try {
-      const generatedRecommendations = await postBookRecommendations();
-      setRecommendations(generatedRecommendations);
+      const bookPrompt = await postBookPrompt({ promptText });
+      setRecommendations(bookPrompt.bookRecommendations);
     } catch (error) {
       return handleError(error);
     }
