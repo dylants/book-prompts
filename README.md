@@ -112,11 +112,27 @@ To run both lint and compile TypeScript files:
 npm run lint
 ```
 
-### Unit and Integration Tests
+### Unit Tests
 
-Jest unit tests exist along side the source file. Integration tests exist in [`integration-tests`](integration-tests).
+Jest unit tests exist along side the source files.
 
-The integration tests (which are included in the test run) require a test database. This is setup via Docker Compose, and requires a running Docker instance.
+To run the tests:
+
+```
+npm test
+```
+
+To run tests in watch mode:
+
+```
+npm run test:watch
+```
+
+### Integration Tests
+
+Integration tests exist in [`integration-tests`](integration-tests).
+
+The integration tests require a test database. This is setup via Docker Compose, and requires a running Docker instance.
 
 To run the tests:
 
@@ -137,19 +153,27 @@ npm run ci:db:reset
 - Run the tests
 
 ```
-npm test
+npm run ci:test
 ```
 
 To run tests in watch mode:
 
 ```
-npm run test:watch
+npm run ci:test:watch
 ```
 
 When tests are complete, you can shutdown the test database:
 
 ```
 npm run ci:down
+```
+
+### Code Coverage
+
+To run all the tests and include code coverage, follow the steps above for the specific test types. Then to run the tests:
+
+```
+npm run test:coverage
 ```
 
 ## Storybook
