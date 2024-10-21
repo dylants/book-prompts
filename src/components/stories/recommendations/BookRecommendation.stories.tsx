@@ -9,8 +9,20 @@ const meta: Meta<typeof BookRecommendation> = {
 export default meta;
 type Story = StoryObj<typeof BookRecommendation>;
 
-export const Default: Story = {
+export const WithPicture: Story = {
   args: {
     recommendation: fakeHydratedBookRecommendation(),
+  },
+};
+
+export const WithoutPicture: Story = {
+  args: {
+    recommendation: {
+      ...fakeHydratedBookRecommendation(),
+      book: {
+        ...fakeHydratedBookRecommendation().book,
+        imageUrl: null,
+      },
+    },
   },
 };
