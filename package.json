@@ -6,7 +6,7 @@
     "node": "20.x"
   },
   "scripts": {
-    "build": "dotenv -e .env.test -- next build",
+    "build": "next build",
     "build-storybook": "storybook build",
     "check-types": "tsc --noemit",
     "ci:db:fixtures": "dotenv -e .env.test -- ts-node -r tsconfig-paths/register --compiler-options '{\"module\":\"CommonJS\"}' integration-tests/create-fixtures.ts",
@@ -14,18 +14,21 @@
     "ci:db:reset": "npm run ci:db:migrate-reset && npm run ci:db:fixtures",
     "ci:down": "docker compose -f ./integration-tests/docker-compose.yml down",
     "ci:up": "docker compose -f ./integration-tests/docker-compose.yml up -d",
+    "ci:test": "dotenv -e .env.test -- jest --config ./jest.integration-tests.config.ts --runInBand",
+    "ci:test:watch": "npm run ci:test -- --watch",
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset",
     "db:seed": "prisma db seed",
     "dev": "next dev",
     "eslint": "next lint",
-    "lint": "bun run eslint && bun run check-types",
+    "lint": "npm run eslint && npm run check-types",
     "log-prompts": "ts-node -r tsconfig-paths/register --compiler-options '{\"module\":\"CommonJS\"}' ./src/scripts/log-prompts.ts",
     "run-prompt": "ts-node -r tsconfig-paths/register --compiler-options '{\"module\":\"CommonJS\"}' ./src/scripts/run-prompt.ts",
     "start": "next start",
-    "test": "dotenv -e .env.test -- jest --coverage --runInBand",
-    "test:watch": "dotenv -e .env.test -- jest --watch",
-    "storybook": "storybook dev -p 6006"
+    "storybook": "storybook dev -p 6006",
+    "test": "dotenv -e .env.test -- jest",
+    "test:coverage": "dotenv -e .env.test -- jest --config ./jest.all.config.ts --coverage --runInBand",
+    "test:watch": "npm run test -- --watch"
   },
   "prisma": {
     "seed": "ts-node -r tsconfig-paths/register --compiler-options {\"module\":\"CommonJS\"} prisma/seeds/run-seeds.ts"

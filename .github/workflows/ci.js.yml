@@ -8,7 +8,8 @@ on:
     branches: [main]
 
 jobs:
-  ci:
+  lint-and-unit-tests:
+    name: Lint and Unit Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -16,16 +17,27 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup-env
       - name: Run lint
-        run: bun run lint
+        run: npm run lint
+      - name: Run unit tests
+        run: npm test
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Setup Environment
+        uses: ./.github/actions/setup-env
       - name: Run docker-compose
         uses: hoverkraft-tech/compose-action@v2.0.1
         with:
           compose-file: './integration-tests/docker-compose.yml'
       - name: Migrate and seed the test database
         run: npm run ci:db:reset
-      - name: Run tests
-        run: npm run test
+      - name: Run integration tests
+        run: npm run ci:test
   build:
+    name: Next.js Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -33,4 +45,4 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup-env
       - name: Run build
-        run: bun run build
+        run: NODE_ENV=test npm run build
