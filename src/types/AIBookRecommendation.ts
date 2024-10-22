@@ -1,5 +1,5 @@
 type AIBookRecommendation = {
-  author: string;
+  authors: string[];
   confidenceScore: number;
   explanation: string;
   title: string;

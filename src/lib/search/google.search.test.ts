@@ -51,7 +51,7 @@ describe('google.search library', () => {
   };
 
   describe('googleBookSearch', () => {
-    const author = 'Cressida Cowell';
+    const authors = ['Cressida Cowell'];
     const title = 'How to Train Your Dragon';
 
     describe('when the book exists', () => {
@@ -61,11 +61,11 @@ describe('google.search library', () => {
         }),
       );
       const searchResult: BookSearchResult = {
-        author: 'Cressida Cowell',
+        authors,
         imageUrl:
           'https://books.google.com/books/content?id=28_qngEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api',
         isbn13: '9780316085274',
-        title: 'How to Train Your Dragon',
+        title,
       };
 
       beforeAll(() => server.listen());
@@ -73,11 +73,11 @@ describe('google.search library', () => {
       afterAll(() => server.close());
 
       it('should return the book details', async () => {
-        const result = await googleBookSearch({ author, title });
+        const result = await googleBookSearch({ authors, title });
         expect(result).toEqual(searchResult);
       });
 
-      it('should return null with no author/title supplied', async () => {
+      it('should return null with no authors/title supplied', async () => {
         const result = await googleBookSearch({});
         expect(result).toEqual(null);
       });
@@ -90,7 +90,7 @@ describe('google.search library', () => {
         }),
       );
       const searchResult: BookSearchResult = {
-        author: undefined,
+        authors: undefined,
         imageUrl: undefined,
         isbn13: undefined,
         title: 'How to Train Your Dragon',
@@ -101,7 +101,7 @@ describe('google.search library', () => {
       afterAll(() => server.close());
 
       it('should return the book details', async () => {
-        const result = await googleBookSearch({ author, title });
+        const result = await googleBookSearch({ authors, title });
         expect(result).toEqual(searchResult);
       });
     });
@@ -118,7 +118,7 @@ describe('google.search library', () => {
       afterAll(() => server.close());
 
       it('should return null', async () => {
-        const result = await googleBookSearch({ author, title });
+        const result = await googleBookSearch({ authors, title });
         expect(result).toEqual(null);
       });
     });

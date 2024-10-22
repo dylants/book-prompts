@@ -71,13 +71,13 @@ export async function POST(
 
     const bookRecommendationPromises = aiRecommendations.map(
       async (recommendation) => {
-        const { author, confidenceScore, explanation, title } = recommendation;
+        const { authors, confidenceScore, explanation, title } = recommendation;
 
         // skip the google book search if we've got fake recommendations
         const searchResult = isFakeRecommendations
           ? /* istanbul ignore next */
             null
-          : await googleBookSearch({ author, title });
+          : await googleBookSearch({ authors, title });
 
         const book = buildBookFromSearchResult({
           recommendation,

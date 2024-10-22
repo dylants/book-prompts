@@ -6,7 +6,7 @@ function _buildQueryParam(param: string): string {
 }
 
 export type GoogleBookSearchProps = {
-  author?: string;
+  authors?: string[];
   title?: string;
 };
 
@@ -33,7 +33,7 @@ export async function googleBookSearch(
   logger.trace({ search }, 'googleBookSearch');
 
   const authorQuery =
-    search.author && `inauthor:${_buildQueryParam(search.author)}`;
+    search.authors && `inauthor:${_buildQueryParam(search.authors.join(' '))}`;
   const titleQuery =
     search.title && `intitle:${_buildQueryParam(search.title)}`;
 
@@ -76,7 +76,7 @@ export async function googleBookSearch(
   );
 
   const result: BookSearchResult = {
-    author: item.volumeInfo?.authors?.join(', '),
+    authors: item.volumeInfo?.authors,
     imageUrl,
     isbn13,
     title: item.volumeInfo?.title,

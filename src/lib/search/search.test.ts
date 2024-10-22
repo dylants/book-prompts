@@ -8,10 +8,10 @@ describe('search library', () => {
     const recommendation = fakeAIBookRecommendation();
 
     it('should match when search result matches', () => {
-      const { author, title } = recommendation;
+      const { authors, title } = recommendation;
 
       const searchResult: BookSearchResult = {
-        author,
+        authors,
         imageUrl: 'my image url',
         isbn13: 'my isbn',
         title,
@@ -20,7 +20,7 @@ describe('search library', () => {
       expect(
         buildBookFromSearchResult({ recommendation, searchResult }),
       ).toEqual({
-        author,
+        authors,
         confirmedExists: true,
         imageUrl: 'my image url',
         isbn13: 'my isbn',
@@ -33,7 +33,7 @@ describe('search library', () => {
       const longTitle = `${shortTitle}: subtitle part that was missing`;
 
       const searchResult: BookSearchResult = {
-        author: recommendation.author,
+        authors: recommendation.authors,
         imageUrl: 'my image url',
         isbn13: 'my isbn',
         title: longTitle,
@@ -48,7 +48,7 @@ describe('search library', () => {
           searchResult,
         }),
       ).toEqual({
-        author: recommendation.author,
+        authors: recommendation.authors,
         confirmedExists: true,
         imageUrl: 'my image url',
         isbn13: 'my isbn',
@@ -57,9 +57,9 @@ describe('search library', () => {
     });
 
     it('should not match when search result does not match', () => {
-      const { author, title } = recommendation;
+      const { authors, title } = recommendation;
       const searchResult: BookSearchResult = {
-        author: 'foo',
+        authors: ['foo'],
         imageUrl: 'my image url',
         isbn13: 'my isbn',
         title: 'bar',
@@ -68,10 +68,10 @@ describe('search library', () => {
       expect(
         buildBookFromSearchResult({ recommendation, searchResult }),
       ).toEqual({
-        author,
+        authors,
         confirmedExists: false,
         imageUrl: undefined,
-        isbn13: isbnHash({ author, title }),
+        isbn13: isbnHash({ authors, title }),
         title,
       });
     });
