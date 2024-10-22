@@ -7,7 +7,10 @@ const randomImage = (): string =>
 
 export function fakeBook(): Book {
   return {
-    author: faker.person.fullName(),
+    authors:
+      Math.random() > 0.9
+        ? [faker.person.fullName(), faker.person.fullName()]
+        : [faker.person.fullName()],
     confirmedExists: faker.datatype.boolean(),
     createdAt: faker.date.past(),
     id: faker.number.int(),

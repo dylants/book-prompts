@@ -9,7 +9,7 @@ import { USER_NO_REVIEWS_EMAIL } from '../../fixtures/user.fixture';
 
 const url = 'https://localhost';
 
-describe('/book-reviews POST', () => {
+describe('/api/protected/book-reviews POST', () => {
   let uuid: string;
   let book: Book;
 
@@ -21,13 +21,13 @@ describe('/book-reviews POST', () => {
 
     uuid = user.uuid;
 
-    const author = 'POST book-reviews test author';
+    const authors = ['POST book-reviews test author'];
     const title = 'My Title';
     book = await prisma.book.create({
       data: {
-        author,
+        authors,
         confirmedExists: false,
-        isbn13: isbnHash({ author, title }),
+        isbn13: isbnHash({ authors, title }),
         title,
       },
     });

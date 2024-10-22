@@ -3,6 +3,7 @@ import logger from '@/lib/logger';
 import AIBookRecommendation from '@/types/AIBookRecommendation';
 import BookCreateInput from '@/types/BookCreateInput';
 import BookSearchResult from '@/types/BookSearchResult';
+import _ from 'lodash';
 
 export function buildBookFromSearchResult({
   recommendation,
@@ -13,22 +14,28 @@ export function buildBookFromSearchResult({
 }): BookCreateInput {
   logger.trace({ recommendation, searchResult }, 'buildBookFromSearchResult');
 
-  const { author, title } = recommendation;
+  const { authors, title } = recommendation;
 
-  const confirmedExists: boolean =
-    !!searchResult &&
-    !!searchResult.isbn13 &&
-    author === searchResult?.author &&
-    !!searchResult?.title?.startsWith(title);
+  const isbnExists: boolean = !!searchResult?.isbn13;
+  logger.trace({ isbnExists }, 'isbnExists');
+
+  const authorMatches: boolean =
+    _.xor(authors, searchResult?.authors).length === 0;
+  logger.trace({ authorMatches }, 'authorMatches');
+
+  const titleMatches: boolean = !!searchResult?.title?.startsWith(title);
+  logger.trace({ titleMatches }, 'titleMatches');
+
+  const confirmedExists: boolean = isbnExists && authorMatches && titleMatches;
 
   const isbn13 = confirmedExists
     ? searchResult!.isbn13!
-    : isbnHash({ author, title });
+    : isbnHash({ authors, title });
 
   const imageUrl = confirmedExists ? searchResult?.imageUrl : undefined;
 
   const result: BookCreateInput = {
-    author,
+    authors,
     confirmedExists,
     imageUrl,
     isbn13,

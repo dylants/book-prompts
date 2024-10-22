@@ -6,7 +6,10 @@ import { BookRecommendation, Prisma } from '@prisma/client';
 
 export function fakeAIBookRecommendation(): AIBookRecommendation {
   return {
-    author: faker.person.fullName(),
+    authors:
+      Math.random() > 0.9
+        ? [faker.person.fullName(), faker.person.fullName()]
+        : [faker.person.fullName()],
     confidenceScore: faker.number.float({ fractionDigits: 2, max: 1, min: 0 }),
     explanation: faker.lorem.paragraph(),
     title: faker.music.songName(),

@@ -1,11 +1,11 @@
 import { hash } from 'crypto';
 
 export function isbnHash({
-  author,
+  authors,
   title,
 }: {
-  author: string;
+  authors: string[];
   title: string;
 }): string {
-  return hash('sha256', `${title} ${author}`);
+  return hash('sha256', `${title} ${authors.join(' ')}`);
 }

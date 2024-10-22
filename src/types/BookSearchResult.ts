@@ -1,5 +1,5 @@
 type BookSearchResult = {
-  author?: string;
+  authors?: string[];
   imageUrl?: string;
   isbn13?: string;
   title?: string;
