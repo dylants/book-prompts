@@ -3,7 +3,6 @@ import {
   PostRequestBody,
   PostResponseBody,
 } from '@/app/api/protected/book-prompts/route';
-import config from '@/config/index';
 import { fakeAIBookRecommendation } from '@/lib/fakes/recommendation.fake';
 import { isbnHash } from '@/lib/hash';
 import prisma from '@/lib/prisma';
@@ -11,6 +10,7 @@ import bookRecommendationsSchema from '@/lib/schemas/book-recommendations.schema
 import { GoogleSearchResponse } from '@/lib/search/google.search';
 import aiService from '@/lib/services/ai.service';
 import AIBookRecommendation from '@/types/AIBookRecommendation';
+import User from '@/types/User';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { NextRequest } from 'next/server';
@@ -21,6 +21,7 @@ import {
   USER_NO_REVIEWS_EMAIL,
   USER_WITH_REVIEWS_EMAIL,
 } from '../../fixtures/user.fixture';
+import { establishAuth } from '../../test-lib/auth';
 
 const mockCreateMessage = jest.spyOn(aiService, 'createMessage');
 
@@ -98,14 +99,19 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
   afterAll(() => server.close());
 
   describe('when the user has book reviews', () => {
-    let uuid: string;
+    let user: User & {
+      bookReviews: {
+        book: { authors: string[]; title: string };
+        rating: number;
+      }[];
+    };
     let bookReviews: {
       book: { authors: string[]; title: string };
       rating: number;
     }[];
 
     beforeAll(async () => {
-      const user = await prisma.user.findFirstOrThrow({
+      user = await prisma.user.findFirstOrThrow({
         include: {
           bookReviews: {
             orderBy: { rating: 'desc' },
@@ -123,7 +129,6 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
         where: { email: USER_WITH_REVIEWS_EMAIL },
       });
 
-      uuid = user.uuid;
       bookReviews = user.bookReviews;
     });
 
@@ -132,7 +137,7 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
         body: JSON.stringify({ foo: 'bar' }),
         method: 'POST',
       });
-      request.cookies.set(config.auth.cookieName, uuid);
+      establishAuth({ request, user });
       const response = await POST(request);
 
       expect(response.status).toEqual(400);
@@ -167,7 +172,7 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
           body: JSON.stringify(BODY),
           method: 'POST',
         });
-        request.cookies.set(config.auth.cookieName, uuid);
+        establishAuth({ request, user });
         const response = await POST(request);
 
         expect(mockCreateMessage).toHaveBeenCalledTimes(1);
@@ -254,7 +259,7 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
           body: JSON.stringify(BODY),
           method: 'POST',
         });
-        request.cookies.set(config.auth.cookieName, uuid);
+        establishAuth({ request, user });
         const response = await POST(request);
 
         expect(mockCreateMessage).toHaveBeenCalledTimes(1);
@@ -281,7 +286,7 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
           body: JSON.stringify(BODY),
           method: 'POST',
         });
-        request.cookies.set(config.auth.cookieName, uuid);
+        establishAuth({ request, user });
         const response = await POST(request);
 
         expect(mockCreateMessage).toHaveBeenCalledTimes(1);
@@ -294,16 +299,13 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
   });
 
   describe('when the user has no book reviews AND the AI responds with recommendations', () => {
-    let uuid: string;
+    let user: User;
     let receivedMessages: ChatCompletionMessageParam[];
 
     beforeAll(async () => {
-      const user = await prisma.user.findFirstOrThrow({
-        select: { uuid: true },
+      user = await prisma.user.findFirstOrThrow({
         where: { email: USER_NO_REVIEWS_EMAIL },
       });
-
-      uuid = user.uuid;
     });
 
     beforeEach(async () => {
@@ -327,7 +329,7 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
         body: JSON.stringify(BODY),
         method: 'POST',
       });
-      request.cookies.set(config.auth.cookieName, uuid);
+      establishAuth({ request, user });
       const response = await POST(request);
 
       expect(mockCreateMessage).toHaveBeenCalledTimes(1);
