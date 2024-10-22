@@ -2,7 +2,7 @@ import { Book, BookRecommendation } from '@prisma/client';
 
 type HydratedBookRecommendation = Omit<
   BookRecommendation,
-  'userId' | 'bookId' | 'aiModel'
+  'bookPromptId' | 'bookId'
 > & {
   book: Book;
 };

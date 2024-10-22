@@ -1,9 +1,10 @@
 import { AuthPostRequestBody } from '@/app/api/auth/route';
+import { PostRequestBody as BookPromptPostRequestBody } from '@/app/api/protected/book-prompts/route';
 import UnauthorizedError from '@/lib/errors/UnauthorizedError';
 import Auth from '@/types/Auth';
 import BookReviewCreateInput from '@/types/BookReviewCreateInput';
 import BookReviewUpdateInput from '@/types/BookReviewUpdateInput';
-import HydratedBookRecommendation from '@/types/HydratedBookRecommendation';
+import HydratedBookPrompt from '@/types/HydratedBookPrompt';
 import { BookReview } from '@prisma/client';
 
 /**
@@ -51,15 +52,16 @@ export async function deleteAuth(): Promise<Auth> {
   });
 }
 
-export async function postBookRecommendations(): Promise<
-  HydratedBookRecommendation[]
-> {
-  return api<HydratedBookRecommendation[]>(
-    '/api/protected/book-recommendations',
-    {
-      method: 'POST',
+export async function postBookPrompt(
+  body: BookPromptPostRequestBody,
+): Promise<HydratedBookPrompt> {
+  return api<HydratedBookPrompt>('/api/protected/book-prompts', {
+    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    method: 'POST',
+  });
 }
 
 export async function getBookReviews(): Promise<BookReview[]> {

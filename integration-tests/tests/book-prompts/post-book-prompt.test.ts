@@ -1,8 +1,9 @@
 import {
   POST,
+  PostRequestBody,
   PostResponseBody,
-} from '@/app/api/protected/book-recommendations/route';
-import projectConfig from '@/config/index';
+} from '@/app/api/protected/book-prompts/route';
+import config from '@/config/index';
 import { fakeAIBookRecommendation } from '@/lib/fakes/recommendation.fake';
 import { isbnHash } from '@/lib/hash';
 import prisma from '@/lib/prisma';
@@ -23,7 +24,14 @@ import {
 
 const mockCreateMessage = jest.spyOn(aiService, 'createMessage');
 
-const AUTHOR = 'post-rec-test author';
+const url = 'https://localhost';
+
+const PROMPT_TEXT = 'post-book-prompt.test prompt text';
+const BODY: PostRequestBody = {
+  promptText: PROMPT_TEXT,
+};
+
+const AUTHOR = 'post-book-prompt.test author';
 const FIRST_RECOMMENDATION: AIBookRecommendation = {
   ...fakeAIBookRecommendation(),
   author: AUTHOR,
@@ -59,9 +67,7 @@ const GOOGLE_BOOK_NOT_FOUND: GoogleSearchResponse = {
   totalItems: 0,
 };
 
-describe('Recommend Books Integration Test', () => {
-  let request: NextRequest;
-
+describe('/api/protected/book-prompts POST Integration Test', () => {
   const server = setupServer(
     rest.get('https://www.googleapis.com/*', (req, res, ctx) => {
       if (req.url.search.includes('title1')) {
@@ -74,22 +80,25 @@ describe('Recommend Books Integration Test', () => {
 
   beforeAll(() => server.listen());
 
-  afterEach(() => {
+  afterEach(async () => {
     server.resetHandlers();
 
     jest.resetAllMocks();
-  });
 
-  afterAll(async () => {
-    server.close();
-
-    // delete all the books we created (which deletes the recommendations as well)
+    // delete all the book prompts we created (which deletes the recommendations as well)
+    await prisma.bookPrompt.deleteMany({
+      where: { promptText: PROMPT_TEXT },
+    });
+    // delete all the books we created from those recommendations
     await prisma.book.deleteMany({
       where: { author: AUTHOR },
     });
   });
 
+  afterAll(() => server.close());
+
   describe('when the user has book reviews', () => {
+    let uuid: string;
     let bookReviews: {
       book: { author: string; title: string };
       rating: number;
@@ -114,10 +123,22 @@ describe('Recommend Books Integration Test', () => {
         where: { email: USER_WITH_REVIEWS_EMAIL },
       });
 
-      request = new NextRequest('http://localhost');
-      request.cookies.set(projectConfig.auth.cookieName, user.uuid);
-
+      uuid = user.uuid;
       bookReviews = user.bookReviews;
+    });
+
+    it('should fail when not passing correct data', async () => {
+      const request = new NextRequest(url, {
+        body: JSON.stringify({ foo: 'bar' }),
+        method: 'POST',
+      });
+      request.cookies.set(config.auth.cookieName, uuid);
+      const response = await POST(request);
+
+      expect(response.status).toEqual(400);
+      expect(await response.json()).toEqual({
+        error: 'Validation error: Required at "promptText"',
+      });
     });
 
     describe('when the AI returns a list of recommendations', () => {
@@ -142,6 +163,11 @@ describe('Recommend Books Integration Test', () => {
       });
 
       it('should query AI and respond with a list of recommendations', async () => {
+        const request = new NextRequest(url, {
+          body: JSON.stringify(BODY),
+          method: 'POST',
+        });
+        request.cookies.set(config.auth.cookieName, uuid);
         const response = await POST(request);
 
         expect(mockCreateMessage).toHaveBeenCalledTimes(1);
@@ -155,7 +181,7 @@ describe('Recommend Books Integration Test', () => {
         expect(userPrompt).toEqual(
           expect.stringContaining(`
 - Recommend and return only 5 books
-- The books should all feature witches (but not necessarily in the title).
+- The books should all ${PROMPT_TEXT}.
 - The books should be all in the Romantic genre.
 - The books should be all in the Comedy subgenre.
 `),
@@ -169,37 +195,43 @@ describe('Recommend Books Integration Test', () => {
         expect(response.status).toEqual(200);
 
         const { data } = (await response.json()) as PostResponseBody;
-        expect(data.length).toEqual(2);
-
-        const [actualFirstRecommendation, actualSecondRecommendation] = data;
-        expect(actualFirstRecommendation).toEqual(
+        expect(data).toEqual(
           expect.objectContaining({
-            book: expect.objectContaining({
-              author: FIRST_RECOMMENDATION.author,
-              confirmedExists: true,
-              imageUrl: 'https://image.com',
-              isbn13: '123',
-              title: FIRST_RECOMMENDATION.title,
-            }),
-            confidenceScore: FIRST_RECOMMENDATION.confidenceScore.toString(),
-            explanation: FIRST_RECOMMENDATION.explanation,
+            promptText: PROMPT_TEXT,
           }),
         );
-        expect(actualSecondRecommendation).toEqual(
-          expect.objectContaining({
-            book: expect.objectContaining({
-              author: SECOND_RECOMMENDATION.author,
-              confirmedExists: false,
-              imageUrl: null,
-              isbn13: isbnHash({
+
+        const { bookRecommendations } = data;
+        expect(bookRecommendations.length).toEqual(2);
+
+        expect(bookRecommendations).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              book: expect.objectContaining({
+                author: FIRST_RECOMMENDATION.author,
+                confirmedExists: true,
+                imageUrl: 'https://image.com',
+                isbn13: '123',
+                title: FIRST_RECOMMENDATION.title,
+              }),
+              confidenceScore: FIRST_RECOMMENDATION.confidenceScore.toString(),
+              explanation: FIRST_RECOMMENDATION.explanation,
+            }),
+            expect.objectContaining({
+              book: expect.objectContaining({
                 author: SECOND_RECOMMENDATION.author,
+                confirmedExists: false,
+                imageUrl: null,
+                isbn13: isbnHash({
+                  author: SECOND_RECOMMENDATION.author,
+                  title: SECOND_RECOMMENDATION.title,
+                }),
                 title: SECOND_RECOMMENDATION.title,
               }),
-              title: SECOND_RECOMMENDATION.title,
+              confidenceScore: SECOND_RECOMMENDATION.confidenceScore.toString(),
+              explanation: SECOND_RECOMMENDATION.explanation,
             }),
-            confidenceScore: SECOND_RECOMMENDATION.confidenceScore.toString(),
-            explanation: SECOND_RECOMMENDATION.explanation,
-          }),
+          ]),
         );
       });
     });
@@ -218,6 +250,11 @@ describe('Recommend Books Integration Test', () => {
       });
 
       it('should return an error', async () => {
+        const request = new NextRequest(url, {
+          body: JSON.stringify(BODY),
+          method: 'POST',
+        });
+        request.cookies.set(config.auth.cookieName, uuid);
         const response = await POST(request);
 
         expect(mockCreateMessage).toHaveBeenCalledTimes(1);
@@ -240,6 +277,11 @@ describe('Recommend Books Integration Test', () => {
       });
 
       it('should return an error', async () => {
+        const request = new NextRequest(url, {
+          body: JSON.stringify(BODY),
+          method: 'POST',
+        });
+        request.cookies.set(config.auth.cookieName, uuid);
         const response = await POST(request);
 
         expect(mockCreateMessage).toHaveBeenCalledTimes(1);
@@ -252,15 +294,16 @@ describe('Recommend Books Integration Test', () => {
   });
 
   describe('when the user has no book reviews AND the AI responds with recommendations', () => {
+    let uuid: string;
     let receivedMessages: ChatCompletionMessageParam[];
 
     beforeAll(async () => {
       const user = await prisma.user.findFirstOrThrow({
+        select: { uuid: true },
         where: { email: USER_NO_REVIEWS_EMAIL },
       });
 
-      request = new NextRequest('http://localhost');
-      request.cookies.set(projectConfig.auth.cookieName, user.uuid);
+      uuid = user.uuid;
     });
 
     beforeEach(async () => {
@@ -280,6 +323,11 @@ describe('Recommend Books Integration Test', () => {
     });
 
     it('should provide the AI with no book reviews', async () => {
+      const request = new NextRequest(url, {
+        body: JSON.stringify(BODY),
+        method: 'POST',
+      });
+      request.cookies.set(config.auth.cookieName, uuid);
       const response = await POST(request);
 
       expect(mockCreateMessage).toHaveBeenCalledTimes(1);
@@ -294,9 +342,6 @@ describe('Recommend Books Integration Test', () => {
       );
 
       expect(response.status).toEqual(200);
-
-      const { data } = (await response.json()) as PostResponseBody;
-      expect(data.length).toEqual(2);
     });
   });
 
