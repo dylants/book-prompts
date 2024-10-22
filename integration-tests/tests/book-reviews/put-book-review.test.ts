@@ -2,24 +2,25 @@ import {
   PUT,
   PutResponseBody,
 } from '@/app/api/protected/book-reviews/[bookReviewId]/route';
-import projectConfig from '@/config/index';
 import prisma from '@/lib/prisma';
 import BookReviewUpdateInput from '@/types/BookReviewUpdateInput';
+import User from '@/types/User';
 import { BookReview } from '@prisma/client';
 import { NextRequest } from 'next/server';
 import {
   USER_WITH_ONE_REVIEW_EMAIL,
   USER_WITH_REVIEWS_EMAIL,
 } from '../../fixtures/user.fixture';
+import { establishAuth } from '../../test-lib/auth';
 
 const url = 'https://localhost';
 
 describe('/book-reviews/[bookReviewId] PUT', () => {
-  let uuid: string;
+  let user: User & { bookReviews: BookReview[] };
   let existingBookReview: BookReview;
 
   beforeAll(async () => {
-    const user = await prisma.user.findFirstOrThrow({
+    user = await prisma.user.findFirstOrThrow({
       include: {
         bookReviews: true,
       },
@@ -27,7 +28,6 @@ describe('/book-reviews/[bookReviewId] PUT', () => {
     });
 
     existingBookReview = user.bookReviews[0];
-    uuid = user.uuid;
   });
 
   afterAll(async () => {
@@ -49,7 +49,7 @@ describe('/book-reviews/[bookReviewId] PUT', () => {
       body: JSON.stringify(updates),
       method: 'PUT',
     });
-    request.cookies.set(projectConfig.auth.cookieName, uuid);
+    establishAuth({ request, user });
 
     const response = await PUT(request, {
       params: { bookReviewId: existingBookReview.id.toString() },
@@ -83,7 +83,7 @@ describe('/book-reviews/[bookReviewId] PUT', () => {
       body: JSON.stringify({ rating: 'not number' }),
       method: 'PUT',
     });
-    request.cookies.set(projectConfig.auth.cookieName, uuid);
+    establishAuth({ request, user });
 
     const response = await PUT(request, {
       params: { bookReviewId: existingBookReview.id.toString() },
@@ -106,7 +106,7 @@ describe('/book-reviews/[bookReviewId] PUT', () => {
       body: JSON.stringify({ rating: 1 }),
       method: 'PUT',
     });
-    request.cookies.set(projectConfig.auth.cookieName, uuid);
+    establishAuth({ request, user });
 
     const response = await PUT(request, {
       params: { bookReviewId: otherUsersBookReview.id.toString() },

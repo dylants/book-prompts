@@ -1,25 +1,23 @@
 import { POST, PostResponseBody } from '@/app/api/protected/book-reviews/route';
-import projectConfig from '@/config/index';
 import { isbnHash } from '@/lib/hash';
 import prisma from '@/lib/prisma';
 import BookReviewCreateInput from '@/types/BookReviewCreateInput';
+import User from '@/types/User';
 import { Book } from '@prisma/client';
 import { NextRequest } from 'next/server';
 import { USER_NO_REVIEWS_EMAIL } from '../../fixtures/user.fixture';
+import { establishAuth } from '../../test-lib/auth';
 
 const url = 'https://localhost';
 
 describe('/api/protected/book-reviews POST', () => {
-  let uuid: string;
+  let user: User;
   let book: Book;
 
   beforeAll(async () => {
-    const user = await prisma.user.findFirstOrThrow({
-      select: { uuid: true },
+    user = await prisma.user.findFirstOrThrow({
       where: { email: USER_NO_REVIEWS_EMAIL },
     });
-
-    uuid = user.uuid;
 
     const authors = ['POST book-reviews test author'];
     const title = 'My Title';
@@ -50,7 +48,7 @@ describe('/api/protected/book-reviews POST', () => {
       body: JSON.stringify(bookReview),
       method: 'POST',
     });
-    request.cookies.set(projectConfig.auth.cookieName, uuid);
+    establishAuth({ request, user });
 
     const response = await POST(request);
 
@@ -75,7 +73,7 @@ describe('/api/protected/book-reviews POST', () => {
       body: JSON.stringify(bookReview),
       method: 'POST',
     });
-    request.cookies.set(projectConfig.auth.cookieName, uuid);
+    establishAuth({ request, user });
 
     const response = await POST(request);
 
@@ -96,7 +94,7 @@ describe('/api/protected/book-reviews POST', () => {
       body: JSON.stringify(bookReview),
       method: 'POST',
     });
-    request.cookies.set(projectConfig.auth.cookieName, uuid);
+    establishAuth({ request, user });
 
     const response = await POST(request);
 
@@ -123,7 +121,7 @@ describe('/api/protected/book-reviews POST', () => {
       body: JSON.stringify({ bad: 'data' }),
       method: 'POST',
     });
-    request.cookies.set(projectConfig.auth.cookieName, uuid);
+    establishAuth({ request, user });
 
     const response = await POST(request);
 

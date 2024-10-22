@@ -7,9 +7,11 @@ import prisma from '@/lib/prisma';
 import RecommendBooksPrompt from '@/lib/prompts/RecommendBooksPrompt';
 import { googleBookSearch } from '@/lib/search/google.search';
 import { buildBookFromSearchResult } from '@/lib/search/search';
+import AIBookRecommendation from '@/types/AIBookRecommendation';
 import HydratedBookPrompt from '@/types/HydratedBookPrompt';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
 import Session from '@/types/Session';
+import { BookRecommendation } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { toZod } from 'tozod';
 import { z } from 'zod';
@@ -28,6 +30,45 @@ const postSchema: toZod<PostRequestBody> = z.object({
 export type PostResponseBody = {
   data: HydratedBookPrompt;
 };
+
+async function createBookRecommendations({
+  aiRecommendations,
+  bookPromptId,
+}: {
+  aiRecommendations: AIBookRecommendation[];
+  bookPromptId: number;
+}): Promise<BookRecommendation[]> {
+  return Promise.all(
+    aiRecommendations.map(async (recommendation) => {
+      const { authors, confidenceScore, explanation, title } = recommendation;
+
+      // skip the google book search if we've got fake recommendations
+      const searchResult = isFakeRecommendations
+        ? /* istanbul ignore next */
+          null
+        : await googleBookSearch({ authors, title });
+
+      const book = buildBookFromSearchResult({
+        recommendation,
+        searchResult,
+      });
+
+      return await prisma.bookRecommendation.create({
+        data: {
+          book: {
+            connectOrCreate: {
+              create: book,
+              where: { isbn13: book.isbn13 },
+            },
+          },
+          bookPrompt: { connect: { id: bookPromptId } },
+          confidenceScore,
+          explanation,
+        },
+      });
+    }),
+  );
+}
 
 export async function POST(
   request: NextRequest,
@@ -69,38 +110,7 @@ export async function POST(
       select: { id: true },
     });
 
-    const bookRecommendationPromises = aiRecommendations.map(
-      async (recommendation) => {
-        const { authors, confidenceScore, explanation, title } = recommendation;
-
-        // skip the google book search if we've got fake recommendations
-        const searchResult = isFakeRecommendations
-          ? /* istanbul ignore next */
-            null
-          : await googleBookSearch({ authors, title });
-
-        const book = buildBookFromSearchResult({
-          recommendation,
-          searchResult,
-        });
-
-        return await prisma.bookRecommendation.create({
-          data: {
-            book: {
-              connectOrCreate: {
-                create: book,
-                where: { isbn13: book.isbn13 },
-              },
-            },
-            bookPrompt: { connect: { id: bookPromptId } },
-            confidenceScore,
-            explanation,
-          },
-        });
-      },
-    );
-
-    await Promise.all(bookRecommendationPromises);
+    await createBookRecommendations({ aiRecommendations, bookPromptId });
 
     const bookPrompt = await prisma.bookPrompt.findFirstOrThrow({
       include: {
