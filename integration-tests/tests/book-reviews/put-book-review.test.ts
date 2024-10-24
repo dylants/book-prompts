@@ -3,9 +3,9 @@ import {
   PutResponseBody,
 } from '@/app/api/protected/book-reviews/[bookReviewId]/route';
 import prisma from '@/lib/prisma';
+import BookReview from '@/types/BookReview';
 import BookReviewUpdateInput from '@/types/BookReviewUpdateInput';
 import User from '@/types/User';
-import { BookReview } from '@prisma/client';
 import { NextRequest } from 'next/server';
 import {
   USER_WITH_ONE_REVIEW_EMAIL,
@@ -22,7 +22,11 @@ describe('/book-reviews/[bookReviewId] PUT', () => {
   beforeAll(async () => {
     user = await prisma.user.findFirstOrThrow({
       include: {
-        bookReviews: true,
+        bookReviews: {
+          omit: {
+            userId: true,
+          },
+        },
       },
       where: { email: USER_WITH_REVIEWS_EMAIL },
     });
@@ -60,6 +64,7 @@ describe('/book-reviews/[bookReviewId] PUT', () => {
     const body = (await response.json()) as PutResponseBody;
     expect(body.data).toEqual(
       expect.objectContaining({
+        bookId: existingBookReview.bookId,
         rating,
       }),
     );

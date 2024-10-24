@@ -31,48 +31,9 @@ describe('/api/protected/book-prompts GET Integration Test', () => {
       expect(bookPrompts).toHaveLength(2);
       expect(bookPrompts).toEqual([
         expect.objectContaining({
-          bookRecommendations: [
-            expect.objectContaining({
-              book: expect.objectContaining({
-                id: 1,
-              }),
-              confidenceScore: '0.75',
-              explanation: 'Explanation 1',
-            }),
-            expect.objectContaining({
-              book: expect.objectContaining({
-                id: 2,
-              }),
-              confidenceScore: '0.5',
-              explanation: 'Explanation 2',
-            }),
-            expect.objectContaining({
-              book: expect.objectContaining({
-                id: 7,
-              }),
-              confidenceScore: '0.25',
-              explanation: 'Explanation 3',
-            }),
-          ],
           promptText: 'feature witches',
         }),
         expect.objectContaining({
-          bookRecommendations: [
-            expect.objectContaining({
-              book: expect.objectContaining({
-                id: 4,
-              }),
-              confidenceScore: '0.75',
-              explanation: 'Explanation 1',
-            }),
-            expect.objectContaining({
-              book: expect.objectContaining({
-                id: 5,
-              }),
-              confidenceScore: '0.5',
-              explanation: 'Explanation 2',
-            }),
-          ],
           promptText: 'include gothic themes',
         }),
       ]);

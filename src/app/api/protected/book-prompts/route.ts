@@ -8,17 +8,17 @@ import RecommendBooksPrompt from '@/lib/prompts/RecommendBooksPrompt';
 import { googleBookSearch } from '@/lib/search/google.search';
 import { buildBookFromSearchResult } from '@/lib/search/search';
 import AIBookRecommendation from '@/types/AIBookRecommendation';
-import HydratedBookPrompt from '@/types/HydratedBookPrompt';
+import BookPrompt from '@/types/BookPrompt';
+import BookPromptHydrated from '@/types/BookPromptHydrated';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
 import Session from '@/types/Session';
-import { BookRecommendation } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { toZod } from 'tozod';
 import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 
 export type GetResponseBody = {
-  data: HydratedBookPrompt[];
+  data: BookPrompt[];
 };
 
 export async function GET(
@@ -28,17 +28,6 @@ export async function GET(
     const session = await authMiddleware(req);
 
     const bookPrompts = await prisma.bookPrompt.findMany({
-      include: {
-        bookRecommendations: {
-          include: {
-            book: true,
-          },
-          omit: {
-            bookId: true,
-            bookPromptId: true,
-          },
-        },
-      },
       omit: {
         aiModel: true,
         userId: true,
@@ -61,7 +50,7 @@ const postSchema: toZod<PostRequestBody> = z.object({
 });
 
 export type PostResponseBody = {
-  data: HydratedBookPrompt;
+  data: BookPromptHydrated;
 };
 
 async function createBookRecommendations({
@@ -70,7 +59,7 @@ async function createBookRecommendations({
 }: {
   aiRecommendations: AIBookRecommendation[];
   bookPromptId: number;
-}): Promise<BookRecommendation[]> {
+}): Promise<void[]> {
   return Promise.all(
     aiRecommendations.map(async (recommendation) => {
       const { authors, confidenceScore, explanation, title } = recommendation;
@@ -86,7 +75,7 @@ async function createBookRecommendations({
         searchResult,
       });
 
-      return await prisma.bookRecommendation.create({
+      await prisma.bookRecommendation.create({
         data: {
           book: {
             connectOrCreate: {
@@ -99,6 +88,8 @@ async function createBookRecommendations({
           explanation,
         },
       });
+
+      return;
     }),
   );
 }

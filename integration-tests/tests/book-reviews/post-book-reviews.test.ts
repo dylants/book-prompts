@@ -1,9 +1,9 @@
 import { POST, PostResponseBody } from '@/app/api/protected/book-reviews/route';
 import { isbnHash } from '@/lib/hash';
 import prisma from '@/lib/prisma';
+import Book from '@/types/Book';
 import BookReviewCreateInput from '@/types/BookReviewCreateInput';
 import User from '@/types/User';
-import { Book } from '@prisma/client';
 import { NextRequest } from 'next/server';
 import { USER_NO_REVIEWS_EMAIL } from '../../fixtures/user.fixture';
 import { establishAuth } from '../../test-lib/auth';

@@ -1,7 +1,7 @@
 import { GET, GetResponseBody } from '@/app/api/protected/book-reviews/route';
 import prisma from '@/lib/prisma';
+import BookReview from '@/types/BookReview';
 import User from '@/types/User';
-import { BookReview } from '@prisma/client';
 import { NextRequest } from 'next/server';
 import { USER_WITH_REVIEWS_EMAIL } from '../../fixtures/user.fixture';
 import { establishAuth } from '../../test-lib/auth';
@@ -15,7 +15,11 @@ describe('/book-reviews GET', () => {
   beforeAll(async () => {
     user = await prisma.user.findFirstOrThrow({
       include: {
-        bookReviews: true,
+        bookReviews: {
+          omit: {
+            userId: true,
+          },
+        },
       },
       where: { email: USER_WITH_REVIEWS_EMAIL },
     });

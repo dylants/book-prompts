@@ -1,4 +1,4 @@
-import HydratedBookRecommendation from '@/types/HydratedBookRecommendation';
+import BookRecommendationHydrated from '@/types/BookRecommendationHydrated';
 import {
   BookIcon,
   MessageCircleQuestionIcon,
@@ -9,7 +9,7 @@ import Image from 'next/image';
 export default function BookRecommendation({
   recommendation,
 }: {
-  recommendation: HydratedBookRecommendation;
+  recommendation: BookRecommendationHydrated;
 }) {
   const { book } = recommendation;
   return (

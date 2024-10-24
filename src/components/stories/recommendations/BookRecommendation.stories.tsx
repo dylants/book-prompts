@@ -1,5 +1,5 @@
 import BookRecommendation from '@/components/recommendations/BookRecommendation';
-import { fakeHydratedBookRecommendation } from '@/lib/fakes/recommendation.fake';
+import { fakeBookRecommendationHydrated } from '@/lib/fakes/recommendation.fake';
 import { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof BookRecommendation> = {
@@ -11,16 +11,16 @@ type Story = StoryObj<typeof BookRecommendation>;
 
 export const WithPicture: Story = {
   args: {
-    recommendation: fakeHydratedBookRecommendation(),
+    recommendation: fakeBookRecommendationHydrated(),
   },
 };
 
 export const WithoutPicture: Story = {
   args: {
     recommendation: {
-      ...fakeHydratedBookRecommendation(),
+      ...fakeBookRecommendationHydrated(),
       book: {
-        ...fakeHydratedBookRecommendation().book,
+        ...fakeBookRecommendationHydrated().book,
         imageUrl: null,
       },
     },

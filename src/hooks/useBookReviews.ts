@@ -1,8 +1,8 @@
 import useHandleError from '@/hooks/useHandleError';
 import { getBookReviews, postBookReviews, putBookReview } from '@/lib/api';
+import BookReview from '@/types/BookReview';
 import BookReviewCreateInput from '@/types/BookReviewCreateInput';
 import BookReviewUpdateInput from '@/types/BookReviewUpdateInput';
-import { BookReview } from '@prisma/client';
 import { useCallback, useEffect, useState } from 'react';
 
 export type UseBookReviewsResult = {

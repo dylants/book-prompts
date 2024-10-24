@@ -3,10 +3,10 @@ import handleErrorResponse from '@/lib/errors/handleErrorResponse';
 import logger from '@/lib/logger';
 import { authMiddleware } from '@/lib/middleware';
 import prisma from '@/lib/prisma';
+import BookReview from '@/types/BookReview';
 import BookReviewCreateInput from '@/types/BookReviewCreateInput';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
 import Session from '@/types/Session';
-import { BookReview } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { toZod } from 'tozod';
 import { z } from 'zod';
@@ -31,6 +31,9 @@ export async function GET(
 
   try {
     const bookReviews = await prisma.bookReview.findMany({
+      omit: {
+        userId: true,
+      },
       where: { userId: session.user.id },
     });
 
@@ -87,6 +90,9 @@ export async function POST(
         user: {
           connect: { id: session.user.id },
         },
+      },
+      omit: {
+        userId: true,
       },
     });
 
