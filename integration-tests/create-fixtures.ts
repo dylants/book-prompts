@@ -1,5 +1,6 @@
 import { encryptPassword } from '@/lib/encryption';
 import { PrismaClient } from '@prisma/client';
+import bookPromptFixtures from './fixtures/book-prompt.fixture';
 import bookFixtures from './fixtures/book.fixture';
 import userFixtures from './fixtures/user.fixture';
 const prisma = new PrismaClient();
@@ -14,6 +15,10 @@ async function createFixtures() {
         password: await encryptPassword({ password: user.password }),
       },
     });
+  }
+
+  for (const bookPrompt of bookPromptFixtures) {
+    await prisma.bookPrompt.create({ data: bookPrompt });
   }
 }
 
