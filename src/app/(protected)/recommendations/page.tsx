@@ -7,13 +7,13 @@ import { Separator } from '@/components/ui/separator';
 import useBookReviews from '@/hooks/useBookReviews';
 import useHandleError from '@/hooks/useHandleError';
 import { postBookPrompt } from '@/lib/api';
-import HydratedBookRecommendation from '@/types/HydratedBookRecommendation';
+import BookRecommendationHydrated from '@/types/BookRecommendationHydrated';
 import { BookCopyIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
 
 export default function RecommendationsPage() {
   const [recommendations, setRecommendations] = useState<
-    HydratedBookRecommendation[]
+    BookRecommendationHydrated[]
   >([]);
   const { handleError } = useHandleError();
   const { bookReviews, createBookReview, updateBookReview } = useBookReviews();

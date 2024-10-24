@@ -2,10 +2,11 @@ import { AuthPostRequestBody } from '@/app/api/auth/route';
 import { PostRequestBody as BookPromptPostRequestBody } from '@/app/api/protected/book-prompts/route';
 import UnauthorizedError from '@/lib/errors/UnauthorizedError';
 import Auth from '@/types/Auth';
+import BookPrompt from '@/types/BookPrompt';
+import BookPromptHydrated from '@/types/BookPromptHydrated';
+import BookReview from '@/types/BookReview';
 import BookReviewCreateInput from '@/types/BookReviewCreateInput';
 import BookReviewUpdateInput from '@/types/BookReviewUpdateInput';
-import HydratedBookPrompt from '@/types/HydratedBookPrompt';
-import { BookReview } from '@prisma/client';
 
 /**
  * Wrapper around fetch, expecting and returning a JSON typed response
@@ -60,14 +61,14 @@ export async function deleteAuth(): Promise<Auth> {
 // ********************** BOOK PROMPTS *************************
 // *************************************************************
 
-export async function getBookPrompts(): Promise<HydratedBookPrompt[]> {
-  return api<HydratedBookPrompt[]>('/api/protected/book-prompts');
+export async function getBookPrompts(): Promise<BookPrompt[]> {
+  return api<BookPrompt[]>('/api/protected/book-prompts');
 }
 
 export async function postBookPrompt(
   body: BookPromptPostRequestBody,
-): Promise<HydratedBookPrompt> {
-  return api<HydratedBookPrompt>('/api/protected/book-prompts', {
+): Promise<BookPromptHydrated> {
+  return api<BookPromptHydrated>('/api/protected/book-prompts', {
     body: JSON.stringify(body),
     headers: {
       'Content-Type': 'application/json',

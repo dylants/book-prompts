@@ -3,10 +3,10 @@ import handleErrorResponse from '@/lib/errors/handleErrorResponse';
 import logger from '@/lib/logger';
 import { authMiddleware } from '@/lib/middleware';
 import prisma from '@/lib/prisma';
+import BookReview from '@/types/BookReview';
 import BookReviewUpdateInput from '@/types/BookReviewUpdateInput';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
 import Session from '@/types/Session';
-import { BookReview } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { toZod } from 'tozod';
 import { z } from 'zod';
@@ -50,6 +50,9 @@ export async function PUT(
     const bookReview = await prisma.bookReview.update({
       data: {
         rating,
+      },
+      omit: {
+        userId: true,
       },
       where: { id: Number(bookReviewId), userId: session.user.id },
     });
