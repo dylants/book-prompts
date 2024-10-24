@@ -17,8 +17,6 @@ import { toZod } from 'tozod';
 import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 
-const isFakeRecommendations = config.prompts.useFakeResponses === 'true';
-
 export type PostRequestBody = {
   promptText: string;
 };
@@ -43,7 +41,7 @@ async function createBookRecommendations({
       const { authors, confidenceScore, explanation, title } = recommendation;
 
       // skip the google book search if we've got fake recommendations
-      const searchResult = isFakeRecommendations
+      const searchResult = config.prompts.shouldUseFakeResponses
         ? /* istanbul ignore next */
           null
         : await googleBookSearch({ authors, title });

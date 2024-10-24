@@ -1,3 +1,4 @@
+import config from '@/config/index';
 import { fakeAIBookRecommendation } from '@/lib/fakes/recommendation.fake';
 import logger from '@/lib/logger';
 import prisma from '@/lib/prisma';
@@ -94,7 +95,7 @@ INPUT:
   }
 
   async execute(): Promise<AIBookRecommendation[]> {
-    if (this.shouldUseFakeResponses()) {
+    if (config.prompts.shouldUseFakeResponses) {
       return _.orderBy(
         _.times(5, () => fakeAIBookRecommendation()),
         ['confidenceScore'],

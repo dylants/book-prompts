@@ -7,7 +7,7 @@ import _ from 'lodash';
 const mockCreateMessage = jest.spyOn(aiService, 'createMessage');
 
 describe('RecommendBooksPrompt', () => {
-  let originalConfig: { useFakeResponses: string | undefined };
+  let originalConfig: { shouldUseFakeResponses: boolean };
   let prompt: RecommendBooksPrompt;
 
   beforeAll(() => {
@@ -24,7 +24,7 @@ describe('RecommendBooksPrompt', () => {
 
   describe('when shouldUseFakeResponses is enabled', () => {
     beforeEach(() => {
-      config.prompts.useFakeResponses = 'true';
+      config.prompts.shouldUseFakeResponses = true;
     });
 
     it('should return the fake responses, and NOT call AI', async () => {
