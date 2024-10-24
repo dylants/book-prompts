@@ -29,6 +29,10 @@ async function api<T>(path: string, fetchOptions?: RequestInit): Promise<T> {
   return (await response.json()).data as T;
 }
 
+// *************************************************************
+// ************************* AUTH ******************************
+// *************************************************************
+
 export async function getAuth(): Promise<Auth> {
   return api<Auth>('/api/auth');
 }
@@ -52,6 +56,14 @@ export async function deleteAuth(): Promise<Auth> {
   });
 }
 
+// *************************************************************
+// ********************** BOOK PROMPTS *************************
+// *************************************************************
+
+export async function getBookPrompts(): Promise<HydratedBookPrompt[]> {
+  return api<HydratedBookPrompt[]>('/api/protected/book-prompts');
+}
+
 export async function postBookPrompt(
   body: BookPromptPostRequestBody,
 ): Promise<HydratedBookPrompt> {
@@ -63,6 +75,10 @@ export async function postBookPrompt(
     method: 'POST',
   });
 }
+
+// *************************************************************
+// ********************** BOOK REVIEWS *************************
+// *************************************************************
 
 export async function getBookReviews(): Promise<BookReview[]> {
   return api<BookReview[]>('/api/protected/book-reviews');

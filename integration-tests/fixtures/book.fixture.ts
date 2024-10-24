@@ -7,6 +7,8 @@ const books: Pick<Book, 'authors' | 'title'>[] = [
   { authors: ['Kendra Ortiz'], title: 'Look Away' },
   { authors: ['Kristie Boyer'], title: 'My Story' },
   { authors: ['Troy Ray', 'Megan Jacobs'], title: 'Buttons & Bows' },
+  { authors: ['John Doe'], title: 'The End' },
+  { authors: ['Jane Doe'], title: 'The Beginning' },
 ];
 
 const bookFixtures: Prisma.BookCreateManyInput[] = books.map((book) => ({

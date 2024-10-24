@@ -17,6 +17,41 @@ import { toZod } from 'tozod';
 import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 
+export type GetResponseBody = {
+  data: HydratedBookPrompt[];
+};
+
+export async function GET(
+  req: NextRequest,
+): Promise<NextResponse<GetResponseBody | NextResponseErrorBody>> {
+  try {
+    const session = await authMiddleware(req);
+
+    const bookPrompts = await prisma.bookPrompt.findMany({
+      include: {
+        bookRecommendations: {
+          include: {
+            book: true,
+          },
+          omit: {
+            bookId: true,
+            bookPromptId: true,
+          },
+        },
+      },
+      omit: {
+        aiModel: true,
+        userId: true,
+      },
+      where: { userId: session.user.id },
+    });
+
+    return NextResponse.json({ data: bookPrompts });
+  } catch (error) {
+    return handleErrorResponse(error);
+  }
+}
+
 export type PostRequestBody = {
   promptText: string;
 };
