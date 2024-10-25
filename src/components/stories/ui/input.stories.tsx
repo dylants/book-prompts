@@ -22,3 +22,7 @@ export const Error: Story = {
 export const Ghost: Story = {
   args: { variant: 'ghost' },
 };
+
+export const Underline: Story = {
+  args: { variant: 'underline' },
+};
