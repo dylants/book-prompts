@@ -1,19 +1,22 @@
 'use client';
 
-import BookRecommendation from '@/components/recommendations/BookRecommendation';
-import ReviewStars from '@/components/ReviewStars';
+import BookRecommendationWithReview from '@/components/recommendations/BookRecommendationWithReview';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import useBookReviews from '@/hooks/useBookReviews';
 import useHandleError from '@/hooks/useHandleError';
 import { postBookPrompt } from '@/lib/api';
 import BookRecommendationHydrated from '@/types/BookRecommendationHydrated';
+import BookRecommendationHydratedWithReview from '@/types/BookRecommendationHydratedWithReview';
 import { BookCopyIcon } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function RecommendationsPage() {
   const [recommendations, setRecommendations] = useState<
     BookRecommendationHydrated[]
+  >([]);
+  const [recommendationsWithReviews, setRecommendationsWithReviews] = useState<
+    BookRecommendationHydratedWithReview[]
   >([]);
   const { handleError } = useHandleError();
   const { bookReviews, createBookReview, updateBookReview } = useBookReviews();
@@ -28,6 +31,16 @@ export default function RecommendationsPage() {
       return handleError(error);
     }
   }, [handleError]);
+
+  useEffect(() => {
+    const recommendationsWithReviews = recommendations.map((recommendation) => {
+      const bookReview = bookReviews.find(
+        (review) => review.bookId === recommendation.book.id,
+      );
+      return { ...recommendation, bookReview };
+    });
+    setRecommendationsWithReviews(recommendationsWithReviews);
+  }, [bookReviews, recommendations]);
 
   return (
     <div>
@@ -45,46 +58,27 @@ export default function RecommendationsPage() {
       ) : (
         <div className="mt-10 grid gap-8">
           <Separator />
-          {recommendations.map((recommendation) => {
-            const bookReview = bookReviews.find(
-              (review) => review.bookId === recommendation.book.id,
-            );
+          {recommendationsWithReviews.map((recommendation) => {
             return (
-              <div key={recommendation.id} className="grid gap-8">
-                <div className="grid gap-4">
-                  <BookRecommendation recommendation={recommendation} />
-                  <div className="grid gap-1">
-                    <p className="text-center italic text-sm">
-                      Read this before? Provide a review to help improve the
-                      recommendations.
-                    </p>
-                    <div className="flex justify-center gap-2">
-                      <div>
-                        <span className="font-bold">Your book rating:</span>
-                      </div>
-                      <ReviewStars
-                        onSetScore={async (score) => {
-                          if (bookReview) {
-                            await updateBookReview({
-                              id: bookReview.id,
-                              updates: { rating: score },
-                            });
-                          } else {
-                            await createBookReview({
-                              bookReview: {
-                                bookId: recommendation.book.id,
-                                rating: score,
-                              },
-                            });
-                          }
-                        }}
-                        score={bookReview?.rating}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <Separator />
-              </div>
+              <BookRecommendationWithReview
+                key={recommendation.id}
+                onSetRating={async (rating: number) => {
+                  if (recommendation.bookReview) {
+                    await updateBookReview({
+                      id: recommendation.bookReview.id,
+                      updates: { rating },
+                    });
+                  } else {
+                    await createBookReview({
+                      bookReview: {
+                        bookId: recommendation.book.id,
+                        rating,
+                      },
+                    });
+                  }
+                }}
+                recommendationWithReview={recommendation}
+              />
             );
           })}
           <div className="flex mt-4 w-full justify-center">
