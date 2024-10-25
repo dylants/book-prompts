@@ -8,8 +8,8 @@ import RecommendBooksPrompt from '@/lib/prompts/RecommendBooksPrompt';
 import { googleBookSearch } from '@/lib/search/google.search';
 import { buildBookFromSearchResult } from '@/lib/search/search';
 import AIBookRecommendation from '@/types/AIBookRecommendation';
-import BookPrompt from '@/types/BookPrompt';
 import BookPromptHydrated from '@/types/BookPromptHydrated';
+import { BookPromptTable } from '@/types/BookPromptTable';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
 import Session from '@/types/Session';
 import { NextRequest, NextResponse } from 'next/server';
@@ -18,7 +18,7 @@ import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 
 export type GetResponseBody = {
-  data: BookPrompt[];
+  data: BookPromptTable[];
 };
 
 export async function GET(
@@ -28,10 +28,25 @@ export async function GET(
     const session = await authMiddleware(req);
 
     const bookPrompts = await prisma.bookPrompt.findMany({
+      include: {
+        promptGenre: {
+          select: {
+            displayName: true,
+            id: true,
+          },
+        },
+        promptSubgenre: {
+          select: {
+            displayName: true,
+            id: true,
+          },
+        },
+      },
       omit: {
         aiModel: true,
         userId: true,
       },
+      orderBy: { createdAt: 'desc' },
       where: { userId: session.user.id },
     });
 
