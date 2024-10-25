@@ -15,11 +15,13 @@ export type BookPromptFormInput = {
 export type BookPromptComponentProps = {
   bookPrompt?: BookPrompt;
   onRecommend: SubmitHandler<BookPromptFormInput>;
+  onReturn?: () => void;
 };
 
 export default function BookPromptComponent({
   bookPrompt,
   onRecommend,
+  onReturn,
 }: BookPromptComponentProps) {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const {
@@ -65,7 +67,13 @@ export default function BookPromptComponent({
                   {...register('promptText', { required: true })}
                 />
               </motion.div>
-              <motion.div className="flex justify-end gap-2">
+              <motion.div
+                layout
+                initial={{ x: 325 }}
+                animate={{ x: 0 }}
+                transition={{ duration: 0.3 }}
+                className="flex justify-end gap-2"
+              >
                 {isEditMode && (
                   <Button
                     onClick={() => {
@@ -97,9 +105,22 @@ export default function BookPromptComponent({
                 </span>{' '}
                 <span className="font-bold">{bookPrompt?.promptText}</span>
               </motion.p>
-              <motion.div className="flex justify-end">
-                <Button variant="outline" onClick={() => setIsEditMode(true)}>
+              <motion.div
+                layout
+                initial={{ x: -325 }}
+                animate={{ x: 0 }}
+                transition={{ bounce: 0, duration: 0.3 }}
+                className="flex justify-end gap-2"
+              >
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={() => setIsEditMode(true)}
+                >
                   Update Prompt
+                </Button>
+                <Button variant="default" type="button" onClick={onReturn}>
+                  Return Home
                 </Button>
               </motion.div>
             </motion.div>
