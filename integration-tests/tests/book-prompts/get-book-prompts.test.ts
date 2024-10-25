@@ -29,14 +29,16 @@ describe('/api/protected/book-prompts GET Integration Test', () => {
       const { data: bookPrompts } = (await response.json()) as GetResponseBody;
 
       expect(bookPrompts).toHaveLength(2);
-      expect(bookPrompts).toEqual([
-        expect.objectContaining({
-          promptText: 'feature witches',
-        }),
-        expect.objectContaining({
-          promptText: 'include gothic themes',
-        }),
-      ]);
+      expect(bookPrompts).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            promptText: 'feature witches',
+          }),
+          expect.objectContaining({
+            promptText: 'include gothic themes',
+          }),
+        ]),
+      );
     });
   });
 

@@ -1,5 +1,7 @@
+import { fakeGenre } from '@/lib/fakes/genre.fake';
 import { fakeBookRecommendationHydrated } from '@/lib/fakes/recommendation.fake';
 import BookPromptHydrated from '@/types/BookPromptHydrated';
+import { BookPromptTable } from '@/types/BookPromptTable';
 import { faker } from '@faker-js/faker';
 import { BookPrompt } from '@prisma/client';
 
@@ -20,5 +22,13 @@ export function fakeBookPromptHydrated(): BookPromptHydrated {
   return {
     ...fakeBookPrompt(),
     bookRecommendations: [fakeBookRecommendationHydrated()],
+  };
+}
+
+export function fakeBookPromptTable(): BookPromptTable {
+  return {
+    ...fakeBookPrompt(),
+    promptGenre: fakeGenre(),
+    promptSubgenre: fakeGenre(),
   };
 }

@@ -4,6 +4,7 @@ import UnauthorizedError from '@/lib/errors/UnauthorizedError';
 import Auth from '@/types/Auth';
 import BookPrompt from '@/types/BookPrompt';
 import BookPromptHydrated from '@/types/BookPromptHydrated';
+import { BookPromptTable } from '@/types/BookPromptTable';
 import BookReview from '@/types/BookReview';
 import BookReviewCreateInput from '@/types/BookReviewCreateInput';
 import BookReviewUpdateInput from '@/types/BookReviewUpdateInput';
@@ -61,8 +62,8 @@ export async function deleteAuth(): Promise<Auth> {
 // ********************** BOOK PROMPTS *************************
 // *************************************************************
 
-export async function getBookPrompts(): Promise<BookPrompt[]> {
-  return api<BookPrompt[]>('/api/protected/book-prompts');
+export async function getBookPrompts(): Promise<BookPromptTable[]> {
+  return api<BookPromptTable[]>('/api/protected/book-prompts');
 }
 
 export async function postBookPrompt(
