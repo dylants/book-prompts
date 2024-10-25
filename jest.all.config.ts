@@ -5,9 +5,10 @@ const extendedConfig: Config = {
   ...config,
   collectCoverageFrom: [
     'src/**/*.ts*',
-    // exclude everything but api from /app
+    // this is meant to exclude all the pages/layouts, but not APIs and contexts
     '!src/app/**',
     'src/app/api/**',
+    'src/app/**/*Context*',
     // exclude all these directories and everything below them
     '!src/config/**',
     '!src/lib/fakes/**',
