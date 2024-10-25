@@ -1,3 +1,5 @@
+import { fakeBookRecommendationHydrated } from '@/lib/fakes/recommendation.fake';
+import BookPromptHydrated from '@/types/BookPromptHydrated';
 import { faker } from '@faker-js/faker';
 import { BookPrompt } from '@prisma/client';
 
@@ -11,5 +13,12 @@ export function fakeBookPrompt(): BookPrompt {
     promptText: faker.lorem.sentence(),
     updatedAt: faker.date.past(),
     userId: faker.number.int(),
+  };
+}
+
+export function fakeBookPromptHydrated(): BookPromptHydrated {
+  return {
+    ...fakeBookPrompt(),
+    bookRecommendations: [fakeBookRecommendationHydrated()],
   };
 }
