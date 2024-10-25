@@ -75,6 +75,7 @@ export default function RecommendationPage({
         <BookPromptComponent
           bookPrompt={bookPrompt}
           onRecommend={onRecommend}
+          onReturn={() => router.push('/')}
         />
         <div className="grid gap-8">
           <Separator />

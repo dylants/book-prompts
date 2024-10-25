@@ -1,6 +1,7 @@
 'use client';
 
 import ReviewStar from '@/components/ReviewStar';
+import { motion } from 'framer-motion';
 import _ from 'lodash';
 import { useState } from 'react';
 
@@ -27,7 +28,7 @@ export default function ReviewStars({ score, onSetScore }: ReviewStarsProps) {
       isHovering && hoverStarNumber! < currentStarNum && shouldBeFilled;
 
     return (
-      <div
+      <motion.div
         key={currentStarNum}
         onMouseEnter={() => {
           setHoverStarNumber(currentStarNum);
@@ -35,6 +36,8 @@ export default function ReviewStars({ score, onSetScore }: ReviewStarsProps) {
         onMouseLeave={() => {
           setHoverStarNumber(undefined);
         }}
+        whileHover={{ scale: 1.2 }}
+        whileTap={{ scale: 0.8 }}
       >
         <ReviewStar
           filled={filled}
@@ -47,7 +50,7 @@ export default function ReviewStars({ score, onSetScore }: ReviewStarsProps) {
             }
           }}
         />
-      </div>
+      </motion.div>
     );
   });
 
