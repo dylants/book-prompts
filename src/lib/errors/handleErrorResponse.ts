@@ -1,4 +1,5 @@
 import BadRequestError from '@/lib/errors/BadRequestError';
+import NotFoundError from '@/lib/errors/NotFoundError';
 import UnauthorizedError from '@/lib/errors/UnauthorizedError';
 import logger from '@/lib/logger';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
@@ -9,6 +10,8 @@ export default function handleErrorResponse(
 ): NextResponse<NextResponseErrorBody> {
   if (error instanceof BadRequestError) {
     return NextResponse.json({ error: error.message }, { status: 400 });
+  } else if (error instanceof NotFoundError) {
+    return NextResponse.json({ error: error.message }, { status: 404 });
   } else if (error instanceof UnauthorizedError) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   } else {

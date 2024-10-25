@@ -28,6 +28,19 @@ const bookPromptFixtures: Prisma.BookPromptCreateInput[] = [
     promptText: 'include gothic themes',
     user: { connect: { id: 1 } },
   },
+  {
+    aiModel: 'gpt-4o',
+    bookRecommendations: {
+      createMany: {
+        data: [
+          { bookId: 5, confidenceScore: 0.75, explanation: 'Explanation 1' },
+          { bookId: 6, confidenceScore: 0.5, explanation: 'Explanation 2' },
+        ],
+      },
+    },
+    promptText: 'features ghosts',
+    user: { connect: { id: 3 } },
+  },
 ];
 
 export default bookPromptFixtures;

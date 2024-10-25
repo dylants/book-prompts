@@ -1,5 +1,6 @@
 import BadRequestError from '@/lib/errors/BadRequestError';
 import handleErrorResponse from '@/lib/errors/handleErrorResponse';
+import NotFoundError from '@/lib/errors/NotFoundError';
 import UnauthorizedError from '@/lib/errors/UnauthorizedError';
 
 describe('handleErrorResponse', () => {
@@ -11,6 +12,12 @@ describe('handleErrorResponse', () => {
     expect(await response.json()).toEqual({
       error: 'you did the wrong thing!',
     });
+  });
+
+  it('should return 404 for not found', async () => {
+    const response = handleErrorResponse(new NotFoundError('Book not found'));
+    expect(response.status).toEqual(404);
+    expect(await response.json()).toEqual({ error: 'Book not found' });
   });
 
   it('should return 401 for unauthorized', async () => {
