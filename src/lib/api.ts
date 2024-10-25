@@ -77,6 +77,14 @@ export async function postBookPrompt(
   });
 }
 
+export async function getBookPrompt({
+  bookPromptId,
+}: {
+  bookPromptId: BookPrompt['id'];
+}): Promise<BookPromptHydrated> {
+  return api<BookPromptHydrated>(`/api/protected/book-prompts/${bookPromptId}`);
+}
+
 // *************************************************************
 // ********************** BOOK REVIEWS *************************
 // *************************************************************
