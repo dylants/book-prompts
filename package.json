@@ -25,6 +25,8 @@
     "log-prompts": "ts-node -r tsconfig-paths/register --compiler-options '{\"module\":\"CommonJS\"}' ./src/scripts/log-prompts.ts",
     "prod:build": "export TAG=$(git rev-parse --short HEAD); docker buildx bake -f docker-bake.hcl",
     "prod:db:migrate": "dotenv -c production -- prisma migrate deploy",
+    "prod:down": "dotenv -c production -- docker compose -f docker-compose.prod.yml down",
+    "prod:up": "dotenv -c production -- docker compose -f docker-compose.prod.yml up",
     "run-prompt": "ts-node -r tsconfig-paths/register --compiler-options '{\"module\":\"CommonJS\"}' ./src/scripts/run-prompt.ts",
     "start": "next start",
     "storybook": "storybook dev -p 6006",

@@ -68,7 +68,9 @@ Reset the database, re-run migrations, and re-seed the database:
 npm run db:reset
 ```
 
-## Docker
+## Run in production environment (Docker)
+
+This application is designed to run in production using Docker. The following steps outline the process.
 
 ### Build Docker Image
 
@@ -112,9 +114,16 @@ Pull the image:
 docker pull ghcr.io/dylants/book-prompts:<tag>
 ```
 
-Start the docker container:
+Define the environment variables in the `.env.production` file. See the [docker-compose.prod.yml](docker-compose.prod.yml) file for specifics.
+
+Start the app:
 ```
-docker run -p 3000:3000 -d ghcr.io/dylants/book-prompts:<tag>
+npm run prod:up
+```
+
+Stop the app:
+```
+npm run prod:down
 ```
 
 ## Scripts
