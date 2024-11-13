@@ -186,9 +186,7 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
         expect(userPrompt).toEqual(
           expect.stringContaining(`
 - Recommend and return only 5 books
-- The books should all ${PROMPT_TEXT}.
-- The books should be all in the Romantic genre.
-- The books should be all in the Comedy subgenre.
+- Recommend books that ${PROMPT_TEXT}.
 `),
         );
         expect(userPrompt).toEqual(

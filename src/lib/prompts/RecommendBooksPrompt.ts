@@ -20,12 +20,17 @@ export default class RecommendBooksPrompt
   implements Prompt<AIBookRecommendation[]>
 {
   private promptText: string;
+  private promptGenre: string | null;
+  private promptSubgenre: string | null;
   private user: User;
 
   constructor({ promptText, user }: RecommendBooksPromptProps) {
     super();
 
     this.promptText = promptText;
+    // TODO pull these from the UI
+    this.promptGenre = null;
+    this.promptSubgenre = null;
     this.user = user;
   }
 
@@ -55,6 +60,14 @@ titles, just to find that perfect book recommendation.
       where: { userId: this.user.id },
     });
 
+    const promptText = `- Recommend books that ${this.promptText}.`;
+    const promptGenre = this.promptGenre
+      ? `- The books must all be in the ${this.promptGenre} genre.`
+      : '';
+    const promptSubgenre = this.promptSubgenre
+      ? `- The books must all be in the ${this.promptSubgenre} subgenre.`
+      : '';
+
     // OBJECTIVE:
     // - Recommend 5 books with a Royal word in the title (such as "crown", "king", "court", etc).
     // - Recommend 5 books featuring vampires
@@ -63,9 +76,9 @@ titles, just to find that perfect book recommendation.
     return Promise.resolve(`
 OBJECTIVE:
 - Recommend and return only 5 books
-- The books should all ${this.promptText}.
-- The books should be all in the Romantic genre.
-- The books should be all in the Comedy subgenre.
+${promptText}
+${promptGenre}
+${promptSubgenre}
 
 PROCESS:
 - Think through the OBJECTIVE before coming up with a solution.
@@ -73,9 +86,12 @@ PROCESS:
 - Outline a process for a solution, and document that process.
 - Review and execute that process to arrive at a solution which includes a list
 of twice as many books than necessary to satisfy the OBJECTIVE.
+- Make sure ALL books in the list satisfy the OBJECTIVE. If any do not, remove them.
 - Review the list, and determine if there's any improvements that could be made,
 and document those improvements.
 - Review and execute those improvements to come up with an improved list.
+- Make sure ALL books in this improved list satisfy the OBJECTIVE. If any do not,
+remove them.
 - Sort the books in descending order based on how closely they match the OBJECTIVE.
 - Select the top books from that sorted list that match the OBJECTIVE.
 - Submit the solution, limiting the recommendations to the amount stated in OBJECTIVE.
@@ -85,9 +101,10 @@ CONSIDERATIONS:
 - Each previously read book has a 1-5 rating from me, 1 being lowest rating,
 and 5 being highest rating.
 - Do not recommend books that have been previously read, but instead use these
-books to predict books that I would enjoy.
-- Emphasize books which are highly rated online.
-- Emphasize books which have more reviews online.
+books to predict books that I would enjoy, and which satisfy the OBJECTIVE.
+- Emphasize books which are highly reviewed or highly rated online.
+- Emphasize books which have more reviews or more ratings online.
+- Emphasize books which appear to be more popular online.
 
 INPUT:
 - Previously read books: ${JSON.stringify(books)}

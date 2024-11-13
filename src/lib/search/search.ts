@@ -23,7 +23,9 @@ export function buildBookFromSearchResult({
     _.xor(authors, searchResult?.authors).length === 0;
   logger.trace({ authorMatches }, 'authorMatches');
 
-  const titleMatches: boolean = !!searchResult?.title?.startsWith(title);
+  const titleMatches: boolean =
+    !!searchResult?.title?.startsWith(title) ||
+    !!(searchResult?.title && title.startsWith(searchResult.title));
   logger.trace({ titleMatches }, 'titleMatches');
 
   const confirmedExists: boolean = isbnExists && authorMatches && titleMatches;

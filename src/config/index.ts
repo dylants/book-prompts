@@ -27,7 +27,7 @@ const config: Config = {
     level: 'trace',
   },
   openai: {
-    apiKey: process.env.OPENAI_API_KEY!,
+    apiKey: process.env.OPENAI_API_KEY as string,
     maxTokens: process.env.OPENAI_MAX_TOKENS
       ? Number(process.env.OPENAI_MAX_TOKENS)
       : 4096,

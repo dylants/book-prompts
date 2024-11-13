@@ -161,6 +161,7 @@ export async function POST(
             bookId: true,
             bookPromptId: true,
           },
+          orderBy: { confidenceScore: 'desc' },
         },
       },
       omit: {
