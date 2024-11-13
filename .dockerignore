@@ -1,0 +1,33 @@
+# docker files
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# node dependencies
+node_modules
+npm-debug.log
+
+# next files
+.next
+next-env.d.ts
+
+# git files
+.git
+.gitignore
+
+# env files
+.env.local
+.env.test
+.env.development
+
+# project files
+.github
+.storybook
+.swc
+.vscode
+README.md
+integration-tests
+test-setup
+**/*.test.ts
+**/*.test.tsx
+tsconfig.tsbuildinfo

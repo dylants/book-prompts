@@ -1,12 +1,10 @@
-import { execSync } from 'child_process';
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
     dirs: ['integration-tests', 'prisma', 'src', 'test-setup'],
   },
-  generateBuildId: async () => {
-    return execSync('git rev-parse --short HEAD').toString().trim();
+  generateBuildId: () => {
+    return process.env.DOCKER_TAG;
   },
   images: {
     remotePatterns: [
@@ -20,6 +18,7 @@ const nextConfig = {
       },
     ],
   },
+  output: 'standalone',
 };
 
 export default nextConfig;
