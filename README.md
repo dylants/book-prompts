@@ -30,7 +30,7 @@ The database schema is stored in the [schema.prisma](prisma/schema.prisma) file.
 
 ### Setup Postgres
 
-Install PostgreSQL and populate the `.env` file with the correct `DATABASE_URL` string to connect to PostgreSQL.
+Install PostgreSQL and populate the `.env.*` files with the correct `DATABASE_URL` string to connect to PostgreSQL.
 
 The `DATABASE_URL` should be populated as such:
 
