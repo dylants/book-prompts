@@ -28,6 +28,7 @@ export async function GET(
             bookId: true,
             bookPromptId: true,
           },
+          orderBy: { confidenceScore: 'desc' },
         },
       },
       omit: {
