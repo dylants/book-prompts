@@ -23,6 +23,8 @@
     "eslint": "next lint",
     "lint": "npm run eslint && npm run check-types",
     "log-prompts": "ts-node -r tsconfig-paths/register --compiler-options '{\"module\":\"CommonJS\"}' ./src/scripts/log-prompts.ts",
+    "prod:build": "export TAG=$(git rev-parse --short HEAD); docker buildx bake -f docker-bake.hcl",
+    "prod:db:migrate": "dotenv -c production -- prisma migrate deploy",
     "run-prompt": "ts-node -r tsconfig-paths/register --compiler-options '{\"module\":\"CommonJS\"}' ./src/scripts/run-prompt.ts",
     "start": "next start",
     "storybook": "storybook dev -p 6006",

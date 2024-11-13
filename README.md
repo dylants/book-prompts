@@ -10,12 +10,10 @@ Use [nvm](https://github.com/nvm-sh/nvm) to use the project's Node version
 nvm use
 ```
 
-_This app uses [bun](https://bun.sh/) for dependency management._
-
 Install dependencies
 
 ```
-bun install
+npm install
 ```
 
 ## Config
@@ -68,6 +66,55 @@ Reset the database, re-run migrations, and re-seed the database:
 
 ```
 npm run db:reset
+```
+
+## Docker
+
+### Build Docker Image
+
+To build the Docker image:
+
+```
+npm run prod:build
+```
+
+Login to Github Container Registry with Personal Access Token (requires write)
+```
+docker login ghcr.io -u <username>
+<enter token>
+```
+
+Push the tagged image to GitHub Container Registry
+```
+docker push ghcr.io/dylants/book-prompts:<tag>
+```
+
+### Run Migrations
+
+Run the migrations on the production database:
+
+```
+npm run prod:db:migrate
+```
+
+### Run Docker Container
+
+On production machine:
+
+Login to Github Container Registry with Personal Access Token (requires read)
+```
+docker login ghcr.io -u <username>
+<enter token>
+```
+
+Pull the image:
+```
+docker pull ghcr.io/dylants/book-prompts:<tag>
+```
+
+Start the docker container:
+```
+docker run -p 3000:3000 -d ghcr.io/dylants/book-prompts:<tag>
 ```
 
 ## Scripts
