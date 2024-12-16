@@ -33,4 +33,4 @@ jobs:
       - name: Migrate and seed the test database
         run: npm run ci:db:reset
       - name: Run integration tests
-        run: npm run ci:test
+        run: npm run test:ci

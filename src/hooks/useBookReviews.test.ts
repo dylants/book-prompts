@@ -10,6 +10,7 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
 jest.mock('next/navigation', () => ({
+  usePathname: () => '/path',
   useRouter: () => {},
 }));
 

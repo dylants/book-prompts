@@ -209,13 +209,13 @@ npm run ci:db:reset
 - Run the tests
 
 ```
-npm run ci:test
+npm run test:ci
 ```
 
 To run tests in watch mode:
 
 ```
-npm run ci:test:watch
+npm run test:ci:watch
 ```
 
 When tests are complete, you can shutdown the test database:
