@@ -4,6 +4,7 @@ import BookPromptComponent, {
   BookPromptFormInput,
 } from '@/components/book-prompt/BookPromptComponent';
 import BookRecommendationWithReview from '@/components/recommendations/BookRecommendationWithReview';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { Separator } from '@/components/ui/separator';
 import useBookPromptContext from '@/hooks/useBookPromptContext';
 import useBookReviews from '@/hooks/useBookReviews';
@@ -59,8 +60,8 @@ export default function RecommendationPage({
 
   if (!bookPrompt) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center">
-        Loading...
+      <div className="flex h-screen w-full items-center justify-center">
+        <LoadingSpinner />
       </div>
     );
   }

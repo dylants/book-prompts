@@ -3,7 +3,8 @@ import logger from '@/lib/logger';
 import openai from '@/lib/openai';
 import OpenAI from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
-import { ZodType } from 'zod';
+import { ParsedChatCompletion } from 'openai/resources/beta/chat/completions.mjs';
+import { TypeOf, ZodType } from 'zod';
 
 class AIService {
   private maxTokens: number;
@@ -25,7 +26,7 @@ class AIService {
   }: {
     messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[];
     schema: ZodInput;
-  }) {
+  }): Promise<ParsedChatCompletion<TypeOf<ZodInput>>> {
     logger.trace(
       { maxTokens: this.maxTokens, model: this.model },
       'createMessage',

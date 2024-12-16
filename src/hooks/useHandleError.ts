@@ -17,8 +17,7 @@ export default function useHandleError(): UseHandleErrorResult {
       if (error instanceof UnauthorizedError) {
         return router.push(buildLoginErrorUrl(LoginError.UNAUTHORIZED));
       } else {
-        // TODO what to do here?
-        return router.push('/500');
+        return router.push('/error');
       }
     },
     [buildLoginErrorUrl, router],

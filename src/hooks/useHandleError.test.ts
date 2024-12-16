@@ -8,6 +8,7 @@ import { renderHook } from '@testing-library/react';
 
 const mockPush = jest.fn();
 jest.mock('next/navigation', () => ({
+  usePathname: () => '/path',
   useRouter: () => ({ push: mockPush }),
 }));
 
@@ -25,7 +26,9 @@ describe('useHandleError', () => {
 
     handleError(new UnauthorizedError());
 
-    expect(mockPush).toHaveBeenCalledWith('/login?login-error=unauthorized');
+    expect(mockPush).toHaveBeenCalledWith(
+      '/login?login-error=unauthorized&return-url=/path',
+    );
   });
 
   it('route to error page on Error', () => {
@@ -37,6 +40,6 @@ describe('useHandleError', () => {
 
     handleError(new Error());
 
-    expect(mockPush).toHaveBeenCalledWith('/500');
+    expect(mockPush).toHaveBeenCalledWith('/error');
   });
 });

@@ -15,6 +15,7 @@ import { setupServer } from 'msw/node';
 import { ReactNode } from 'react';
 
 jest.mock('next/navigation', () => ({
+  usePathname: () => '/path',
   useRouter: () => {},
 }));
 

@@ -8,14 +8,14 @@ const meta: Meta<typeof LoadingSpinner> = {
 export default meta;
 type Story = StoryObj<typeof LoadingSpinner>;
 
+export const Small: Story = {
+  args: { size: 'sm' },
+};
+
 export const Default: Story = {
   args: {},
 };
 
-export const large: Story = {
+export const Large: Story = {
   args: { size: 'lg' },
-};
-
-export const small: Story = {
-  args: { size: 'sm' },
 };
