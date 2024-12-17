@@ -10,13 +10,13 @@ const authCookieName = projectConfig.auth.cookieName;
 export async function authMiddleware(request: NextRequest): Promise<Session> {
   const cookie = request.cookies.get(authCookieName);
   logger.trace({ cookie }, 'authMiddleware cookie');
-  const uuid = cookie?.value;
-  if (!uuid) {
+  const userId = cookie?.value;
+  if (!userId) {
     throw new UnauthorizedError();
   }
 
   const user = await prisma.user.findFirst({
-    where: { uuid },
+    where: { id: userId },
   });
   if (!user) {
     throw new UnauthorizedError();

@@ -30,8 +30,8 @@ export default function RecommendationPage({
   // either load or redirect to the correct page (to load)
   useEffect(() => {
     if (!bookPrompt) {
-      loadBookPrompt(Number(bookPromptId));
-    } else if (bookPrompt.id !== Number(bookPromptId)) {
+      loadBookPrompt(bookPromptId);
+    } else if (bookPrompt.id !== bookPromptId) {
       router.replace(`/recommendations/${bookPrompt.id}`);
     }
   }, [bookPrompt, bookPromptId, loadBookPrompt, router]);

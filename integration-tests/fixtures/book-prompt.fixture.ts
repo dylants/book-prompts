@@ -6,40 +6,40 @@ const bookPromptFixtures: Prisma.BookPromptCreateInput[] = [
     bookRecommendations: {
       createMany: {
         data: [
-          { bookId: 1, confidenceScore: 0.75, explanation: 'Explanation 1' },
-          { bookId: 2, confidenceScore: 0.5, explanation: 'Explanation 2' },
-          { bookId: 7, confidenceScore: 0.25, explanation: 'Explanation 3' },
+          { bookId: 'one', confidenceScore: 0.75, explanation: 'Text 1' },
+          { bookId: 'two', confidenceScore: 0.5, explanation: 'Text 2' },
+          { bookId: 'seven', confidenceScore: 0.25, explanation: 'Text 3' },
         ],
       },
     },
     promptText: 'feature witches',
-    user: { connect: { id: 1 } },
+    user: { connect: { id: 'user-with-reviews' } },
   },
   {
     aiModel: 'gpt-4o',
     bookRecommendations: {
       createMany: {
         data: [
-          { bookId: 4, confidenceScore: 0.75, explanation: 'Explanation 1' },
-          { bookId: 5, confidenceScore: 0.5, explanation: 'Explanation 2' },
+          { bookId: 'four', confidenceScore: 0.75, explanation: 'Text 1' },
+          { bookId: 'five', confidenceScore: 0.5, explanation: 'Text 2' },
         ],
       },
     },
     promptText: 'include gothic themes',
-    user: { connect: { id: 1 } },
+    user: { connect: { id: 'user-with-reviews' } },
   },
   {
     aiModel: 'gpt-4o',
     bookRecommendations: {
       createMany: {
         data: [
-          { bookId: 5, confidenceScore: 0.75, explanation: 'Explanation 1' },
-          { bookId: 6, confidenceScore: 0.5, explanation: 'Explanation 2' },
+          { bookId: 'five', confidenceScore: 0.75, explanation: 'Text 1' },
+          { bookId: 'six', confidenceScore: 0.5, explanation: 'Text 2' },
         ],
       },
     },
     promptText: 'features ghosts',
-    user: { connect: { id: 3 } },
+    user: { connect: { id: 'user-with-one-review' } },
   },
 ];
 

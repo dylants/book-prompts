@@ -1,14 +1,14 @@
 import { isbnHash } from '@/lib/hash';
 import { Book, Prisma } from '@prisma/client';
 
-const books: Pick<Book, 'authors' | 'title'>[] = [
-  { authors: ['Jacob Schiller'], title: 'Sunday' },
-  { authors: ['Troy Hayes'], title: 'Roses Are Red' },
-  { authors: ['Kendra Ortiz'], title: 'Look Away' },
-  { authors: ['Kristie Boyer'], title: 'My Story' },
-  { authors: ['Troy Ray', 'Megan Jacobs'], title: 'Buttons & Bows' },
-  { authors: ['John Doe'], title: 'The End' },
-  { authors: ['Jane Doe'], title: 'The Beginning' },
+const books: Pick<Book, 'authors' | 'id' | 'title'>[] = [
+  { authors: ['Jacob Schiller'], id: 'one', title: 'Sunday' },
+  { authors: ['Troy Hayes'], id: 'two', title: 'Roses Are Red' },
+  { authors: ['Kendra Ortiz'], id: 'three', title: 'Look Away' },
+  { authors: ['Kristie Boyer'], id: 'four', title: 'My Story' },
+  { authors: ['Troy Ray', 'Megan Jacobs'], id: 'five', title: 'Buttons' },
+  { authors: ['John Doe'], id: 'six', title: 'The End' },
+  { authors: ['Jane Doe'], id: 'seven', title: 'The Beginning' },
 ];
 
 const bookFixtures: Prisma.BookCreateManyInput[] = books.map((book) => ({

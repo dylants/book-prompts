@@ -9,5 +9,5 @@ export function establishAuth({
   request: NextRequest;
   user: User;
 }): void {
-  request.cookies.set(config.auth.cookieName, user.uuid);
+  request.cookies.set(config.auth.cookieName, user.id);
 }

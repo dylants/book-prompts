@@ -16,7 +16,7 @@ describe('GET /auth API Integration Test', () => {
 
   it('should return logged in with valid auth', async () => {
     const request = new NextRequest(url);
-    request.cookies.set(projectConfig.auth.cookieName, user.uuid);
+    request.cookies.set(projectConfig.auth.cookieName, user.id);
 
     const response = await GET(request);
     expect(response.status).toEqual(200);

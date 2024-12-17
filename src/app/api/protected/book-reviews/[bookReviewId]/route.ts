@@ -54,7 +54,7 @@ export async function PUT(
       omit: {
         userId: true,
       },
-      where: { id: Number(bookReviewId), userId: session.user.id },
+      where: { id: bookReviewId, userId: session.user.id },
     });
 
     return NextResponse.json({ data: bookReview });

@@ -55,7 +55,7 @@ describe('useBookPromptContext', () => {
         const bookPrompt = await req.json();
         return res(ctx.json({ data: bookPrompt }));
       }),
-      rest.get('/api/protected/book-prompts/1', (_, res, ctx) => {
+      rest.get('/api/protected/book-prompts/abc', (_, res, ctx) => {
         return res(ctx.json({ data: bookPromptHydrated }));
       }),
     );
@@ -99,7 +99,7 @@ describe('useBookPromptContext', () => {
       const { loadBookPrompt } = result.current;
 
       await act(async () => {
-        await loadBookPrompt(1);
+        await loadBookPrompt('abc');
       });
 
       expect(result.current.bookPrompt).toEqual(
