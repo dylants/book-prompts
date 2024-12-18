@@ -17,7 +17,7 @@ jest.mock('next/navigation', () => ({
 describe('useBookReviews', () => {
   const bookReview = {
     ...fakeBookReview(),
-    id: -1,
+    id: 'abc',
     rating: 2,
   };
   const BOOK_REVIEWS: BookReview[] = [
@@ -34,7 +34,7 @@ describe('useBookReviews', () => {
       const postedReview = await req.json();
       return res(ctx.json({ data: postedReview }));
     }),
-    rest.put('/api/protected/book-reviews/-1', async (req, res, ctx) => {
+    rest.put('/api/protected/book-reviews/abc', async (req, res, ctx) => {
       const updates = await req.json();
       return res(
         ctx.json({
@@ -75,7 +75,7 @@ describe('useBookReviews', () => {
     const { createBookReview } = result.current;
     await act(async () => {
       await createBookReview({
-        bookReview: { bookId: 999, rating: 5 },
+        bookReview: { bookId: 'xyz', rating: 5 },
       });
     });
 
@@ -83,7 +83,7 @@ describe('useBookReviews', () => {
     expect(result.current.bookReviews).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          bookId: 999,
+          bookId: 'xyz',
           rating: 5,
         }),
       ]),
@@ -100,7 +100,7 @@ describe('useBookReviews', () => {
     expect(result.current.bookReviews).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          id: -1,
+          id: 'abc',
           rating: 2,
         }),
       ]),
@@ -109,7 +109,7 @@ describe('useBookReviews', () => {
     const { updateBookReview } = result.current;
     await act(async () => {
       await updateBookReview({
-        id: -1,
+        id: 'abc',
         updates: { rating: 5 },
       });
     });
@@ -117,7 +117,7 @@ describe('useBookReviews', () => {
     expect(result.current.bookReviews).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          id: -1,
+          id: 'abc',
           rating: 5,
         }),
       ]),

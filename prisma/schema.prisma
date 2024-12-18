@@ -12,20 +12,19 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid(2))
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
   email    String @unique
   password String
-  uuid     String @default(cuid())
 
   bookReviews BookReview[]
   bookPrompts BookPrompt[]
 }
 
 model Book {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid(2))
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
@@ -42,43 +41,43 @@ model Book {
 }
 
 model BookReview {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid(2))
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
   /// The user's rating of the book (1-5)
   rating Int // includes constraint bounding from 1-5, inclusive
 
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 
-  book   Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  bookId Int
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId String
 }
 
 model BookPrompt {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid(2))
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
-  /// The user defined unique prompt text about the book recommendations
+  /// The user defined prompt text about the book recommendations
   promptText       String
-  promptGenreId    Int?
-  promptGenre      Genre? @relation("genreBookPrompts", fields: [promptGenreId], references: [id])
-  promptSubgenreId Int?
-  promptSubgenre   Genre? @relation("subgenreBookPrompts", fields: [promptSubgenreId], references: [id])
+  promptGenreId    String?
+  promptGenre      Genre?  @relation("genreBookPrompts", fields: [promptGenreId], references: [id])
+  promptSubgenreId String?
+  promptSubgenre   Genre?  @relation("subgenreBookPrompts", fields: [promptSubgenreId], references: [id])
 
   /// For record keeping, the AI model which generated this recommendation
   aiModel String
 
   bookRecommendations BookRecommendation[]
 
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 }
 
 model BookRecommendation {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid(2))
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
@@ -88,14 +87,14 @@ model BookRecommendation {
   explanation     String
 
   bookPrompt   BookPrompt @relation(fields: [bookPromptId], references: [id], onDelete: Cascade)
-  bookPromptId Int
+  bookPromptId String
 
-  book   Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  bookId Int
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId String
 }
 
 model Genre {
-  id        Int       @id @default(autoincrement())
+  id        String    @id @default(cuid(2))
   createdAt DateTime  @default(now()) @db.Timestamptz(3)
   updatedAt DateTime? @updatedAt @db.Timestamptz(3)
 

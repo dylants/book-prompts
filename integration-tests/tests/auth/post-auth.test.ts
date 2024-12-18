@@ -61,7 +61,7 @@ describe('/auth POST API', () => {
 
     expect(mockSetCookies).toHaveBeenCalledWith(
       projectConfig.auth.cookieName,
-      user.uuid,
+      user.id,
     );
   });
 

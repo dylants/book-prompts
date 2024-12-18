@@ -73,7 +73,7 @@ async function createBookRecommendations({
   bookPromptId,
 }: {
   aiRecommendations: AIBookRecommendation[];
-  bookPromptId: number;
+  bookPromptId: string;
 }): Promise<void[]> {
   return Promise.all(
     aiRecommendations.map(async (recommendation) => {

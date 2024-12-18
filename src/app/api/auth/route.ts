@@ -25,18 +25,18 @@ export async function GET(
   logger.trace({}, `${request.nextUrl.pathname} ${request.method}`);
 
   try {
-    const uuid = request.cookies.get(authCookieName)?.value;
+    const userId = request.cookies.get(authCookieName)?.value;
 
-    if (!uuid) {
-      logger.trace({}, 'No uuid in auth cookie, returning not logged in');
+    if (!userId) {
+      logger.trace({}, 'No userId in auth cookie, returning not logged in');
       return NextResponse.json({
         data: { isLoggedIn: false },
       });
     }
 
-    const user = await prisma.user.findFirst({ where: { uuid } });
+    const user = await prisma.user.findFirst({ where: { id: userId } });
     if (!user) {
-      logger.trace({ uuid }, 'No user for uuid, returning not logged in');
+      logger.trace({ userId }, 'No user for userId, returning not logged in');
       return NextResponse.json({
         data: { isLoggedIn: false },
       });
@@ -88,8 +88,8 @@ export async function POST(
     const user = await prisma.user.findFirst({
       select: {
         email: true,
+        id: true,
         password: true,
-        uuid: true,
       },
       where: { email },
     });
@@ -109,7 +109,7 @@ export async function POST(
 
     logger.trace({ email }, 'Valid login auth');
     const cookieStore = cookies();
-    cookieStore.set(authCookieName, user.uuid);
+    cookieStore.set(authCookieName, user.id);
 
     return NextResponse.json({
       data: {

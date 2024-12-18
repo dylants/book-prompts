@@ -3,11 +3,11 @@ import { BookReview } from '@prisma/client';
 
 export function fakeBookReview(): BookReview {
   return {
-    bookId: faker.number.int(),
+    bookId: faker.string.nanoid(),
     createdAt: faker.date.past(),
-    id: faker.number.int(),
+    id: faker.string.nanoid(),
     rating: faker.number.int({ max: 5, min: 0 }),
     updatedAt: faker.date.past(),
-    userId: faker.number.int(),
+    userId: faker.string.nanoid(),
   };
 }

@@ -20,7 +20,7 @@ describe('src/lib/middleware', () => {
 
     it('should return the user with a valid cookie', async () => {
       const request = new NextRequest(url);
-      request.cookies.set(authCookieName, user1.uuid);
+      request.cookies.set(authCookieName, user1.id);
       mockFind.mockResolvedValue(user1);
 
       expect(await authMiddleware(request)).toEqual({

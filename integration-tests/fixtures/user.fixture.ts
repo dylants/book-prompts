@@ -11,27 +11,30 @@ const userFixtures: Prisma.UserCreateInput[] = [
     bookReviews: {
       createMany: {
         data: [
-          { bookId: 1, rating: 5 },
-          { bookId: 2, rating: 3 },
-          { bookId: 3, rating: 2 },
-          { bookId: 4, rating: 1 },
+          { bookId: 'one', rating: 5 },
+          { bookId: 'two', rating: 3 },
+          { bookId: 'three', rating: 2 },
+          { bookId: 'four', rating: 1 },
         ],
       },
     },
     email: USER_WITH_REVIEWS_EMAIL,
+    id: 'user-with-reviews',
     password: PASSWORD,
   },
   {
     email: USER_NO_REVIEWS_EMAIL,
+    id: 'user-no-reviews',
     password: PASSWORD,
   },
   {
     bookReviews: {
       createMany: {
-        data: [{ bookId: 5, rating: 3 }],
+        data: [{ bookId: 'five', rating: 3 }],
       },
     },
     email: USER_WITH_ONE_REVIEW_EMAIL,
+    id: 'user-with-one-review',
     password: PASSWORD,
   },
 ];

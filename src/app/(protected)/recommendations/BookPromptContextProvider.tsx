@@ -32,7 +32,7 @@ export default function BookPromptContextProvider({
   );
 
   const loadBookPrompt = useCallback(
-    async (bookPromptId: number) => {
+    async (bookPromptId: string) => {
       try {
         const loadedBookPrompt = await getBookPrompt({ bookPromptId });
         setBookPrompt(loadedBookPrompt);

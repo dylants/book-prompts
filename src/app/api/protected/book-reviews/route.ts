@@ -49,7 +49,7 @@ export async function GET(
 export type PostRequestBody = BookReviewCreateInput;
 
 const postSchema: toZod<PostRequestBody> = z.object({
-  bookId: z.number(),
+  bookId: z.string(),
   rating: z.number(),
 });
 

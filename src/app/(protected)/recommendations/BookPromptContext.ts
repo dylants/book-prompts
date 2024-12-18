@@ -5,7 +5,7 @@ import { createContext } from 'react';
 export type BookPromptContextType = {
   bookPrompt: BookPromptHydrated | null;
   createBookPrompt: (bookPrompt: PostRequestBody) => Promise<void>;
-  loadBookPrompt: (bookPromptId: number) => Promise<void>;
+  loadBookPrompt: (bookPromptId: string) => Promise<void>;
 };
 
 const BookPromptContext = createContext<BookPromptContextType | null>(null);

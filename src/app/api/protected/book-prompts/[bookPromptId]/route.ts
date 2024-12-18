@@ -16,7 +16,7 @@ export async function GET(
 ): Promise<NextResponse<GetResponseBody | NextResponseErrorBody>> {
   try {
     const session = await authMiddleware(req);
-    const bookPromptId = Number(params.bookPromptId);
+    const bookPromptId = params.bookPromptId;
 
     const bookPrompt = await prisma.bookPrompt.findFirst({
       include: {
