@@ -9,12 +9,12 @@ export function fakeBookPrompt(): BookPrompt {
   return {
     aiModel: faker.lorem.word(),
     createdAt: faker.date.past(),
-    id: faker.string.nanoid(21),
-    promptGenreId: faker.string.nanoid(21),
-    promptSubgenreId: faker.string.nanoid(21),
+    id: faker.string.nanoid(),
+    promptGenreId: faker.string.nanoid(),
+    promptSubgenreId: faker.string.nanoid(),
     promptText: faker.lorem.sentence(),
     updatedAt: faker.date.past(),
-    userId: faker.string.nanoid(21),
+    userId: faker.string.nanoid(),
   };
 }
 

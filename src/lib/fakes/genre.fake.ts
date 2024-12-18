@@ -4,6 +4,6 @@ import { faker } from '@faker-js/faker';
 export function fakeGenre(): Genre {
   return {
     displayName: faker.lorem.word(),
-    id: faker.string.nanoid(21),
+    id: faker.string.nanoid(),
   };
 }

@@ -13,7 +13,7 @@ export function fakeBook(): Book {
         : [faker.person.fullName()],
     confirmedExists: faker.datatype.boolean(),
     createdAt: faker.date.past(),
-    id: faker.string.nanoid(21),
+    id: faker.string.nanoid(),
     imageUrl: randomImage(),
     isbn13: faker.string.nanoid(),
     title: faker.music.songName(),

@@ -18,12 +18,12 @@ export function fakeAIBookRecommendation(): AIBookRecommendation {
 
 export function fakeBookRecommendation(): BookRecommendation {
   return {
-    bookId: faker.string.nanoid(21),
-    bookPromptId: faker.string.nanoid(21),
+    bookId: faker.string.nanoid(),
+    bookPromptId: faker.string.nanoid(),
     confidenceScore: new Prisma.Decimal(faker.number.float()),
     createdAt: faker.date.past(),
     explanation: faker.lorem.paragraph(),
-    id: faker.string.nanoid(21),
+    id: faker.string.nanoid(),
     updatedAt: faker.date.past(),
   };
 }
