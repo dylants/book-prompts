@@ -25,7 +25,11 @@ describe('/api/protected/book-prompts/[bookPromptId] GET Integration Test', () =
           include: {
             bookRecommendations: {
               include: {
-                book: true,
+                book: {
+                  include: {
+                    authors: true,
+                  },
+                },
               },
               omit: {
                 bookId: true,
@@ -85,7 +89,11 @@ describe('/api/protected/book-prompts/[bookPromptId] GET Integration Test', () =
             include: {
               bookRecommendations: {
                 include: {
-                  book: true,
+                  book: {
+                    include: {
+                      authors: true,
+                    },
+                  },
                 },
                 omit: {
                   bookId: true,

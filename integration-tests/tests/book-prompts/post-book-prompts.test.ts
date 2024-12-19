@@ -32,15 +32,15 @@ const BODY: PostRequestBody = {
   promptText: PROMPT_TEXT,
 };
 
-const AUTHORS: [string] = ['post-book-prompt.test author'];
+const AUTHOR = 'post-book-prompt.test author';
 const FIRST_RECOMMENDATION: AIBookRecommendation = {
   ...fakeAIBookRecommendation(),
-  authors: AUTHORS,
+  authors: [AUTHOR],
   title: 'title1',
 };
 const SECOND_RECOMMENDATION: AIBookRecommendation = {
   ...fakeAIBookRecommendation(),
-  authors: AUTHORS,
+  authors: [AUTHOR],
   title: 'title2',
 };
 const RECOMMENDATIONS = [FIRST_RECOMMENDATION, SECOND_RECOMMENDATION];
@@ -49,7 +49,7 @@ const GOOGLE_BOOK_FOUND: GoogleSearchResponse = {
   items: [
     {
       volumeInfo: {
-        authors: AUTHORS,
+        authors: [AUTHOR],
         imageLinks: { thumbnail: 'http://image.com' },
         industryIdentifiers: [
           {
@@ -92,7 +92,11 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
     });
     // delete all the books we created from those recommendations
     await prisma.book.deleteMany({
-      where: { authors: { equals: AUTHORS } },
+      where: { authors: { some: { name: AUTHOR } } },
+    });
+    // delete the author we created
+    await prisma.author.deleteMany({
+      where: { name: AUTHOR },
     });
   });
 
@@ -101,12 +105,12 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
   describe('when the user has book reviews', () => {
     let user: User & {
       bookReviews: {
-        book: { authors: string[]; title: string };
+        book: { authors: { name: string }[]; title: string };
         rating: number;
       }[];
     };
     let bookReviews: {
-      book: { authors: string[]; title: string };
+      book: { authors: { name: string }[]; title: string };
       rating: number;
     }[];
 
@@ -118,7 +122,11 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
             select: {
               book: {
                 select: {
-                  authors: true,
+                  authors: {
+                    select: {
+                      name: true,
+                    },
+                  },
                   title: true,
                 },
               },
@@ -211,7 +219,11 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
           expect.arrayContaining([
             expect.objectContaining({
               book: expect.objectContaining({
-                authors: FIRST_RECOMMENDATION.authors,
+                authors: expect.arrayContaining([
+                  expect.objectContaining({
+                    name: AUTHOR,
+                  }),
+                ]),
                 confirmedExists: true,
                 imageUrl: 'https://image.com',
                 isbn13: '123',
@@ -222,7 +234,11 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
             }),
             expect.objectContaining({
               book: expect.objectContaining({
-                authors: SECOND_RECOMMENDATION.authors,
+                authors: expect.arrayContaining([
+                  expect.objectContaining({
+                    name: AUTHOR,
+                  }),
+                ]),
                 confirmedExists: false,
                 imageUrl: null,
                 isbn13: isbnHash({

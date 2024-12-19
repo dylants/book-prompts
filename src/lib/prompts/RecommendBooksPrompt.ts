@@ -51,7 +51,11 @@ titles, just to find that perfect book recommendation.
       select: {
         book: {
           select: {
-            authors: true,
+            authors: {
+              select: {
+                name: true,
+              },
+            },
             title: true,
           },
         },

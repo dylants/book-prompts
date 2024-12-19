@@ -1,8 +1,8 @@
-import Book from '@/types/Book';
+import BookHydrated from '@/types/BookHydrated';
 import BookRecommendation from '@/types/BookRecommendation';
 
 type BookRecommendationHydrated = BookRecommendation & {
-  book: Book;
+  book: BookHydrated;
 };
 
 export default BookRecommendationHydrated;

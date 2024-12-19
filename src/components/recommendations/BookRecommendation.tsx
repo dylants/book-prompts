@@ -36,7 +36,9 @@ export default function BookRecommendation({
           <div>
             <span className="font-bold">{book.title}</span>
             <span> by </span>
-            <span className="font-bold">{book.authors.join(', ')}</span>
+            <span className="font-bold">
+              {book.authors.map((a) => a.name).join(', ')}
+            </span>
           </div>
         </div>
         <div className="flex gap-2">

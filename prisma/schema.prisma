@@ -31,13 +31,23 @@ model Book {
   /// true iff we're able to confirm this is a real book (AI hallucination)
   confirmedExists Boolean
   /// the ISBN13 number of the book if confirmedExists, else hash of title+authors
-  isbn13          String   @unique
+  isbn13          String  @unique
   title           String
-  authors         String[]
   imageUrl        String?
 
+  authors             Author[]
   bookReviews         BookReview[]
   bookRecommendations BookRecommendation[]
+}
+
+model Author {
+  id        String   @id @default(cuid(2))
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  name String @unique
+
+  books Book[]
 }
 
 model BookReview {
