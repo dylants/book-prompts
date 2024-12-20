@@ -28,16 +28,8 @@ export async function GET(
               },
             },
           },
-          omit: {
-            bookId: true,
-            bookPromptId: true,
-          },
           orderBy: { confidenceScore: 'desc' },
         },
-      },
-      omit: {
-        aiModel: true,
-        userId: true,
       },
       where: {
         id: bookPromptId,

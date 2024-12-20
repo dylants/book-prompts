@@ -1,8 +1,5 @@
 import { BookRecommendation as PrismaBookRecommendation } from '@prisma/client';
 
-type BookRecommendation = Omit<
-  PrismaBookRecommendation,
-  'bookPromptId' | 'bookId'
->;
+type BookRecommendation = PrismaBookRecommendation;
 
 export default BookRecommendation;

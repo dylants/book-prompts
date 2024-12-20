@@ -22,11 +22,7 @@ describe('/book-reviews/[bookReviewId] PUT', () => {
   beforeAll(async () => {
     user = await prisma.user.findFirstOrThrow({
       include: {
-        bookReviews: {
-          omit: {
-            userId: true,
-          },
-        },
+        bookReviews: true,
       },
       where: { email: USER_WITH_REVIEWS_EMAIL },
     });

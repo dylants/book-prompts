@@ -1,14 +1,19 @@
 // https://www.prisma.io/docs/orm/more/help-and-troubleshooting/help-articles/nextjs-prisma-client-dev-practices
 
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
+
+const omitConfig = {
+  bookPrompt: {
+    aiModel: true,
+  },
+  user: {
+    password: true,
+  },
+} satisfies Prisma.GlobalOmitConfig;
 
 const prismaClientSingleton = () => {
   return new PrismaClient({
-    omit: {
-      user: {
-        password: true,
-      },
-    },
+    omit: omitConfig,
   });
 };
 

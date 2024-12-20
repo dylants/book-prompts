@@ -29,15 +29,8 @@ export function fakeBookRecommendation(): BookRecommendation {
 }
 
 export function fakeBookRecommendationHydrated(): BookRecommendationHydrated {
-  const { confidenceScore, createdAt, explanation, id, updatedAt } =
-    fakeBookRecommendation();
-
   return {
+    ...fakeBookRecommendation(),
     book: fakeBookHydrated(),
-    confidenceScore,
-    createdAt,
-    explanation,
-    id,
-    updatedAt,
   };
 }

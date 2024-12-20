@@ -51,9 +51,6 @@ export async function PUT(
       data: {
         rating,
       },
-      omit: {
-        userId: true,
-      },
       where: { id: bookReviewId, userId: session.user.id },
     });
 

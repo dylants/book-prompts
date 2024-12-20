@@ -47,10 +47,6 @@ export async function GET(
           },
         },
       },
-      omit: {
-        aiModel: true,
-        userId: true,
-      },
       orderBy: { createdAt: 'desc' },
       where: { userId: session.user.id },
     });
@@ -186,16 +182,8 @@ export async function POST(
                 },
               },
             },
-            omit: {
-              bookId: true,
-              bookPromptId: true,
-            },
             orderBy: { confidenceScore: 'desc' },
           },
-        },
-        omit: {
-          aiModel: true,
-          userId: true,
         },
         where: { id: bookPromptId },
       });
