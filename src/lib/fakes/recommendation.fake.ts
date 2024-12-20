@@ -1,4 +1,4 @@
-import { fakeBook } from '@/lib/fakes/book.fake';
+import { fakeBookHydrated } from '@/lib/fakes/book.fake';
 import AIBookRecommendation from '@/types/AIBookRecommendation';
 import BookRecommendationHydrated from '@/types/BookRecommendationHydrated';
 import { faker } from '@faker-js/faker';
@@ -33,7 +33,7 @@ export function fakeBookRecommendationHydrated(): BookRecommendationHydrated {
     fakeBookRecommendation();
 
   return {
-    book: fakeBook(),
+    book: fakeBookHydrated(),
     confidenceScore,
     createdAt,
     explanation,

@@ -13,19 +13,23 @@ const url = 'https://localhost';
 describe('/api/protected/book-reviews POST', () => {
   let user: User;
   let book: Book;
+  const AUTHOR = 'POST book-reviews test author';
 
   beforeAll(async () => {
     user = await prisma.user.findFirstOrThrow({
       where: { email: USER_NO_REVIEWS_EMAIL },
     });
 
-    const authors = ['POST book-reviews test author'];
     const title = 'My Title';
     book = await prisma.book.create({
       data: {
-        authors,
+        authors: {
+          create: {
+            name: AUTHOR,
+          },
+        },
         confirmedExists: false,
-        isbn13: isbnHash({ authors, title }),
+        isbn13: isbnHash({ authors: [AUTHOR], title }),
         title,
       },
     });
@@ -35,6 +39,11 @@ describe('/api/protected/book-reviews POST', () => {
     // delete the book we created (which will delete the book reviews)
     await prisma.book.delete({
       where: { id: book.id },
+    });
+
+    // delete the author we created
+    await prisma.author.delete({
+      where: { name: AUTHOR },
     });
   });
 

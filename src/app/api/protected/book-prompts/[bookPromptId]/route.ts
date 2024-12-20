@@ -22,7 +22,11 @@ export async function GET(
       include: {
         bookRecommendations: {
           include: {
-            book: true,
+            book: {
+              include: {
+                authors: true,
+              },
+            },
           },
           omit: {
             bookId: true,

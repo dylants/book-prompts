@@ -4,6 +4,11 @@ import handleErrorResponse from '@/lib/errors/handleErrorResponse';
 import logger from '@/lib/logger';
 import { authMiddleware } from '@/lib/middleware';
 import prisma from '@/lib/prisma';
+import {
+  getPrismaClient,
+  PrismaOptions,
+  prismaTransaction,
+} from '@/lib/prisma-helpers';
 import RecommendBooksPrompt from '@/lib/prompts/RecommendBooksPrompt';
 import { googleBookSearch } from '@/lib/search/google.search';
 import { buildBookFromSearchResult } from '@/lib/search/search';
@@ -68,13 +73,18 @@ export type PostResponseBody = {
   data: BookPromptHydrated;
 };
 
-async function createBookRecommendations({
-  aiRecommendations,
-  bookPromptId,
-}: {
-  aiRecommendations: AIBookRecommendation[];
-  bookPromptId: string;
-}): Promise<void[]> {
+async function createBookRecommendations(
+  {
+    aiRecommendations,
+    bookPromptId,
+  }: {
+    aiRecommendations: AIBookRecommendation[];
+    bookPromptId: string;
+  },
+  options: PrismaOptions,
+): Promise<void[]> {
+  const client = getPrismaClient(options);
+
   return Promise.all(
     aiRecommendations.map(async (recommendation) => {
       const { authors, confidenceScore, explanation, title } = recommendation;
@@ -90,11 +100,22 @@ async function createBookRecommendations({
         searchResult,
       });
 
-      await prisma.bookRecommendation.create({
+      await client.bookRecommendation.create({
         data: {
           book: {
             connectOrCreate: {
-              create: book,
+              create: {
+                authors: {
+                  connectOrCreate: book.authors.map((author) => ({
+                    create: { name: author },
+                    where: { name: author },
+                  })),
+                },
+                confirmedExists: book.confirmedExists,
+                imageUrl: book.imageUrl,
+                isbn13: book.isbn13,
+                title: book.title,
+              },
               where: { isbn13: book.isbn13 },
             },
           },
@@ -138,40 +159,49 @@ export async function POST(
 
     logger.trace({ aiRecommendations }, 'RecommendBooksPrompt response');
 
-    const { id: bookPromptId } = await prisma.bookPrompt.create({
-      data: {
-        aiModel: config.openai.model,
-        promptText,
-        user: {
-          connect: { id: session.user.id },
-        },
-      },
-      select: { id: true },
-    });
-
-    await createBookRecommendations({ aiRecommendations, bookPromptId });
-
-    const bookPrompt = await prisma.bookPrompt.findFirstOrThrow({
-      include: {
-        bookRecommendations: {
-          include: {
-            book: true,
+    return prismaTransaction(async (tx) => {
+      const { id: bookPromptId } = await tx.bookPrompt.create({
+        data: {
+          aiModel: config.openai.model,
+          promptText,
+          user: {
+            connect: { id: session.user.id },
           },
-          omit: {
-            bookId: true,
-            bookPromptId: true,
-          },
-          orderBy: { confidenceScore: 'desc' },
         },
-      },
-      omit: {
-        aiModel: true,
-        userId: true,
-      },
-      where: { id: bookPromptId },
-    });
+        select: { id: true },
+      });
 
-    return NextResponse.json({ data: bookPrompt });
+      await createBookRecommendations(
+        { aiRecommendations, bookPromptId },
+        { tx },
+      );
+
+      const bookPrompt = await tx.bookPrompt.findFirstOrThrow({
+        include: {
+          bookRecommendations: {
+            include: {
+              book: {
+                include: {
+                  authors: true,
+                },
+              },
+            },
+            omit: {
+              bookId: true,
+              bookPromptId: true,
+            },
+            orderBy: { confidenceScore: 'desc' },
+          },
+        },
+        omit: {
+          aiModel: true,
+          userId: true,
+        },
+        where: { id: bookPromptId },
+      });
+
+      return NextResponse.json({ data: bookPrompt });
+    });
   } catch (error: unknown) {
     return handleErrorResponse(error);
   }

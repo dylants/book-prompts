@@ -23,6 +23,7 @@ const extendedConfig: Config = {
     'src/lib/logger.ts',
     'src/lib/openai.ts',
     'src/lib/prisma.ts',
+    'src/lib/prisma-helpers.ts',
     'src/lib/tailwind-utils.ts',
   ],
   testPathIgnorePatterns: ['/node_modules/'],

@@ -6,7 +6,11 @@ import userFixtures from './fixtures/user.fixture';
 const prisma = new PrismaClient();
 
 async function createFixtures() {
-  await prisma.book.createMany({ data: bookFixtures });
+  for (const book of bookFixtures) {
+    await prisma.book.create({
+      data: book,
+    });
+  }
 
   for (const user of userFixtures) {
     await prisma.user.create({
