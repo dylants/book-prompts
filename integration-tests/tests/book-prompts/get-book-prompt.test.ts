@@ -31,15 +31,7 @@ describe('/api/protected/book-prompts/[bookPromptId] GET Integration Test', () =
                   },
                 },
               },
-              omit: {
-                bookId: true,
-                bookPromptId: true,
-              },
             },
-          },
-          omit: {
-            aiModel: true,
-            userId: true,
           },
         },
       },
@@ -95,15 +87,7 @@ describe('/api/protected/book-prompts/[bookPromptId] GET Integration Test', () =
                     },
                   },
                 },
-                omit: {
-                  bookId: true,
-                  bookPromptId: true,
-                },
               },
-            },
-            omit: {
-              aiModel: true,
-              userId: true,
             },
           },
         },

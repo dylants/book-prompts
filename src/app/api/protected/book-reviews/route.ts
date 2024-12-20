@@ -31,9 +31,7 @@ export async function GET(
 
   try {
     const bookReviews = await prisma.bookReview.findMany({
-      omit: {
-        userId: true,
-      },
+      orderBy: { createdAt: 'desc' },
       where: { userId: session.user.id },
     });
 
@@ -90,9 +88,6 @@ export async function POST(
         user: {
           connect: { id: session.user.id },
         },
-      },
-      omit: {
-        userId: true,
       },
     });
 

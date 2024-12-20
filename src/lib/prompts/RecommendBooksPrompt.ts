@@ -45,9 +45,7 @@ titles, just to find that perfect book recommendation.
 
   async getUserPrompt(): Promise<string> {
     const books = await prisma.bookReview.findMany({
-      orderBy: {
-        rating: 'desc',
-      },
+      orderBy: { rating: 'desc' },
       select: {
         book: {
           select: {

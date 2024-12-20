@@ -2,13 +2,16 @@ import projectConfig from '@/config/index';
 import UnauthorizedError from '@/lib/errors/UnauthorizedError';
 import { fakeUser } from '@/lib/fakes/user.fake';
 import { authMiddleware } from '@/lib/middleware';
-import prisma from '@/lib/prisma';
+import prisma, { ExtendedPrismaClient } from '@/lib/prisma';
 import { NextRequest } from 'next/server';
 
 const url = 'http://localhost';
 const authCookieName = projectConfig.auth.cookieName;
 
-const mockFind = jest.spyOn(prisma.user, 'findFirst');
+const mockFind = jest.spyOn(
+  prisma.user as ExtendedPrismaClient['user'],
+  'findFirst',
+);
 
 describe('src/lib/middleware', () => {
   beforeEach(() => {
