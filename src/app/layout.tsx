@@ -1,3 +1,4 @@
+import AppBreadcrumbs from '@/app/AppBreadcrumbs';
 import AppContextProvider from '@/app/AppContextProvider';
 import NavContainer from '@/app/NavContainer';
 import type { Metadata } from 'next';
@@ -22,7 +23,10 @@ export default function RootLayout({
             <div className="flex flex-1">
               <main className="flex flex-col flex-1 md:items-center mb-12">
                 <div className="w-full h-full px-4 md:w-[768px] md:px-0">
-                  {children}
+                  <div className="grid gap-10">
+                    <AppBreadcrumbs />
+                    {children}
+                  </div>
                 </div>
               </main>
             </div>
