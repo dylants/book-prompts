@@ -4,8 +4,8 @@
 
 import BookPromptContext, {
   BookPromptContextType,
-} from '@/app/(protected)/recommendations/BookPromptContext';
-import BookPromptContextProvider from '@/app/(protected)/recommendations/BookPromptContextProvider';
+} from '@/app/(protected)/prompts/BookPromptContext';
+import BookPromptContextProvider from '@/app/(protected)/prompts/BookPromptContextProvider';
 import useBookPromptContext from '@/hooks/useBookPromptContext';
 import { fakeBookPromptHydrated } from '@/lib/fakes/bookPrompt.fake';
 import BookPromptHydrated from '@/types/BookPromptHydrated';

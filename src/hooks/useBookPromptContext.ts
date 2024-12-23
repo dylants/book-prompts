@@ -2,7 +2,7 @@
 
 import BookPromptContext, {
   BookPromptContextType,
-} from '@/app/(protected)/recommendations/BookPromptContext';
+} from '@/app/(protected)/prompts/BookPromptContext';
 import { useContext } from 'react';
 
 export default function useBookPromptContext(): BookPromptContextType {

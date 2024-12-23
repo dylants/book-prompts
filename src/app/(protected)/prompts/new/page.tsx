@@ -24,7 +24,7 @@ export default function RecommendationPage() {
   // only want to navigate once we have a book prompt created
   useEffect(() => {
     if (bookPrompt) {
-      router.replace(`/recommendations/${bookPrompt.id}`);
+      router.replace(`/prompts/${bookPrompt.id}`);
     }
   }, [bookPrompt, router]);
 
