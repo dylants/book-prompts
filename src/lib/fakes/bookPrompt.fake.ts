@@ -12,7 +12,10 @@ export function fakeBookPrompt(): BookPrompt {
     id: faker.string.nanoid(),
     promptGenreId: faker.string.nanoid(),
     promptSubgenreId: faker.string.nanoid(),
-    promptText: faker.lorem.sentence(),
+    promptText: faker.lorem.sentence({
+      max: 20,
+      min: 2,
+    }),
     updatedAt: faker.date.past(),
     userId: faker.string.nanoid(),
   };

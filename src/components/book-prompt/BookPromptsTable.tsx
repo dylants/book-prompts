@@ -1,32 +1,93 @@
 import DataTable from '@/components/table/DataTable';
 import SortableHeader from '@/components/table/SortableHeader';
+import { TableCell, TableHead } from '@/components/ui/table';
 import { BookPromptTable } from '@/types/BookPromptTable';
 import { ColumnDef } from '@tanstack/react-table';
+import Link from 'next/link';
 
-const columns: ColumnDef<BookPromptTable>[] = [
+const getColumns = (linkPathname: string): ColumnDef<BookPromptTable>[] => [
   {
     accessorKey: 'promptText',
-    header: ({ column }) => (
-      <SortableHeader column={column} text="Prompt" className="justify-start" />
-    ),
+    meta: {
+      cell: (props) => (
+        <TableCell className="p-0 contents">
+          <Link
+            href={`${linkPathname}/${props.row.id}`}
+            className="table-cell align-middle p-2 w-[450px] max-w-[450px]"
+          >
+            <div className="overflow-hidden text-ellipsis whitespace-nowrap">
+              <>{props.getValue()}</>
+            </div>
+          </Link>
+        </TableCell>
+      ),
+      header: ({ column }) => (
+        <TableHead className="w-[450px] max-w-[450px]">
+          <SortableHeader
+            column={column}
+            text="Book Prompt"
+            className="justify-start"
+            showPlaceholderSortIconSpace={false}
+          />
+        </TableHead>
+      ),
+    },
   },
   {
     accessorFn: (bookPrompt) => bookPrompt.promptGenre?.displayName,
-    header: ({ column }) => (
-      <SortableHeader column={column} text="Genre" className="justify-start" />
-    ),
     id: 'genre',
+    meta: {
+      cell: (props) => (
+        <TableCell className="p-0 contents">
+          <Link
+            href={`${linkPathname}/${props.row.id}`}
+            className="table-cell align-middle p-2 w-[100px] max-w-[100px]"
+          >
+            <div className="overflow-hidden text-ellipsis whitespace-nowrap">
+              <>{props.getValue()}</>
+            </div>
+          </Link>
+        </TableCell>
+      ),
+      header: ({ column }) => (
+        <TableHead className="w-[100px] max-w-[100px]">
+          <SortableHeader
+            column={column}
+            text="Genre"
+            className="justify-start"
+            showPlaceholderSortIconSpace={false}
+          />
+        </TableHead>
+      ),
+    },
   },
   {
     accessorFn: (bookPrompt) => bookPrompt.promptSubgenre?.displayName,
-    header: ({ column }) => (
-      <SortableHeader
-        column={column}
-        text="Subgenre"
-        className="justify-start"
-      />
-    ),
     id: 'subgenre',
+    meta: {
+      cell: (props) => (
+        <TableCell className="p-0 contents">
+          <Link
+            href={`${linkPathname}/${props.row.id}`}
+            className="table-cell align-middle p-2 w-[100px] max-w-[100px]"
+          >
+            <div className="overflow-hidden text-ellipsis whitespace-nowrap">
+              <>{props.getValue()}</>
+            </div>
+          </Link>
+        </TableCell>
+      ),
+      header: ({ column }) => (
+        <TableHead className="w-[100px] max-w-[100px]">
+          <SortableHeader
+            column={column}
+            text="Subgenre"
+            className="justify-start"
+            showPlaceholderSortIconSpace={false}
+          />
+        </TableHead>
+      ),
+    },
   },
   {
     accessorFn: (bookPrompt) =>
@@ -52,7 +113,7 @@ export default function BookPromptsTable({
 }) {
   return (
     <DataTable
-      columns={columns}
+      columns={getColumns(linkPathname)}
       data={bookPrompts}
       isLoading={isLoading}
       linkPathname={linkPathname}

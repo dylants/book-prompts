@@ -6,10 +6,12 @@ import { ArrowDown, ArrowUp } from 'lucide-react';
 export default function SortableHeader<T>({
   className,
   column,
+  showPlaceholderSortIconSpace = true,
   text,
 }: {
   className?: string;
   column: Column<T>;
+  showPlaceholderSortIconSpace?: boolean;
   text: string;
 }) {
   const sorted = column.getIsSorted();
@@ -21,9 +23,11 @@ export default function SortableHeader<T>({
         <ArrowDown className="ml-1 h-4 w-4" />
       )}
     </>
-  ) : (
+  ) : showPlaceholderSortIconSpace ? (
     // this acts as a placeholder for the sort icon
     <div className="ml-1 h-4 w-4"></div>
+  ) : (
+    <></>
   );
 
   return (
