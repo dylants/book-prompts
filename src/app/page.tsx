@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { BookCopyIcon, StarIcon } from 'lucide-react';
+import { NotebookPenIcon, StarIcon } from 'lucide-react';
 import Link from 'next/link';
 
 function NavLink({
@@ -31,9 +31,9 @@ export default function HomePage() {
       <h1>Book Prompts</h1>
       <p>Recommends books based off reading prompts</p>
       <div className="grid grid-cols-2 gap-8">
-        <NavLink path="/recommendations">
-          <BookCopyIcon size={18} />
-          Recommendations
+        <NavLink path="/prompts">
+          <NotebookPenIcon size={18} />
+          Prompts
         </NavLink>
         <NavLink path="/reviews">
           <StarIcon size={18} />

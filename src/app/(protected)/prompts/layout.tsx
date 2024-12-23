@@ -1,4 +1,4 @@
-import BookPromptContextProvider from '@/app/(protected)/recommendations/BookPromptContextProvider';
+import BookPromptContextProvider from '@/app/(protected)/prompts/BookPromptContextProvider';
 
 export default function RecommendationsLayout({
   children,

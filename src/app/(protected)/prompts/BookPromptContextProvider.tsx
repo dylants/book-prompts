@@ -2,7 +2,7 @@
 
 import BookPromptContext, {
   BookPromptContextType,
-} from '@/app/(protected)/recommendations/BookPromptContext';
+} from '@/app/(protected)/prompts/BookPromptContext';
 import { PostRequestBody } from '@/app/api/protected/book-prompts/route';
 import useHandleError from '@/hooks/useHandleError';
 import { getBookPrompt, postBookPrompt } from '@/lib/api';

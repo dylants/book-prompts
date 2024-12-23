@@ -9,7 +9,6 @@ import { Separator } from '@/components/ui/separator';
 import useBookPromptContext from '@/hooks/useBookPromptContext';
 import useBookReviews from '@/hooks/useBookReviews';
 import BookRecommendationHydratedWithReview from '@/types/BookRecommendationHydratedWithReview';
-import { BookCopyIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
@@ -32,7 +31,7 @@ export default function RecommendationPage({
     if (!bookPrompt) {
       loadBookPrompt(bookPromptId);
     } else if (bookPrompt.id !== bookPromptId) {
-      router.replace(`/recommendations/${bookPrompt.id}`);
+      router.replace(`/prompts/${bookPrompt.id}`);
     }
   }, [bookPrompt, bookPromptId, loadBookPrompt, router]);
 
@@ -68,10 +67,6 @@ export default function RecommendationPage({
 
   return (
     <div>
-      <h1 className="flex gap-2 items-center mb-10">
-        <BookCopyIcon size={18} />
-        Recommendations
-      </h1>
       <div className="grid gap-4">
         <BookPromptComponent
           bookPrompt={bookPrompt}
