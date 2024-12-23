@@ -22,16 +22,14 @@ export default function RecommendationsPage() {
   }, [loadBookPrompts]);
 
   return (
-    <div>
-      <div className="grid gap-4">
-        <h1>Prompts and Recommendations</h1>
-        <div className="flex justify-end">
-          <Link href="/prompts/new">
-            <Button>New Prompt</Button>
-          </Link>
-        </div>
-        <BookPromptsTable bookPrompts={bookPrompts} linkPathname={pathname} />
+    <div className="grid gap-4">
+      <h1>Your Book Prompts</h1>
+      <div className="flex justify-end">
+        <Link href="/prompts/new">
+          <Button>New Prompt</Button>
+        </Link>
       </div>
+      <BookPromptsTable bookPrompts={bookPrompts} linkPathname={pathname} />
     </div>
   );
 }

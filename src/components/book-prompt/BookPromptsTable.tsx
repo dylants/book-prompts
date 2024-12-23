@@ -25,7 +25,7 @@ const getColumns = (linkPathname: string): ColumnDef<BookPromptTable>[] => [
         <TableHead className="w-[450px] max-w-[450px]">
           <SortableHeader
             column={column}
-            text="Book Prompt"
+            text="Recommendations for books that..."
             className="justify-start"
             showPlaceholderSortIconSpace={false}
           />
