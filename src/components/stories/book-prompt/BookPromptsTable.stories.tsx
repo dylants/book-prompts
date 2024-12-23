@@ -12,10 +12,10 @@ type Story = StoryObj<typeof BookPromptsTable>;
 
 export const Default: Story = {
   render: () => {
-    const bookPrompts = _.times(20, () => fakeBookPromptTable());
+    const bookPrompts = _.times(100, () => fakeBookPromptTable());
 
     return (
-      <div>
+      <div className="max-w-[768px]">
         <BookPromptsTable bookPrompts={bookPrompts} linkPathname="#" />
       </div>
     );

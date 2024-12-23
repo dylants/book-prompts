@@ -18,7 +18,9 @@ import {
 } from '@/components/ui/table';
 import { cn } from '@/lib/tailwind-utils';
 import {
+  CellContext,
   ColumnDef,
+  HeaderContext,
   SortingState,
   flexRender,
   getCoreRowModel,
@@ -27,12 +29,20 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import Link from 'next/link';
-import { useState } from 'react';
+import React, { useState } from 'react';
+
+declare module '@tanstack/react-table' {
+  interface ColumnMeta<TData, TValue> {
+    cell?: (props: CellContext<TData, TValue>) => React.ReactNode;
+    header?: (props: HeaderContext<TData, TValue>) => React.ReactNode;
+  }
+}
 
 export type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   idFieldName?: string;
+  isFixedTable?: boolean;
   isLoading?: boolean;
   linkPathname?: string;
   tableBodyAdditionalChildren?: React.ReactNode;
@@ -43,7 +53,8 @@ export default function DataTable<TData, TValue>({
   columns,
   data,
   idFieldName = 'id',
-  isLoading,
+  isFixedTable = false,
+  isLoading = false,
   linkPathname,
   tableBodyAdditionalChildren,
   noDataText,
@@ -74,6 +85,9 @@ export default function DataTable<TData, TValue>({
     },
   });
 
+  const hasAdditionalPages =
+    table.getCanPreviousPage() || table.getCanNextPage();
+
   const tableBody = isLoading ? (
     <TableRow className="hover:!bg-transparent">
       <TableCell colSpan={columns.length} className="h-24">
@@ -87,23 +101,53 @@ export default function DataTable<TData, TValue>({
     <>
       {table.getRowModel().rows?.length ? (
         table.getRowModel().rows.map((row) => (
-          <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-            {row.getVisibleCells().map((cell) => (
-              <TableCell key={cell.id} className={cn(linkPathname && 'p-0')}>
-                {linkPathname ? (
-                  <Link
-                    href={`${linkPathname}/${row.id}`}
-                    className="block p-2"
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </Link>
-                ) : (
-                  <>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </>
-                )}
-              </TableCell>
-            ))}
+          <TableRow
+            key={row.id}
+            data-state={row.getIsSelected() && 'selected'}
+            className="h-[50px]"
+          >
+            {row.getVisibleCells().map((cell) => {
+              // allow for custom cell rendering
+              if (cell.column.columnDef.meta?.cell) {
+                return (
+                  <React.Fragment key={cell.id}>
+                    {flexRender(
+                      cell.column.columnDef.meta.cell,
+                      cell.getContext(),
+                    )}
+                  </React.Fragment>
+                );
+              }
+
+              return (
+                <React.Fragment key={cell.id}>
+                  {linkPathname ? (
+                    <TableCell className="p-0 contents">
+                      <Link
+                        href={`${linkPathname}/${row.id}`}
+                        className="table-cell align-middle p-2"
+                      >
+                        <>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </>
+                      </Link>
+                    </TableCell>
+                  ) : (
+                    <TableCell>
+                      <>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </>
+                    </TableCell>
+                  )}
+                </React.Fragment>
+              );
+            })}
           </TableRow>
         ))
       ) : (
@@ -122,46 +166,56 @@ export default function DataTable<TData, TValue>({
 
   return (
     <>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
+      <Table className={cn(isFixedTable && 'table-fixed')}>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                // allow for custom header rendering
+                if (header.column.columnDef.meta?.header) {
                   return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
+                    <React.Fragment key={header.id}>
+                      {flexRender(
+                        header.column.columnDef.meta.header,
+                        header.getContext(),
+                      )}
+                    </React.Fragment>
                   );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            <>{tableBody}</>
-            {tableBodyAdditionalChildren && <>{tableBodyAdditionalChildren}</>}
-          </TableBody>
-        </Table>
-      </div>
-      {!isLoading && (
+                }
+
+                return (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          <>{tableBody}</>
+          {tableBodyAdditionalChildren && <>{tableBodyAdditionalChildren}</>}
+        </TableBody>
+      </Table>
+      {!isLoading && hasAdditionalPages && (
         <div className="mt-2">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious
                   onClick={() => table.previousPage()}
-                  isDisabled={!table.getCanPreviousPage() || isLoading}
+                  isDisabled={!table.getCanPreviousPage()}
                 />
               </PaginationItem>
               <PaginationItem>
                 <PaginationNext
                   onClick={() => table.nextPage()}
-                  isDisabled={!table.getCanNextPage() || isLoading}
+                  isDisabled={!table.getCanNextPage()}
                 />
               </PaginationItem>
             </PaginationContent>

@@ -1,6 +1,6 @@
 import DataTable from '@/components/table/DataTable';
 import SortableHeader from '@/components/table/SortableHeader';
-import { TableCell, TableRow } from '@/components/ui/table';
+import { TableCell, TableHead, TableRow } from '@/components/ui/table';
 import { faker } from '@faker-js/faker';
 import { Meta, StoryObj } from '@storybook/react';
 import { ColumnDef } from '@tanstack/react-table';
@@ -172,6 +172,117 @@ export const AdditionalChildren: Story = {
           columns={columns}
           data={data}
           tableBodyAdditionalChildren={tableBodyAdditionalChildren}
+        />
+      </div>
+    );
+  },
+};
+
+export const FixedWithCustomCell: Story = {
+  render: () => {
+    const customColumns: ColumnDef<DataTableEntity>[] = [
+      {
+        accessorKey: 'name',
+        meta: {
+          cell: (props) => (
+            <TableCell className="w-[40%]">
+              <div className="overflow-hidden text-ellipsis whitespace-nowrap">
+                <>{props.getValue()}</>
+              </div>
+            </TableCell>
+          ),
+          header: ({ column }) => (
+            <TableHead className="w-[40%]">
+              <SortableHeader
+                column={column}
+                text="Name"
+                className="justify-start"
+                showPlaceholderSortIconSpace={false}
+              />
+            </TableHead>
+          ),
+        },
+      },
+      {
+        accessorKey: 'description',
+        meta: {
+          cell: (props) => (
+            <TableCell className="w-[30%]">
+              <div className="overflow-hidden text-ellipsis whitespace-nowrap">
+                <>{props.getValue()}</>
+              </div>
+            </TableCell>
+          ),
+          header: ({ column }) => (
+            <TableHead className="w-[30%]">
+              <SortableHeader
+                column={column}
+                text="Description"
+                className="justify-start"
+                showPlaceholderSortIconSpace={false}
+              />
+            </TableHead>
+          ),
+        },
+      },
+      {
+        accessorFn: (entity) => entity.date.toLocaleDateString(),
+        id: 'date',
+        meta: {
+          cell: (props) => (
+            <TableCell className="w-[10%]">
+              <div className="text-right">
+                <>{props.getValue()}</>
+              </div>
+            </TableCell>
+          ),
+          header: ({ column }) => (
+            <TableHead className="w-[10%]">
+              <SortableHeader
+                column={column}
+                text="Date"
+                className="text-right"
+                showPlaceholderSortIconSpace={false}
+              />
+            </TableHead>
+          ),
+        },
+      },
+      {
+        accessorKey: 'num',
+        cell: (props) => (
+          <div className="text-right w-[100px]">
+            <>{props.getValue()}</>
+          </div>
+        ),
+        header: ({ column }) => (
+          <SortableHeader
+            column={column}
+            text="Number"
+            className="w-[100px]"
+            showPlaceholderSortIconSpace={false}
+          />
+        ),
+      },
+      {
+        accessorKey: 'bool',
+        cell: (props) => {
+          const bool = props.getValue();
+          return (
+            <div className="flex justify-end">
+              {bool ? <CheckCircle color="green" /> : <XCircle color="red" />}
+            </div>
+          );
+        },
+        header: () => <div className="text-right">Boolean</div>,
+      },
+    ];
+
+    return (
+      <div>
+        <DataTable
+          columns={customColumns}
+          data={_.times(50, fakeDataTableEntity)}
         />
       </div>
     );
