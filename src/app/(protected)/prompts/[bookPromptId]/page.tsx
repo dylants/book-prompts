@@ -6,34 +6,48 @@ import BookPromptComponent, {
 import BookRecommendationWithReview from '@/components/recommendations/BookRecommendationWithReview';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { Separator } from '@/components/ui/separator';
-import useBookPromptContext from '@/hooks/useBookPromptContext';
 import useBookReviews from '@/hooks/useBookReviews';
+import useHandleError from '@/hooks/useHandleError';
+import { getBookPrompt, postBookPrompt } from '@/lib/api';
+import BookPromptHydrated from '@/types/BookPromptHydrated';
 import BookRecommendationHydratedWithReview from '@/types/BookRecommendationHydratedWithReview';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 
-export default function RecommendationPage({
+export default function PromptPage({
   params: { bookPromptId },
 }: {
   params: { bookPromptId: string };
 }) {
-  const { bookPrompt, createBookPrompt, loadBookPrompt } =
-    useBookPromptContext();
+  const isNew = bookPromptId === 'new';
+  const [bookPrompt, setBookPrompt] = useState<BookPromptHydrated | null>(null);
+  const { handleError } = useHandleError();
   const router = useRouter();
   const [recommendationsWithReviews, setRecommendationsWithReviews] = useState<
     BookRecommendationHydratedWithReview[]
   >([]);
   const { bookReviews, createBookReview, updateBookReview } = useBookReviews();
 
-  // either load or redirect to the correct page (to load)
+  const loadBookPrompt = useCallback(
+    async (bookPromptId: string) => {
+      try {
+        const loadedBookPrompt = await getBookPrompt({ bookPromptId });
+        setBookPrompt(loadedBookPrompt);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    [handleError],
+  );
+
   useEffect(() => {
-    if (!bookPrompt) {
+    if (isNew) {
+      // no book prompt to load, we're in create new
+    } else if (!bookPrompt) {
       loadBookPrompt(bookPromptId);
-    } else if (bookPrompt.id !== bookPromptId) {
-      router.replace(`/prompts/${bookPrompt.id}`);
     }
-  }, [bookPrompt, bookPromptId, loadBookPrompt, router]);
+  }, [bookPrompt, bookPromptId, isNew, loadBookPrompt, router]);
 
   useEffect(() => {
     if (bookPrompt) {
@@ -52,12 +66,19 @@ export default function RecommendationPage({
   const onRecommend: SubmitHandler<BookPromptFormInput> = useCallback(
     async (formInput) => {
       const { promptText } = formInput;
-      await createBookPrompt({ promptText });
+      try {
+        // TODO show loading animation while waiting for book prompt
+        // TODO improve performance here by using the book prompt returned
+        const { id } = await postBookPrompt({ promptText });
+        router.push(`/prompts/${id}`);
+      } catch (error) {
+        return handleError(error);
+      }
     },
-    [createBookPrompt],
+    [handleError, router],
   );
 
-  if (!bookPrompt) {
+  if (!isNew && !bookPrompt) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <LoadingSpinner />
@@ -72,32 +93,34 @@ export default function RecommendationPage({
           bookPrompt={bookPrompt}
           onRecommend={onRecommend}
         />
-        <div className="grid gap-8">
-          <Separator />
-          {recommendationsWithReviews.map((recommendation) => {
-            return (
-              <BookRecommendationWithReview
-                key={recommendation.id}
-                onSetRating={async (rating: number) => {
-                  if (recommendation.bookReview) {
-                    await updateBookReview({
-                      id: recommendation.bookReview.id,
-                      updates: { rating },
-                    });
-                  } else {
-                    await createBookReview({
-                      bookReview: {
-                        bookId: recommendation.book.id,
-                        rating,
-                      },
-                    });
-                  }
-                }}
-                recommendationWithReview={recommendation}
-              />
-            );
-          })}
-        </div>
+        {bookPrompt && (
+          <div className="grid gap-8">
+            <Separator />
+            {recommendationsWithReviews.map((recommendation) => {
+              return (
+                <BookRecommendationWithReview
+                  key={recommendation.id}
+                  onSetRating={async (rating: number) => {
+                    if (recommendation.bookReview) {
+                      await updateBookReview({
+                        id: recommendation.bookReview.id,
+                        updates: { rating },
+                      });
+                    } else {
+                      await createBookReview({
+                        bookReview: {
+                          bookId: recommendation.book.id,
+                          rating,
+                        },
+                      });
+                    }
+                  }}
+                  recommendationWithReview={recommendation}
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
