@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/tailwind-utils';
-import BookPrompt from '@/types/BookPrompt';
+import BookPromptHydrated from '@/types/BookPromptHydrated';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -13,7 +13,7 @@ export type BookPromptFormInput = {
 };
 
 export type BookPromptComponentProps = {
-  bookPrompt?: BookPrompt;
+  bookPrompt?: BookPromptHydrated | null;
   onRecommend: SubmitHandler<BookPromptFormInput>;
 };
 
@@ -28,8 +28,8 @@ export default function BookPromptComponent({
     register,
     reset,
   } = useForm<BookPromptFormInput>({
-    defaultValues: {
-      promptText: bookPrompt?.promptText,
+    values: {
+      promptText: bookPrompt?.promptText ?? '',
     },
   });
 

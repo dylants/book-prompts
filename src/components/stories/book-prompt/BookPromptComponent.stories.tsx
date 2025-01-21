@@ -1,7 +1,7 @@
 import BookPromptComponent from '@/components/book-prompt/BookPromptComponent';
 import { Separator } from '@/components/ui/separator';
-import { fakeBookPrompt } from '@/lib/fakes/bookPrompt.fake';
-import BookPrompt from '@/types/BookPrompt';
+import { fakeBookPromptHydrated } from '@/lib/fakes/bookPrompt.fake';
+import BookPromptHydrated from '@/types/BookPromptHydrated';
 import { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 
@@ -15,9 +15,9 @@ type Story = StoryObj<typeof BookPromptComponent>;
 function WrapperComponent({
   initialBookPrompt,
 }: {
-  initialBookPrompt?: BookPrompt;
+  initialBookPrompt?: BookPromptHydrated;
 }) {
-  const [bookPrompt, setBookPrompt] = useState<BookPrompt | undefined>(
+  const [bookPrompt, setBookPrompt] = useState<BookPromptHydrated | undefined>(
     initialBookPrompt,
   );
 
@@ -27,7 +27,7 @@ function WrapperComponent({
         bookPrompt={bookPrompt}
         onRecommend={({ promptText }) => {
           setBookPrompt({
-            ...(bookPrompt || fakeBookPrompt()),
+            ...(bookPrompt || fakeBookPromptHydrated()),
             promptText,
           });
         }}
@@ -42,5 +42,7 @@ export const NoBookPrompt: Story = {
 };
 
 export const WithBookPrompt: Story = {
-  render: () => <WrapperComponent initialBookPrompt={fakeBookPrompt()} />,
+  render: () => (
+    <WrapperComponent initialBookPrompt={fakeBookPromptHydrated()} />
+  ),
 };
