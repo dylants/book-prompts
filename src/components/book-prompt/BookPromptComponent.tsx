@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/tailwind-utils';
 import BookPromptHydrated from '@/types/BookPromptHydrated';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useState } from 'react';
+import { useCallback, useImperativeHandle, useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 export type BookPromptFormInput = {
@@ -32,9 +32,13 @@ export default function BookPromptComponent({
       promptText: bookPrompt?.promptText ?? '',
     },
   });
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const onSubmit: SubmitHandler<BookPromptFormInput> = useCallback(
     async (formInput) => {
+      if (inputRef.current) {
+        inputRef.current.blur();
+      }
       await onRecommend(formInput);
       setIsEditMode(false);
     },
@@ -42,6 +46,14 @@ export default function BookPromptComponent({
   );
 
   const showForm = !bookPrompt || isEditMode;
+
+  const { ref: formRef, ...formRest } = register('promptText', {
+    required: true,
+  });
+
+  // https://stackoverflow.com/a/76739143/3666800
+  const ref = useRef<HTMLInputElement | null>(null);
+  useImperativeHandle(inputRef, () => ref.current as HTMLInputElement);
 
   return (
     <form
@@ -62,7 +74,12 @@ export default function BookPromptComponent({
                   className={cn(errors.promptText && 'border-b-red-500')}
                   defaultValue={bookPrompt?.promptText}
                   variant="underline"
-                  {...register('promptText', { required: true })}
+                  // https://www.react-hook-form.com/faqs/#Howtosharerefusage
+                  {...formRest}
+                  ref={(e) => {
+                    formRef(e);
+                    ref.current = e;
+                  }}
                 />
               </motion.div>
               <motion.div
