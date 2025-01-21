@@ -4,6 +4,7 @@ import BookPromptComponent, {
   BookPromptFormInput,
 } from '@/components/book-prompt/BookPromptComponent';
 import BookRecommendationWithReview from '@/components/recommendations/BookRecommendationWithReview';
+import { LoadingCircleOverlay } from '@/components/ui/loading-circle';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { Separator } from '@/components/ui/separator';
 import useBookReviews from '@/hooks/useBookReviews';
@@ -28,6 +29,7 @@ export default function PromptPage({
     BookRecommendationHydratedWithReview[]
   >([]);
   const { bookReviews, createBookReview, updateBookReview } = useBookReviews();
+  const [isGeneratingBookPrompt, setIsGeneratingBookPrompt] = useState(false);
 
   const loadBookPrompt = useCallback(
     async (bookPromptId: string) => {
@@ -67,12 +69,14 @@ export default function PromptPage({
     async (formInput) => {
       const { promptText } = formInput;
       try {
-        // TODO show loading animation while waiting for book prompt
+        setIsGeneratingBookPrompt(true);
         // TODO improve performance here by using the book prompt returned
         const { id } = await postBookPrompt({ promptText });
         router.push(`/prompts/${id}`);
       } catch (error) {
         return handleError(error);
+      } finally {
+        setIsGeneratingBookPrompt(false);
       }
     },
     [handleError, router],
@@ -122,6 +126,9 @@ export default function PromptPage({
           </div>
         )}
       </div>
+      <LoadingCircleOverlay isOpen={isGeneratingBookPrompt}>
+        <p className="text-lg text-slate-300">Generating recommendations...</p>
+      </LoadingCircleOverlay>
     </div>
   );
 }
