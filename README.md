@@ -2,6 +2,8 @@
 
 Recommends books based off reading prompts.
 
+![book-prompts](https://github.com/user-attachments/assets/5b74fe7e-0e9b-49db-bdc9-03864600e348)
+
 ## Getting Started
 
 Use [nvm](https://github.com/nvm-sh/nvm) to use the project's Node version
