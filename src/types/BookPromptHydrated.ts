@@ -1,8 +1,8 @@
 import BookPrompt from '@/types/BookPrompt';
-import HydratedBookRecommendation from '@/types/BookRecommendationHydrated';
+import BookRecommendationHydrated from '@/types/BookRecommendationHydrated';
 
 type BookPromptHydrated = BookPrompt & {
-  bookRecommendations: HydratedBookRecommendation[];
+  bookRecommendations: BookRecommendationHydrated[];
 };
 
 export default BookPromptHydrated;

@@ -3,7 +3,7 @@
 import BookPromptComponent, {
   BookPromptFormInput,
 } from '@/components/book-prompt/BookPromptComponent';
-import BookRecommendationWithReview from '@/components/recommendations/BookRecommendationWithReview';
+import BookRecommendationComponent from '@/components/recommendations/BookRecommendationComponent';
 import { LoadingCircleOverlay } from '@/components/ui/loading-circle';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { Separator } from '@/components/ui/separator';
@@ -11,7 +11,6 @@ import useBookReviews from '@/hooks/useBookReviews';
 import useHandleError from '@/hooks/useHandleError';
 import { getBookPrompt, postBookPrompt } from '@/lib/api';
 import BookPromptHydrated from '@/types/BookPromptHydrated';
-import BookRecommendationHydratedWithReview from '@/types/BookRecommendationHydratedWithReview';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
@@ -25,9 +24,6 @@ export default function PromptPage({
   const [bookPrompt, setBookPrompt] = useState<BookPromptHydrated | null>(null);
   const { handleError } = useHandleError();
   const router = useRouter();
-  const [recommendationsWithReviews, setRecommendationsWithReviews] = useState<
-    BookRecommendationHydratedWithReview[]
-  >([]);
   const { bookReviews, createBookReview, updateBookReview } = useBookReviews();
   const [isGeneratingBookPrompt, setIsGeneratingBookPrompt] = useState(false);
 
@@ -50,20 +46,6 @@ export default function PromptPage({
       loadBookPrompt(bookPromptId);
     }
   }, [bookPrompt, bookPromptId, isNew, loadBookPrompt, router]);
-
-  useEffect(() => {
-    if (bookPrompt) {
-      const recommendationsWithReviews = bookPrompt.bookRecommendations.map(
-        (recommendation) => {
-          const bookReview = bookReviews.find(
-            (review) => review.bookId === recommendation.book.id,
-          );
-          return { ...recommendation, bookReview };
-        },
-      );
-      setRecommendationsWithReviews(recommendationsWithReviews);
-    }
-  }, [bookPrompt, bookReviews]);
 
   const onRecommend: SubmitHandler<BookPromptFormInput> = useCallback(
     async (formInput) => {
@@ -100,27 +82,33 @@ export default function PromptPage({
         {bookPrompt && (
           <div className="grid gap-8">
             <Separator />
-            {recommendationsWithReviews.map((recommendation) => {
+            {bookPrompt.bookRecommendations.map((recommendation) => {
+              const bookReview = bookReviews.find(
+                (review) => review.bookId === recommendation.book.id,
+              );
               return (
-                <BookRecommendationWithReview
-                  key={recommendation.id}
-                  onSetRating={async (rating: number) => {
-                    if (recommendation.bookReview) {
-                      await updateBookReview({
-                        id: recommendation.bookReview.id,
-                        updates: { rating },
-                      });
-                    } else {
-                      await createBookReview({
-                        bookReview: {
-                          bookId: recommendation.book.id,
-                          rating,
-                        },
-                      });
-                    }
-                  }}
-                  recommendationWithReview={recommendation}
-                />
+                <div className="grid gap-8" key={recommendation.id}>
+                  <BookRecommendationComponent
+                    bookReview={bookReview}
+                    onSetBookReviewRating={async (rating: number) => {
+                      if (bookReview) {
+                        await updateBookReview({
+                          id: bookReview.id,
+                          updates: { rating },
+                        });
+                      } else {
+                        await createBookReview({
+                          bookReview: {
+                            bookId: recommendation.book.id,
+                            rating,
+                          },
+                        });
+                      }
+                    }}
+                    recommendation={recommendation}
+                  />
+                  <Separator />
+                </div>
               );
             })}
           </div>

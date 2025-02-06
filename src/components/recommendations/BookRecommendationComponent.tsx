@@ -1,4 +1,6 @@
+import ReviewStars from '@/components/ReviewStars';
 import BookRecommendationHydrated from '@/types/BookRecommendationHydrated';
+import BookReview from '@/types/BookReview';
 import {
   BookIcon,
   MessageCircleQuestionIcon,
@@ -6,11 +8,17 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 
-export default function BookRecommendation({
-  recommendation,
-}: {
+export type BookRecommendationComponentProps = {
+  bookReview?: BookReview;
+  onSetBookReviewRating: (rating: number) => Promise<void>;
   recommendation: BookRecommendationHydrated;
-}) {
+};
+
+export default function BookRecommendationComponent({
+  bookReview,
+  onSetBookReviewRating,
+  recommendation,
+}: BookRecommendationComponentProps) {
   const { book } = recommendation;
   return (
     <div className="flex gap-4">
@@ -33,12 +41,25 @@ export default function BookRecommendation({
           <div>
             <BookIcon size={26} />
           </div>
-          <div>
-            <span className="font-bold">{book.title}</span>
-            <span> by </span>
-            <span className="font-bold">
-              {book.authors.map((a) => a.name).join(', ')}
-            </span>
+          <div className="grid gap-1 mt-[-5px]">
+            <div className="flex gap-2 items-center">
+              <div className="font-bold">{book.title}</div>
+              <ReviewStars
+                onSetScore={onSetBookReviewRating}
+                score={bookReview?.rating}
+              />
+            </div>
+            <div className="flex gap-2 items-center">
+              <div>
+                by{' '}
+                <span className="font-bold">
+                  {book.authors.map((a) => a.name).join(', ')}
+                </span>
+              </div>
+              {/* TODO author review
+              <ReviewStars onSetScore={async () => {}} score={2} />
+               */}
+            </div>
           </div>
         </div>
         <div className="flex gap-2">
@@ -56,7 +77,7 @@ export default function BookRecommendation({
           <div>
             <MessageCircleQuestionIcon size={26} />
           </div>
-          <div>
+          <div className="mt-[-2px]">
             <span className="font-bold">Why:</span> {recommendation.explanation}
           </div>
         </div>
