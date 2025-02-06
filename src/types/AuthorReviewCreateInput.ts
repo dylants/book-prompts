@@ -2,7 +2,7 @@ import { AuthorReview, Prisma } from '@prisma/client';
 
 type AuthorReviewCreateInput = Omit<
   Prisma.AuthorReviewCreateInput,
-  'id' | 'createdAt' | 'updatedAt' | 'user' | 'author'
+  'createdAt' | 'updatedAt' | 'user' | 'author'
 > & {
   authorId: AuthorReview['authorId'];
 };

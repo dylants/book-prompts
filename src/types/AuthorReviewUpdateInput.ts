@@ -1,8 +1,5 @@
-import { Prisma } from '@prisma/client';
-
-type AuthorReviewUpdateInput = Omit<
-  Prisma.AuthorReviewUpdateInput,
-  'id' | 'createdAt' | 'updatedAt' | 'user' | 'author'
->;
+type AuthorReviewUpdateInput = {
+  rating: number;
+};
 
 export default AuthorReviewUpdateInput;

@@ -6,6 +6,7 @@ import prisma from '@/lib/prisma';
 import Author from '@/types/Author';
 import AuthorReviewCreateInput from '@/types/AuthorReviewCreateInput';
 import User from '@/types/User';
+import { createId } from '@paralleldrive/cuid2';
 import { NextRequest } from 'next/server';
 import { USER_NO_REVIEWS_EMAIL } from '../../fixtures/user.fixture';
 import { establishAuth } from '../../test-lib/auth';
@@ -57,6 +58,37 @@ describe('/api/protected/author-reviews POST', () => {
         rating: 3,
       }),
     );
+  });
+
+  it('should fail when the ID already exists', async () => {
+    const authorReview: AuthorReviewCreateInput = {
+      authorId: author.id,
+      id: createId(),
+      rating: 3,
+    };
+
+    const request = new NextRequest(url, {
+      body: JSON.stringify(authorReview),
+      method: 'POST',
+    });
+    establishAuth({ request, user });
+
+    const response = await POST(request);
+
+    expect(response.status).toEqual(200);
+
+    const request2 = new NextRequest(url, {
+      body: JSON.stringify(authorReview),
+      method: 'POST',
+    });
+    establishAuth({ request: request2, user });
+    const response2 = await POST(request2);
+
+    // TODO we fail, but we should probably improve this failure message
+    expect(response2.status).toEqual(500);
+    expect(await response2.json()).toEqual({
+      error: 'Unknown error',
+    });
   });
 
   it('should fail when rating is below 0', async () => {
