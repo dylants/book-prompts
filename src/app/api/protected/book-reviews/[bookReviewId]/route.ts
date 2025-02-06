@@ -15,7 +15,7 @@ import { fromZodError } from 'zod-validation-error';
 export type PutRequestBody = BookReviewUpdateInput;
 
 const putSchema: toZod<PutRequestBody> = z.object({
-  rating: z.number().optional(),
+  rating: z.number(),
 });
 
 export type PutResponseBody = {

@@ -1,8 +1,5 @@
-import { Prisma } from '@prisma/client';
-
-type BookReviewUpdateInput = Omit<
-  Prisma.BookReviewUpdateInput,
-  'id' | 'createdAt' | 'updatedAt' | 'user' | 'book'
->;
+type BookReviewUpdateInput = {
+  rating: number;
+};
 
 export default BookReviewUpdateInput;

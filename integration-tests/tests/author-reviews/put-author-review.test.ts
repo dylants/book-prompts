@@ -79,6 +79,23 @@ describe('/author-reviews/[authorReviewId] PUT', () => {
     });
   });
 
+  it('should fail to update without required fields', async () => {
+    const request = new NextRequest(url, {
+      body: JSON.stringify({}),
+      method: 'PUT',
+    });
+    establishAuth({ request, user });
+
+    const response = await PUT(request, {
+      params: { authorReviewId: existingAuthorReview.id.toString() },
+    });
+
+    expect(response.status).toEqual(400);
+    expect(await response.json()).toEqual({
+      error: 'Validation error: Required at "rating"',
+    });
+  });
+
   it('should fail to update with bad data', async () => {
     const request = new NextRequest(url, {
       body: JSON.stringify({ rating: 'not number' }),

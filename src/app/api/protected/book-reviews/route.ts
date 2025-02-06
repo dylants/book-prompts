@@ -48,6 +48,7 @@ export type PostRequestBody = BookReviewCreateInput;
 
 const postSchema: toZod<PostRequestBody> = z.object({
   bookId: z.string(),
+  id: z.string().optional(),
   rating: z.number(),
 });
 
@@ -77,13 +78,14 @@ export async function POST(
       throw new BadRequestError(message.toString());
     }
 
-    const { bookId, rating } = validatedBody.data;
+    const { bookId, id, rating } = validatedBody.data;
 
     const bookReview = await prisma.bookReview.create({
       data: {
         book: {
           connect: { id: bookId },
         },
+        id,
         rating,
         user: {
           connect: { id: session.user.id },

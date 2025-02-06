@@ -48,6 +48,7 @@ export type PostRequestBody = AuthorReviewCreateInput;
 
 const postSchema: toZod<PostRequestBody> = z.object({
   authorId: z.string(),
+  id: z.string().optional(),
   rating: z.number(),
 });
 
@@ -77,13 +78,14 @@ export async function POST(
       throw new BadRequestError(message.toString());
     }
 
-    const { authorId, rating } = validatedBody.data;
+    const { authorId, id, rating } = validatedBody.data;
 
     const authorReview = await prisma.authorReview.create({
       data: {
         author: {
           connect: { id: authorId },
         },
+        id,
         rating,
         user: {
           connect: { id: session.user.id },
