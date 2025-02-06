@@ -8,6 +8,16 @@ export const PASSWORD = 'password';
 
 const userFixtures: Prisma.UserCreateInput[] = [
   {
+    authorReviews: {
+      createMany: {
+        data: [
+          { authorId: 'authorOne', rating: 2 },
+          { authorId: 'authorTwo', rating: 4 },
+          { authorId: 'authorThree', rating: 1 },
+          { authorId: 'authorFour', rating: 5 },
+        ],
+      },
+    },
     bookReviews: {
       createMany: {
         data: [
@@ -28,6 +38,11 @@ const userFixtures: Prisma.UserCreateInput[] = [
     password: PASSWORD,
   },
   {
+    authorReviews: {
+      createMany: {
+        data: [{ authorId: 'authorFive', rating: 4 }],
+      },
+    },
     bookReviews: {
       createMany: {
         data: [{ bookId: 'five', rating: 3 }],

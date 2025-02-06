@@ -17,8 +17,9 @@ model User {
   email    String @unique
   password String
 
-  bookReviews BookReview[]
-  bookPrompts BookPrompt[]
+  bookReviews   BookReview[]
+  authorReviews AuthorReview[]
+  bookPrompts   BookPrompt[]
 }
 
 model Book {
@@ -45,7 +46,8 @@ model Author {
 
   name String @unique
 
-  books Book[]
+  books         Book[]
+  authorReviews AuthorReview[]
 }
 
 model BookReview {
@@ -61,6 +63,21 @@ model BookReview {
 
   book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
   bookId String
+}
+
+model AuthorReview {
+  id        String   @id @default(cuid(2))
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  /// The user's rating of the author (1-5)
+  rating Int // includes constraint bounding from 1-5, inclusive
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  author   Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId String
 }
 
 model BookPrompt {
