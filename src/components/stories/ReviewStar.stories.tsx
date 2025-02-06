@@ -3,6 +3,11 @@ import { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof ReviewStar> = {
   component: ReviewStar,
+  render: (args) => (
+    <div className="w-[18px]">
+      <ReviewStar {...args} />
+    </div>
+  ),
 };
 
 export default meta;
