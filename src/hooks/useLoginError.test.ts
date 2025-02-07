@@ -16,7 +16,12 @@ describe('useLoginError', () => {
     let buildLoginErrorUrl: UseLoginErrorResult['buildLoginErrorUrl'];
 
     beforeEach(() => {
-      mockUsePathname.mockReturnValue('/');
+      const originalLocation = window.location;
+      jest.spyOn(window, 'location', 'get').mockImplementation(() => ({
+        ...originalLocation,
+        pathname: '/foo',
+      }));
+
       ({
         result: {
           current: { buildLoginErrorUrl },
@@ -24,15 +29,19 @@ describe('useLoginError', () => {
       } = renderHook(() => useLoginError()));
     });
 
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
     it('should build the correct invalid login url', () => {
       expect(buildLoginErrorUrl(LoginError.INVALID_LOGIN)).toEqual(
-        '/login?login-error=invalid-login&return-url=/',
+        '/login?login-error=invalid-login&return-url=/foo',
       );
     });
 
     it('should build the correct unauthorized url', () => {
       expect(buildLoginErrorUrl(LoginError.UNAUTHORIZED)).toEqual(
-        '/login?login-error=unauthorized&return-url=/',
+        '/login?login-error=unauthorized&return-url=/foo',
       );
     });
   });
