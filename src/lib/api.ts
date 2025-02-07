@@ -2,6 +2,9 @@ import { AuthPostRequestBody } from '@/app/api/auth/route';
 import { PostRequestBody as BookPromptPostRequestBody } from '@/app/api/protected/book-prompts/route';
 import UnauthorizedError from '@/lib/errors/UnauthorizedError';
 import Auth from '@/types/Auth';
+import AuthorReview from '@/types/AuthorReview';
+import AuthorReviewCreateInput from '@/types/AuthorReviewCreateInput';
+import AuthorReviewUpdateInput from '@/types/AuthorReviewUpdateInput';
 import BookPrompt from '@/types/BookPrompt';
 import BookPromptHydrated from '@/types/BookPromptHydrated';
 import BookPromptTable from '@/types/BookPromptTable';
@@ -116,6 +119,44 @@ export async function putBookReview({
   updates: BookReviewUpdateInput;
 }): Promise<BookReview> {
   return api<BookReview>(`/api/protected/book-reviews/${id}`, {
+    body: JSON.stringify(updates),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'PUT',
+  });
+}
+
+// *************************************************************
+// ********************** AUTHOR REVIEWS **********************
+// *************************************************************
+
+export async function getAuthorReviews(): Promise<AuthorReview[]> {
+  return api<AuthorReview[]>('/api/protected/author-reviews');
+}
+
+export async function postAuthorReviews({
+  authorReview,
+}: {
+  authorReview: AuthorReviewCreateInput;
+}): Promise<AuthorReview> {
+  return api<AuthorReview>('/api/protected/author-reviews', {
+    body: JSON.stringify(authorReview),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+  });
+}
+
+export async function putAuthorReview({
+  id,
+  updates,
+}: {
+  id: AuthorReview['id'];
+  updates: AuthorReviewUpdateInput;
+}): Promise<AuthorReview> {
+  return api<AuthorReview>(`/api/protected/author-reviews/${id}`, {
     body: JSON.stringify(updates),
     headers: {
       'Content-Type': 'application/json',
