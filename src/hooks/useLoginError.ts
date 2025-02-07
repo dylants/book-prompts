@@ -1,7 +1,6 @@
 'use client';
 
 import LoginError from '@/types/LoginError';
-import { usePathname } from 'next/navigation';
 import { useCallback } from 'react';
 
 export type UseLoginErrorResult = {
@@ -26,14 +25,9 @@ const LOGIN_ERROR_VALUES = {
 const RETURN_URL_KEY = 'return-url';
 
 export default function useLoginError(): UseLoginErrorResult {
-  const pathname = usePathname();
-
-  const buildLoginErrorUrl = useCallback(
-    (loginError: LoginError) => {
-      return `/login?${LOGIN_ERROR_KEY}=${LOGIN_ERROR_VALUES[loginError]}&${RETURN_URL_KEY}=${pathname}`;
-    },
-    [pathname],
-  );
+  const buildLoginErrorUrl = useCallback((loginError: LoginError) => {
+    return `/login?${LOGIN_ERROR_KEY}=${LOGIN_ERROR_VALUES[loginError]}&${RETURN_URL_KEY}=${window.location.pathname}`;
+  }, []);
 
   const parseLoginErrorUrl = useCallback((searchParams: URLSearchParams) => {
     const loginError = searchParams.get(LOGIN_ERROR_KEY);
