@@ -8,12 +8,20 @@ import { renderHook } from '@testing-library/react';
 
 const mockPush = jest.fn();
 jest.mock('next/navigation', () => ({
-  usePathname: () => '/path',
   useRouter: () => ({ push: mockPush }),
 }));
 
 describe('useHandleError', () => {
+  beforeEach(() => {
+    const originalLocation = window.location;
+    jest.spyOn(window, 'location', 'get').mockImplementation(() => ({
+      ...originalLocation,
+      pathname: '/path',
+    }));
+  });
+
   afterEach(() => {
+    jest.restoreAllMocks();
     jest.resetAllMocks();
   });
 
