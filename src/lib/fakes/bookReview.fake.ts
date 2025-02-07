@@ -1,5 +1,5 @@
+import BookReview from '@/types/BookReview';
 import { faker } from '@faker-js/faker';
-import { BookReview } from '@prisma/client';
 
 export function fakeBookReview(): BookReview {
   return {

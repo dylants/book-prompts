@@ -4,7 +4,7 @@ import UnauthorizedError from '@/lib/errors/UnauthorizedError';
 import Auth from '@/types/Auth';
 import BookPrompt from '@/types/BookPrompt';
 import BookPromptHydrated from '@/types/BookPromptHydrated';
-import { BookPromptTable } from '@/types/BookPromptTable';
+import BookPromptTable from '@/types/BookPromptTable';
 import BookReview from '@/types/BookReview';
 import BookReviewCreateInput from '@/types/BookReviewCreateInput';
 import BookReviewUpdateInput from '@/types/BookReviewUpdateInput';

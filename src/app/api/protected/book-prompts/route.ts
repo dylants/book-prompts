@@ -14,7 +14,7 @@ import { googleBookSearch } from '@/lib/search/google.search';
 import { buildBookFromSearchResult } from '@/lib/search/search';
 import AIBookRecommendation from '@/types/AIBookRecommendation';
 import BookPromptHydrated from '@/types/BookPromptHydrated';
-import { BookPromptTable } from '@/types/BookPromptTable';
+import BookPromptTable from '@/types/BookPromptTable';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
 import Session from '@/types/Session';
 import { NextRequest, NextResponse } from 'next/server';
