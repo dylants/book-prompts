@@ -22,7 +22,6 @@ describe('useHandleError', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
-    jest.resetAllMocks();
   });
 
   it('route to the login page on UnauthorizedError', () => {
