@@ -4,7 +4,7 @@ import BookPromptsTable from '@/components/book-prompt/BookPromptsTable';
 import { Button } from '@/components/ui/button';
 import useHandleError from '@/hooks/useHandleError';
 import { getBookPrompts } from '@/lib/api';
-import { BookPromptTable } from '@/types/BookPromptTable';
+import BookPromptTable from '@/types/BookPromptTable';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';

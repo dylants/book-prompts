@@ -1,8 +1,9 @@
 import { fakeBookHydrated } from '@/lib/fakes/book.fake';
 import AIBookRecommendation from '@/types/AIBookRecommendation';
+import BookRecommendation from '@/types/BookRecommendation';
 import BookRecommendationHydrated from '@/types/BookRecommendationHydrated';
 import { faker } from '@faker-js/faker';
-import { BookRecommendation, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 export function fakeAIBookRecommendation(): AIBookRecommendation {
   return {

@@ -1,7 +1,7 @@
 import DataTable from '@/components/table/DataTable';
 import SortableHeader from '@/components/table/SortableHeader';
 import { TableCell, TableHead } from '@/components/ui/table';
-import { BookPromptTable } from '@/types/BookPromptTable';
+import BookPromptTable from '@/types/BookPromptTable';
 import { ColumnDef } from '@tanstack/react-table';
 import Link from 'next/link';
 
@@ -16,7 +16,7 @@ const getColumns = (linkPathname: string): ColumnDef<BookPromptTable>[] => [
             className="table-cell align-middle p-2 w-[450px] max-w-[450px]"
           >
             <div className="overflow-hidden text-ellipsis whitespace-nowrap">
-              <>{props.getValue()}</>
+              <>{props.getValue() as string}</>
             </div>
           </Link>
         </TableCell>
@@ -44,7 +44,7 @@ const getColumns = (linkPathname: string): ColumnDef<BookPromptTable>[] => [
             className="table-cell align-middle p-2 w-[100px] max-w-[100px]"
           >
             <div className="overflow-hidden text-ellipsis whitespace-nowrap">
-              <>{props.getValue()}</>
+              <>{props.getValue() as string}</>
             </div>
           </Link>
         </TableCell>
@@ -72,7 +72,7 @@ const getColumns = (linkPathname: string): ColumnDef<BookPromptTable>[] => [
             className="table-cell align-middle p-2 w-[100px] max-w-[100px]"
           >
             <div className="overflow-hidden text-ellipsis whitespace-nowrap">
-              <>{props.getValue()}</>
+              <>{props.getValue() as string}</>
             </div>
           </Link>
         </TableCell>
@@ -94,7 +94,7 @@ const getColumns = (linkPathname: string): ColumnDef<BookPromptTable>[] => [
       new Date(bookPrompt.createdAt).toLocaleDateString(),
     cell: (props) => (
       <div className="text-right">
-        <>{props.getValue()}</>
+        <>{props.getValue() as string}</>
       </div>
     ),
     header: ({ column }) => <SortableHeader column={column} text="Date" />,
