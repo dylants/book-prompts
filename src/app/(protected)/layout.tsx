@@ -1,5 +1,6 @@
 'use client';
 
+import ProtectedContextProvider from '@/app/(protected)/ProtectedContextProvider';
 import useAppContext from '@/hooks/useAppContext';
 import useLoginError from '@/hooks/useLoginError';
 import LoginError from '@/types/LoginError';
@@ -27,5 +28,5 @@ export default function ProtectedLayout({
     return <></>;
   }
 
-  return <>{children}</>;
+  return <ProtectedContextProvider>{children}</ProtectedContextProvider>;
 }

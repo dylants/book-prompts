@@ -12,6 +12,7 @@ export const config: Config = {
   setupFilesAfterEnv: [
     '<rootDir>/test-setup/fetch-polyfill.setup.ts',
     '<rootDir>/test-setup/openai-mock.setup.ts',
+    '<rootDir>/test-setup/text-encoding-polyfill.setup.ts',
   ],
   testPathIgnorePatterns: ['/node_modules/', '/integration-tests/'],
 };
