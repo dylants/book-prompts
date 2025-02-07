@@ -24,8 +24,14 @@ export default function PromptPage({
   const [bookPrompt, setBookPrompt] = useState<BookPromptHydrated | null>(null);
   const { handleError } = useHandleError();
   const router = useRouter();
-  const { bookReviews, createBookReview, updateBookReview } =
-    useProtectedContext();
+  const {
+    authorReviews,
+    bookReviews,
+    createAuthorReview,
+    createBookReview,
+    updateAuthorReview,
+    updateBookReview,
+  } = useProtectedContext();
   const [isGeneratingBookPrompt, setIsGeneratingBookPrompt] = useState(false);
 
   const loadBookPrompt = useCallback(
@@ -87,10 +93,32 @@ export default function PromptPage({
               const bookReview = bookReviews.find(
                 (review) => review.bookId === recommendation.book.id,
               );
+              const authorReview = authorReviews.find(
+                (review) =>
+                  // TODO how do we represent multiple authors?
+                  review.authorId === recommendation.book.authors[0].id,
+              );
               return (
                 <div className="grid gap-8" key={recommendation.id}>
                   <BookRecommendationComponent
+                    authorReview={authorReview}
                     bookReview={bookReview}
+                    onSetAuthorReviewRating={async (rating: number) => {
+                      if (authorReview) {
+                        await updateAuthorReview({
+                          id: authorReview.id,
+                          updates: { rating },
+                        });
+                      } else {
+                        await createAuthorReview({
+                          authorReview: {
+                            // TODO how do we represent multiple authors?
+                            authorId: recommendation.book.authors[0].id,
+                            rating,
+                          },
+                        });
+                      }
+                    }}
                     onSetBookReviewRating={async (rating: number) => {
                       if (bookReview) {
                         await updateBookReview({

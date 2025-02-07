@@ -1,4 +1,5 @@
 import ReviewStars from '@/components/ReviewStars';
+import AuthorReview from '@/types/AuthorReview';
 import BookRecommendationHydrated from '@/types/BookRecommendationHydrated';
 import BookReview from '@/types/BookReview';
 import {
@@ -9,13 +10,17 @@ import {
 import Image from 'next/image';
 
 export type BookRecommendationComponentProps = {
+  authorReview?: AuthorReview;
   bookReview?: BookReview;
+  onSetAuthorReviewRating: (rating: number) => Promise<void>;
   onSetBookReviewRating: (rating: number) => Promise<void>;
   recommendation: BookRecommendationHydrated;
 };
 
 export default function BookRecommendationComponent({
+  authorReview,
   bookReview,
+  onSetAuthorReviewRating,
   onSetBookReviewRating,
   recommendation,
 }: BookRecommendationComponentProps) {
@@ -56,9 +61,10 @@ export default function BookRecommendationComponent({
                   {book.authors.map((a) => a.name).join(', ')}
                 </span>
               </div>
-              {/* TODO author review
-              <ReviewStars onSetScore={async () => {}} score={2} />
-               */}
+              <ReviewStars
+                onSetScore={onSetAuthorReviewRating}
+                score={authorReview?.rating}
+              />
             </div>
           </div>
         </div>

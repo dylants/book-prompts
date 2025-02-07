@@ -7,7 +7,9 @@ import ProtectedContext, {
 } from '@/app/(protected)/ProtectedContext';
 import ProtectedContextProvider from '@/app/(protected)/ProtectedContextProvider';
 import useProtectedContext from '@/hooks/useProtectedContext';
+import { fakeAuthorReview } from '@/lib/fakes/authorReview.fake';
 import { fakeBookReview } from '@/lib/fakes/bookReview.fake';
+import AuthorReview from '@/types/AuthorReview';
 import { BookReview } from '@prisma/client';
 import { renderHook, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
@@ -43,8 +45,15 @@ describe('useProtectedContext', () => {
   });
 
   describe('with mock data', () => {
+    const AUTHOR_REVIEWS: AuthorReview[] = [
+      fakeAuthorReview(),
+      fakeAuthorReview(),
+    ];
     const BOOK_REVIEWS: BookReview[] = [fakeBookReview(), fakeBookReview()];
     const server = setupServer(
+      rest.get('/api/protected/author-reviews', (_, res, ctx) => {
+        return res(ctx.json({ data: AUTHOR_REVIEWS }));
+      }),
       rest.get('/api/protected/book-reviews', (_, res, ctx) => {
         return res(ctx.json({ data: BOOK_REVIEWS }));
       }),
