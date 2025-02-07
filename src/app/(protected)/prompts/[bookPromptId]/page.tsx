@@ -7,8 +7,8 @@ import BookRecommendationComponent from '@/components/recommendations/BookRecomm
 import { LoadingCircleOverlay } from '@/components/ui/loading-circle';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { Separator } from '@/components/ui/separator';
-import useBookReviews from '@/hooks/useBookReviews';
 import useHandleError from '@/hooks/useHandleError';
+import useProtectedContext from '@/hooks/useProtectedContext';
 import { getBookPrompt, postBookPrompt } from '@/lib/api';
 import BookPromptHydrated from '@/types/BookPromptHydrated';
 import { useRouter } from 'next/navigation';
@@ -24,7 +24,8 @@ export default function PromptPage({
   const [bookPrompt, setBookPrompt] = useState<BookPromptHydrated | null>(null);
   const { handleError } = useHandleError();
   const router = useRouter();
-  const { bookReviews, createBookReview, updateBookReview } = useBookReviews();
+  const { bookReviews, createBookReview, updateBookReview } =
+    useProtectedContext();
   const [isGeneratingBookPrompt, setIsGeneratingBookPrompt] = useState(false);
 
   const loadBookPrompt = useCallback(

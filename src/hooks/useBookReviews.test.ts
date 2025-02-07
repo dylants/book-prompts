@@ -10,7 +10,6 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
 jest.mock('next/navigation', () => ({
-  usePathname: () => '/path',
   useRouter: () => {},
 }));
 
@@ -54,8 +53,9 @@ describe('useBookReviews', () => {
   it('should load the book reviews', async () => {
     const { result } = renderHook(() => useBookReviews());
 
+    result.current.loadBookReviews();
     await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
+      expect(result.current.bookReviews).toBeDefined();
     });
 
     expect(result.current.bookReviews).toEqual(
@@ -66,11 +66,12 @@ describe('useBookReviews', () => {
   it('should create a book review', async () => {
     const { result } = renderHook(() => useBookReviews());
 
+    result.current.loadBookReviews();
     await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
+      expect(result.current.bookReviews).toBeDefined();
     });
 
-    expect(result.current.bookReviews.length).toEqual(3);
+    expect(result.current.bookReviews?.length).toEqual(3);
 
     const { createBookReview } = result.current;
     await act(async () => {
@@ -79,7 +80,7 @@ describe('useBookReviews', () => {
       });
     });
 
-    expect(result.current.bookReviews.length).toEqual(4);
+    expect(result.current.bookReviews?.length).toEqual(4);
     expect(result.current.bookReviews).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -93,8 +94,9 @@ describe('useBookReviews', () => {
   it('should update a book review', async () => {
     const { result } = renderHook(() => useBookReviews());
 
+    result.current.loadBookReviews();
     await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
+      expect(result.current.bookReviews).toBeDefined();
     });
 
     expect(result.current.bookReviews).toEqual(
