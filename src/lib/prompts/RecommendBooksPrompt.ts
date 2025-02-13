@@ -44,7 +44,7 @@ titles, just to find that perfect book recommendation.
   }
 
   async getUserPrompt(): Promise<string> {
-    const books = await prisma.bookReview.findMany({
+    const bookReviews = await prisma.bookReview.findMany({
       orderBy: { rating: 'desc' },
       select: {
         book: {
@@ -57,6 +57,14 @@ titles, just to find that perfect book recommendation.
             title: true,
           },
         },
+        rating: true,
+      },
+      where: { userId: this.user.id },
+    });
+    const authorReviews = await prisma.authorReview.findMany({
+      orderBy: { rating: 'desc' },
+      select: {
+        author: { select: { name: true } },
         rating: true,
       },
       where: { userId: this.user.id },
@@ -99,17 +107,20 @@ remove them.
 - Submit the solution, limiting the recommendations to the amount stated in OBJECTIVE.
 
 CONSIDERATIONS:
-- INPUT includes a list of books which I have previously read.
-- Each previously read book has a 1-5 rating from me, 1 being lowest rating,
-and 5 being highest rating.
-- Do not recommend books that have been previously read, but instead use these
-books to predict books that I would enjoy, and which satisfy the OBJECTIVE.
+- INPUT includes a list of books which I have previously read. Each previously read
+book has a 1-5 rating from me, 1 being lowest rating, and 5 being highest rating.
+- INPUT includes a list of authors which I have previously read. Each previously read
+author has a 1-5 rating from me, 1 being lowest rating, and 5 being highest rating.
+- Do not recommend books that have been previously read.
+- Use the book and author ratings to predict books that I would enjoy, and which
+satisfy the OBJECTIVE.
 - Emphasize books which are highly reviewed or highly rated online.
 - Emphasize books which have more reviews or more ratings online.
 - Emphasize books which appear to be more popular online.
 
 INPUT:
-- Previously read books: ${JSON.stringify(books)}
+- Previously read books: ${JSON.stringify(bookReviews)}
+- Previously read authors: ${JSON.stringify(authorReviews)}
 `);
   }
 
