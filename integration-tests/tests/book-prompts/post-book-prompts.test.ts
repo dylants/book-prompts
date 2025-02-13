@@ -103,32 +103,34 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
   afterAll(() => server.close());
 
   describe('when the user has book reviews', () => {
-    let user: User & {
-      bookReviews: {
-        book: { authors: { name: string }[]; title: string };
-        rating: number;
-      }[];
-    };
+    let authorReviews: {
+      author: { name: string };
+      rating: number;
+    }[];
     let bookReviews: {
       book: { authors: { name: string }[]; title: string };
       rating: number;
     }[];
+    let user: User & {
+      authorReviews: typeof authorReviews;
+      bookReviews: typeof bookReviews;
+    };
 
     beforeAll(async () => {
       user = await prisma.user.findFirstOrThrow({
         include: {
+          authorReviews: {
+            orderBy: { rating: 'desc' },
+            select: {
+              author: { select: { name: true } },
+              rating: true,
+            },
+          },
           bookReviews: {
             orderBy: { rating: 'desc' },
             select: {
               book: {
-                select: {
-                  authors: {
-                    select: {
-                      name: true,
-                    },
-                  },
-                  title: true,
-                },
+                select: { authors: { select: { name: true } }, title: true },
               },
               rating: true,
             },
@@ -138,6 +140,7 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
       });
 
       bookReviews = user.bookReviews;
+      authorReviews = user.authorReviews;
     });
 
     it('should fail when not passing correct data', async () => {
@@ -200,6 +203,11 @@ describe('/api/protected/book-prompts POST Integration Test', () => {
         expect(userPrompt).toEqual(
           expect.stringContaining(
             `Previously read books: ${JSON.stringify(bookReviews)}`,
+          ),
+        );
+        expect(userPrompt).toEqual(
+          expect.stringContaining(
+            `Previously read authors: ${JSON.stringify(authorReviews)}`,
           ),
         );
 
