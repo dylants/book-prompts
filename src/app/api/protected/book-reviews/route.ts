@@ -5,6 +5,7 @@ import { authMiddleware } from '@/lib/middleware';
 import prisma from '@/lib/prisma';
 import BookReview from '@/types/BookReview';
 import BookReviewCreateInput from '@/types/BookReviewCreateInput';
+import BookReviewHydrated from '@/types/BookReviewHydrated';
 import NextResponseErrorBody from '@/types/NextResponseErrorBody';
 import Session from '@/types/Session';
 import { NextRequest, NextResponse } from 'next/server';
@@ -13,7 +14,7 @@ import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 
 export type GetResponseBody = {
-  data: BookReview[];
+  data: BookReviewHydrated[];
 };
 
 export async function GET(
@@ -31,6 +32,13 @@ export async function GET(
 
   try {
     const bookReviews = await prisma.bookReview.findMany({
+      include: {
+        book: {
+          include: {
+            authors: true,
+          },
+        },
+      },
       orderBy: { createdAt: 'desc' },
       where: { userId: session.user.id },
     });

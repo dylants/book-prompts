@@ -10,6 +10,7 @@ import BookPromptHydrated from '@/types/BookPromptHydrated';
 import BookPromptTable from '@/types/BookPromptTable';
 import BookReview from '@/types/BookReview';
 import BookReviewCreateInput from '@/types/BookReviewCreateInput';
+import BookReviewHydrated from '@/types/BookReviewHydrated';
 import BookReviewUpdateInput from '@/types/BookReviewUpdateInput';
 
 /**
@@ -93,8 +94,8 @@ export async function getBookPrompt({
 // ********************** BOOK REVIEWS *************************
 // *************************************************************
 
-export async function getBookReviews(): Promise<BookReview[]> {
-  return api<BookReview[]>('/api/protected/book-reviews');
+export async function getBookReviews(): Promise<BookReviewHydrated[]> {
+  return api<BookReviewHydrated[]>('/api/protected/book-reviews');
 }
 
 export async function postBookReviews({

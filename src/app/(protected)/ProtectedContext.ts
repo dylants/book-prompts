@@ -1,5 +1,6 @@
 import AuthorReviewCreateInput from '@/types/AuthorReviewCreateInput';
 import AuthorReviewUpdateInput from '@/types/AuthorReviewUpdateInput';
+import BookHydrated from '@/types/BookHydrated';
 import BookReview from '@/types/BookReview';
 import BookReviewCreateInput from '@/types/BookReviewCreateInput';
 import BookReviewUpdateInput from '@/types/BookReviewUpdateInput';
@@ -15,8 +16,10 @@ export type ProtectedContextType = {
     authorReview: AuthorReviewCreateInput;
   }) => Promise<void>;
   createBookReview: ({
+    bookHydrated,
     bookReview,
   }: {
+    bookHydrated: BookHydrated;
     bookReview: BookReviewCreateInput;
   }) => Promise<void>;
   updateAuthorReview: ({
