@@ -127,6 +127,7 @@ export default function PromptPage({
                         });
                       } else {
                         await createBookReview({
+                          bookHydrated: recommendation.book,
                           bookReview: {
                             bookId: recommendation.book.id,
                             rating,

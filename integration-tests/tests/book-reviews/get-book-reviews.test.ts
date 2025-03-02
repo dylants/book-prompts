@@ -1,6 +1,6 @@
 import { GET, GetResponseBody } from '@/app/api/protected/book-reviews/route';
 import prisma from '@/lib/prisma';
-import BookReview from '@/types/BookReview';
+import BookReviewHydrated from '@/types/BookReviewHydrated';
 import User from '@/types/User';
 import { NextRequest } from 'next/server';
 import { USER_WITH_REVIEWS_EMAIL } from '../../fixtures/user.fixture';
@@ -9,13 +9,22 @@ import { establishAuth } from '../../test-lib/auth';
 const url = 'https://localhost';
 
 describe('/book-reviews GET', () => {
-  let user: User & { bookReviews: BookReview[] };
-  let existingBookReviews: BookReview[];
+  let user: User & { bookReviews: BookReviewHydrated[] };
+  let existingBookReviews: BookReviewHydrated[];
 
   beforeAll(async () => {
     user = await prisma.user.findFirstOrThrow({
       include: {
-        bookReviews: true,
+        bookReviews: {
+          include: {
+            book: {
+              include: {
+                authors: true,
+              },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+        },
       },
       where: { email: USER_WITH_REVIEWS_EMAIL },
     });

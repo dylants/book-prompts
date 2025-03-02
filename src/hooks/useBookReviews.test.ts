@@ -3,8 +3,12 @@
  */
 
 import useBookReviews from '@/hooks/useBookReviews';
-import { fakeBookReview } from '@/lib/fakes/bookReview.fake';
-import { BookReview } from '@prisma/client';
+import { fakeBookHydrated } from '@/lib/fakes/book.fake';
+import {
+  fakeBookReview,
+  fakeBookReviewHydrated,
+} from '@/lib/fakes/bookReview.fake';
+import BookReviewHydrated from '@/types/BookReviewHydrated';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
@@ -19,10 +23,13 @@ describe('useBookReviews', () => {
     id: 'abc',
     rating: 2,
   };
-  const BOOK_REVIEWS: BookReview[] = [
-    bookReview,
-    fakeBookReview(),
-    fakeBookReview(),
+  const BOOK_REVIEWS: BookReviewHydrated[] = [
+    {
+      book: fakeBookHydrated(),
+      ...bookReview,
+    },
+    fakeBookReviewHydrated(),
+    fakeBookReviewHydrated(),
   ];
 
   const server = setupServer(
@@ -76,6 +83,7 @@ describe('useBookReviews', () => {
     const { createBookReview } = result.current;
     await act(async () => {
       await createBookReview({
+        bookHydrated: fakeBookHydrated(),
         bookReview: { bookId: 'xyz', rating: 5 },
       });
     });

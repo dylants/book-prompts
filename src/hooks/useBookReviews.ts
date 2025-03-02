@@ -2,17 +2,21 @@
 
 import useHandleError from '@/hooks/useHandleError';
 import { getBookReviews, postBookReviews, putBookReview } from '@/lib/api';
+import BookHydrated from '@/types/BookHydrated';
 import BookReview from '@/types/BookReview';
 import BookReviewCreateInput from '@/types/BookReviewCreateInput';
+import BookReviewHydrated from '@/types/BookReviewHydrated';
 import BookReviewUpdateInput from '@/types/BookReviewUpdateInput';
 import { createId } from '@paralleldrive/cuid2';
 import { useCallback, useState } from 'react';
 
 export type UseBookReviewsResult = {
-  bookReviews: BookReview[];
+  bookReviews: BookReviewHydrated[];
   createBookReview: ({
+    bookHydrated,
     bookReview,
   }: {
+    bookHydrated: BookHydrated;
     bookReview: BookReviewCreateInput;
   }) => Promise<void>;
   loadBookReviews: () => Promise<void>;
@@ -31,7 +35,7 @@ type OptimisticBookReview = Pick<BookReview, 'rating'> & {
 };
 
 export default function useBookReviews() {
-  const [bookReviews, setBookReviews] = useState<BookReview[]>();
+  const [bookReviews, setBookReviews] = useState<BookReviewHydrated[]>();
   const { handleError } = useHandleError();
 
   const loadBookReviews = useCallback(async () => {
@@ -45,7 +49,10 @@ export default function useBookReviews() {
   }, [handleError]);
 
   const updateBookReviews = useCallback(
-    (optimisticBookReview: OptimisticBookReview) => {
+    (
+      optimisticBookReview: OptimisticBookReview,
+      bookHydrated?: BookHydrated,
+    ) => {
       setBookReviews((existingReviews) => {
         /* istanbul ignore next */
         if (!existingReviews) {
@@ -65,9 +72,10 @@ export default function useBookReviews() {
               ...optimisticBookReview,
             },
           ];
-        } else if (optimisticBookReview.bookId) {
-          const newBookReview: BookReview = {
+        } else if (optimisticBookReview.bookId && bookHydrated) {
+          const newBookReview: BookReviewHydrated = {
             ...optimisticBookReview,
+            book: bookHydrated,
             bookId: optimisticBookReview.bookId,
             createdAt: new Date(), // replaced by the server code
             updatedAt: new Date(), // replaced by the server code
@@ -85,6 +93,7 @@ export default function useBookReviews() {
 
   const createBookReview = useCallback(
     async ({
+      bookHydrated,
       bookReview,
     }: Parameters<UseBookReviewsResult['createBookReview']>[0]) => {
       /* istanbul ignore next */
@@ -98,12 +107,12 @@ export default function useBookReviews() {
           ...bookReview,
           id: createId(),
         };
-        updateBookReviews(optimisticBookReview);
+        updateBookReviews(optimisticBookReview, bookHydrated);
 
         const createdBookReview = await postBookReviews({
           bookReview: optimisticBookReview,
         });
-        updateBookReviews(createdBookReview);
+        updateBookReviews(createdBookReview, bookHydrated);
       } catch (error) {
         /* istanbul ignore next */
         return handleError(error);
