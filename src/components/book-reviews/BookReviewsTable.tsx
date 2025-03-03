@@ -8,7 +8,13 @@ import { ColumnDef } from '@tanstack/react-table';
 import Image from 'next/image';
 
 const getColumns = (
-  onSetBookReviewRating: (rating: number) => Promise<void>,
+  onSetBookReviewRating: ({
+    id,
+    rating,
+  }: {
+    id: string;
+    rating: number;
+  }) => Promise<void>,
 ): ColumnDef<BookReviewHydrated>[] => [
   {
     accessorFn: (bookReview) => bookReview.book,
@@ -76,13 +82,19 @@ const getColumns = (
     },
   },
   {
-    accessorFn: (bookReview) => bookReview.rating,
+    accessorFn: (bookReview) => bookReview,
     cell: (props) => {
-      const rating = props.getValue() as number;
+      const bookReview = props.getValue() as BookReviewHydrated;
+      const { id, rating } = bookReview;
 
       return (
         <div className="flex items-center">
-          <ReviewStars onSetScore={onSetBookReviewRating} score={rating} />
+          <ReviewStars
+            onSetScore={(rating: number) =>
+              onSetBookReviewRating({ id, rating })
+            }
+            score={rating}
+          />
         </div>
       );
     },
@@ -100,7 +112,13 @@ export default function BookReviewsTable({
 }: {
   bookReviews: BookReviewHydrated[];
   isLoading?: boolean;
-  onSetBookReviewRating: (rating: number) => Promise<void>;
+  onSetBookReviewRating: ({
+    id,
+    rating,
+  }: {
+    id: string;
+    rating: number;
+  }) => Promise<void>;
 }) {
   return (
     <DataTable

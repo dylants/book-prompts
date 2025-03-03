@@ -3,13 +3,14 @@ import AuthorReviewUpdateInput from '@/types/AuthorReviewUpdateInput';
 import BookHydrated from '@/types/BookHydrated';
 import BookReview from '@/types/BookReview';
 import BookReviewCreateInput from '@/types/BookReviewCreateInput';
+import BookReviewHydrated from '@/types/BookReviewHydrated';
 import BookReviewUpdateInput from '@/types/BookReviewUpdateInput';
 import { AuthorReview } from '@prisma/client';
 import { createContext } from 'react';
 
 export type ProtectedContextType = {
   authorReviews: AuthorReview[];
-  bookReviews: BookReview[];
+  bookReviews: BookReviewHydrated[];
   createAuthorReview: ({
     authorReview,
   }: {

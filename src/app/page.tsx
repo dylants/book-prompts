@@ -35,9 +35,9 @@ export default function HomePage() {
           <NotebookPenIcon size={18} />
           Prompts
         </NavLink>
-        <NavLink path="/reviews">
+        <NavLink path="/book-reviews">
           <StarIcon size={18} />
-          Reviews
+          Book Reviews
         </NavLink>
       </div>
     </div>

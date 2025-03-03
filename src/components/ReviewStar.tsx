@@ -20,10 +20,12 @@ const ReviewStar = ({
   return (
     <motion.div
       onTap={() => {
-        animate(scope.current, { scale: 0.4 });
-        setTimeout(() => {
-          animate(scope.current, { scale: 1 });
-        }, 100);
+        if (scope.current) {
+          animate(scope.current, { scale: 0.4 });
+          setTimeout(() => {
+            animate(scope.current, { scale: 1 });
+          }, 100);
+        }
       }}
       whileHover={{ scale: 1.5 }}
       whileTap={{ scale: 0.8 }}
