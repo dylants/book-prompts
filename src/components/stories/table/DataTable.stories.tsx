@@ -35,7 +35,7 @@ const columns: ColumnDef<DataTableEntity>[] = [
     accessorFn: (entity) => entity.date.toLocaleDateString(),
     cell: (props) => (
       <div className="text-right">
-        <>{props.getValue()}</>
+        <>{props.getValue() as string}</>
       </div>
     ),
     header: () => <div className="text-right">Date</div>,
@@ -45,7 +45,7 @@ const columns: ColumnDef<DataTableEntity>[] = [
     accessorKey: 'num',
     cell: (props) => (
       <div className="text-right">
-        <>{props.getValue()}</>
+        <>{props.getValue() as string}</>
       </div>
     ),
     header: ({ column }) => <SortableHeader column={column} text="Number" />,
@@ -187,7 +187,7 @@ export const FixedWithCustomCell: Story = {
           cell: (props) => (
             <TableCell className="w-[40%]">
               <div className="overflow-hidden text-ellipsis whitespace-nowrap">
-                <>{props.getValue()}</>
+                <>{props.getValue() as string}</>
               </div>
             </TableCell>
           ),
@@ -209,7 +209,7 @@ export const FixedWithCustomCell: Story = {
           cell: (props) => (
             <TableCell className="w-[30%]">
               <div className="overflow-hidden text-ellipsis whitespace-nowrap">
-                <>{props.getValue()}</>
+                <>{props.getValue() as string}</>
               </div>
             </TableCell>
           ),
@@ -232,7 +232,7 @@ export const FixedWithCustomCell: Story = {
           cell: (props) => (
             <TableCell className="w-[10%]">
               <div className="text-right">
-                <>{props.getValue()}</>
+                <>{props.getValue() as string}</>
               </div>
             </TableCell>
           ),
@@ -252,7 +252,7 @@ export const FixedWithCustomCell: Story = {
         accessorKey: 'num',
         cell: (props) => (
           <div className="text-right w-[100px]">
-            <>{props.getValue()}</>
+            <>{props.getValue() as string}</>
           </div>
         ),
         header: ({ column }) => (
@@ -283,6 +283,20 @@ export const FixedWithCustomCell: Story = {
         <DataTable
           columns={customColumns}
           data={_.times(50, fakeDataTableEntity)}
+        />
+      </div>
+    );
+  },
+};
+
+export const DefaultSortState: Story = {
+  render: () => {
+    return (
+      <div>
+        <DataTable
+          columns={columns}
+          data={data}
+          defaultSortState={[{ desc: false, id: 'num' }]}
         />
       </div>
     );

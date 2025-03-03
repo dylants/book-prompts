@@ -41,6 +41,7 @@ declare module '@tanstack/react-table' {
 export type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  defaultSortState?: SortingState;
   idFieldName?: string;
   isFixedTable?: boolean;
   isLoading?: boolean;
@@ -52,6 +53,7 @@ export type DataTableProps<TData, TValue> = {
 export default function DataTable<TData, TValue>({
   columns,
   data,
+  defaultSortState = [],
   idFieldName = 'id',
   isFixedTable = false,
   isLoading = false,
@@ -63,7 +65,7 @@ export default function DataTable<TData, TValue>({
     pageIndex: 0, //initial page index
     pageSize: 10, //default page size
   });
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>(defaultSortState);
   const table = useReactTable({
     columns,
     data,
