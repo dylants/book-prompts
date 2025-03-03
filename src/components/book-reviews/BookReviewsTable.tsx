@@ -23,13 +23,15 @@ const getColumns = (
 
       return (
         <div className="flex items-center">
-          {book.imageUrl && (
+          {book.imageUrl ? (
             <Image
               alt={book.title}
               src={book.imageUrl}
               width={16}
               height={24}
             />
+          ) : (
+            <div className="border rounded-sm border-customPalette-300 w-[16px] h-[24px] flex justify-center items-center" />
           )}
         </div>
       );
@@ -124,6 +126,7 @@ export default function BookReviewsTable({
     <DataTable
       columns={getColumns(onSetBookReviewRating)}
       data={bookReviews}
+      defaultSortState={[{ desc: false, id: 'title' }]}
       isLoading={isLoading}
       noDataText="No reviews found"
     />
